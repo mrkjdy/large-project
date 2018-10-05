@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/mrkjdy/large-project/issues"
   },
-  "homepage": "https://github.com/mrkjdy/large-project#readme"
+  "homepage": "https://github.com/mrkjdy/large-project#readme",
+  "dependencies": {
+    "mysql": "^2.16.0"
+  }
 }
