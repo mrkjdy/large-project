@@ -54,7 +54,7 @@ If the auto-merge fails git will tell you that you need to fix conficts in certa
 	Keep in mind if you remove files, it doesn't remove them from your computer, git just removes them from your current commit.
 	Also if you remove files from your computer it doesn't remove them from the repo, you have to tell git to remove them manually.
 
-2. You need to tell git that your ready to make changes to the repo:
+2. You need to tell git that you're ready to make changes to the repo:
 
 	`git commit`
 
