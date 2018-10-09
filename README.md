@@ -4,7 +4,7 @@ Step Counter created by Group 4 in COP4331
 
 ## Git commands:
 	To start using git in a directory on your computer use this command:
-		```git init```
+		`git init`
 		(this makes a hidden folder in that directory called .git that 
 		 git uses to manage branches, file changes, etc)
 
