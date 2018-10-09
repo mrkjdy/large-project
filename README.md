@@ -1,14 +1,17 @@
-# large-project
-Step Counter created by Group 4 in COP4331
+# Android studio project is in StepswithFriends
+
+# Web server files are in WebServer
 
 
 ## Git commands
+Keep in mind these are pretty basic, and many of these commands have other options or alternative ways to use them
+
 #### To start using git in a directory on your computer
 `git init`
 
 This makes a hidden folder in that directory called .git that git uses to manage branches, file changes, etc
 
-#### To mange repositorys git can use:
+#### To mange repositorys (remotes) git can use:
 `git remote add [name of remote] [repo url]`
 
 `git remote rm [name of remote]`
@@ -70,5 +73,12 @@ If the auto-merge fails git will tell you that you need to fix conficts in certa
 	For this project you can use this if you have named your remote "origin":
 
 	`git push origin master`
-	
+
 	This command won't do anything if you haven't committed any changes
+
+#### To save your credentials for the current working directory:
+`git config credential.helper store`
+
+then
+
+`git pull ...`
