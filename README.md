@@ -1,9 +1,4 @@
-# Android studio project is in StepswithFriends
-
-# Web server files are in WebServer
-
-
-## git commands
+## Useful commands
 Keep in mind these are pretty basic, and many of these commands have other options or alternative ways to use them
 
 #### To start using git in a directory on your computer
