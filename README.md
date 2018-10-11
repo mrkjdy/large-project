@@ -82,3 +82,21 @@ If the auto-merge fails git will tell you that you need to fix conficts in certa
 then
 
 `git pull ...`
+
+#### To view heroku logs:
+1. Tell heroku what app this directory is using:
+
+`heroku git:remote -a large-project`
+
+2. View the logs:
+`heroku logs`	(Prints recent logs)
+
+`heroku logs -t`	(Prints live logs)
+
+#### To run the server locally:
+
+`node WebServer/server.js`
+
+or
+
+`heroku local`
