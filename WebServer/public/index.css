@@ -1,0 +1,100 @@
+body
+{
+  background-color: #e2e1e0;
+  font-family: 'Roboto', sans-serif;
+  color: #757575;
+  font-size: 16px;
+}
+
+#login-box
+{
+  position: fixed;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  background: #fff;
+  border-radius: 4px;
+  width: 300px;
+  margin: -150px 0px 0px -150px;
+  top: 30%;
+  left: 50%;
+  text-align: center;
+}
+
+#login-box p
+{
+  font-size: 12px;
+  padding: 10px;
+}
+
+#login-box input
+{
+  width: 70%;
+}
+
+select
+{
+  padding: 10px;
+  outline: 0;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
+input
+{
+  padding: 10px;
+  outline: 0;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
+.button
+{
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  text-decoration: none;
+}
+
+.button:hover
+{
+  background-color: #43A047; /* Green */
+}
+
+#submitMessage
+{
+  color: red;
+}
+
+#createAccountForm
+{
+  display: none;
+}
+
+#loginPrompt
+{
+  display: none;
+}
+
+#contacts-box
+{
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  background: #fff;
+  border-radius: 4px;
+  margin: 10px 10px 40px 10px;
+  text-align: center;
+  padding: 3px;
+}
+
+button {
+     background:none!important;
+     color:inherit;
+     border:none; 
+     padding:0!important;
+     font: inherit;
+     /*border is optional*/
+     border-bottom:1px solid #444; 
+     cursor: pointer;
+}
+
+#pointer {
+  cursor: pointer;
+}

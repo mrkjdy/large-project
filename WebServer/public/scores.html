@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link href="index.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="code.js" type="text/javascript"></script>
+
+  <title>G4 Contact Manager</title>
+  <p style="position:fixed;  margin: 0; padding: 1%; bottom: 0; right: 0; color: #757575">
+    Created by COP 4331 Group 4
+  </p>
+	<!-- stretch-goal feature
+		<p style="position:fixed;  margin: 0; padding: 1%; top: 0; left: 0; color: #757575">
+		Logged in as: ########
+		</p> 
+	-->
+</head>
+
+<body> 
+  
+<div class="container-fluid text-center">  
+  <div class="col-xs-0 col-sm-1 col-lg-1 sidenav"></div>
+  <div class="col-xs-12 col-sm-10 col-lg-10">
+  <div class="row content">
+    <div id="contacts-box">
+      <h2>G4 Contact Manager</h2>
+	
+	  <!-- Log out button -->
+      <div class="row">
+        <button type="button" onclick="logout()">Log out</button>
+      </div><br>
+
+	  <div class="container-fluid">
+		<form onsubmit="searchContact(); return false" id="searchForm">
+			<div class="row">
+			<input type="text" id="searchString" placeholder="Search contacts..." autofocus>
+			<select id="sBox">
+				<option value="firstname">First Name</option>
+				<option value="lastname">Last Name</option>
+				<option value="email">Email</option>
+				<option value="phone">Phone</option>
+			</select>
+			<input type="submit" id="submitSearch" class="button" value="Search"><br><br>
+			</div>
+		</form>
+
+		<form onsubmit="addContact(); return false" id="addContactForm">
+		  <div class="row">
+		  <input type="text" id="newFirstName" placeholder="First Name">
+		  <input type="text" id="newLastName" placeholder="Last Name">
+		  <input type="text" id="newEmail" placeholder="Email">
+		  <input type="text" id="newPhone" placeholder="Phone Number">
+		  <input type="submit" id="submitAddContact" class="button" value="Add Contact">
+		  </div>
+		  <br>
+		</form>
+		<p id="contactAddResult" ></p><br>
+
+		<div class="container-fluid text-left">
+		<div class="table-responsive">
+		<table class="table" id="cTable">
+		  <thead>
+			  <tr>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Email</th>
+				<th>Phone</th>
+				<th><span class="glyphicon glyphicon-trash"></span></th>
+			  </tr>
+		  </thead>
+		  <tbody id="tBody">
+			  
+			  <tr>
+				  <td></td>
+				  <td></td>
+				  <td></td>
+				  <td></td>
+				  <td></td>
+			  </tr>
+		  </tbody>
+		</table>
+        	</div>
+	</div>
+      </div>
+    </div>
+    </div>
+  </div>
+  <div class="col-xs-0 col-sm-1 col-lg-1 sidenav"></div>
+  </div>
+</body>
+</html>
