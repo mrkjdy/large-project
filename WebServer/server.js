@@ -2,9 +2,14 @@
 // ----------------------------------------------------------------------
 
 const express = require('express');
+const session = require('express-session');
+const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const pug = require('pug');
 const path = require('path');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const favicon = require('serve-favicon');
 
 
 
@@ -56,6 +61,24 @@ app.use(function (req, res, next) {
 // Sets pug as view engine
 app.set('view engine', 'pug')
 app.set('views', path.join(__dirname, 'public'));
+
+// Body-parser initialization
+app.set('trust proxy', 1);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(session({
+	secret: 'T9LqJYlgFNQi46lBBGge',
+	resave: false,
+	saveUninitialized: false,
+	cookie: {
+		secure: true,
+		maxAge: 86400000
+	}
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(favicon(__dirname + '/public/favicon.ico'));
 
 
 

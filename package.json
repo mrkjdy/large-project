@@ -1,26 +1,31 @@
 {
   "name": "large-project",
   "version": "1.0.0",
-  "description": "Step Counter",
+  "description": "Steps with Friends",
   "main": "WebServer/server.js",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "mysql": "^2.16.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "path": "^0.12.7",
+    "pug": "^2.0.3",
+    "serve-favicon": "^2.5.0"
+  },
+  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node WebServer/server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mrkjdy/large-project.git"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/mrkjdy/large-project/issues"
   },
-  "homepage": "https://github.com/mrkjdy/large-project#readme",
-  "dependencies": {
-    "express": "^4.16.4",
-    "mysql": "^2.16.0",
-    "pug": "^2.0.3"
-  }
+  "homepage": "https://github.com/mrkjdy/large-project#readme"
 }
