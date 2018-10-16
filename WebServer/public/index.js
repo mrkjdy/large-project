@@ -1,4 +1,4 @@
-var APIRoot = 'https://small-project-cop4331.herokuapp.com'; 
+var APIRoot = 'https://large-project.herokuapp.com/'; 
 var fileExtension = '.js'; 
 var contactsURL = '/contacts';
 var loginURL = '/';
@@ -9,6 +9,8 @@ var lastName = '';
 
 var JSONtextID = '';
 
+var bcrypt = dcodeIO.bcrypt;
+
 function login()
 {
 
@@ -16,74 +18,75 @@ function login()
 	var pass = document.getElementById("pWord").value;
 
 	// Hash Password
-	pass = calcMD5(pass);
+	var hash = bcrypt.hashSync(pass, user);
+	alert(hash);
 	// End
 
-	//TODO: add an error message element to login page
-	document.getElementById("submitMessage").innerHTML = "";
+	// //TODO: add an error message element to login page
+	// document.getElementById("submitMessage").innerHTML = "";
 
-	// Create JSON pacage 
-	var jsonPayload = '{"username" : "' + user + '", "password" : "' + pass + '"}';
-	var url = "/login"; //+ 'small-project-cop4331.herokuapp.com:5000'; //+ fileExtension;
+	// // Create JSON pacage 
+	// var jsonPayload = '{"username" : "' + user + '", "password" : "' + pass + '"}';
+	// var url = "/login"; //+ 'small-project-cop4331.herokuapp.com:5000'; //+ fileExtension;
 
-	//alert(jsonPayload);
+	// //alert(jsonPayload);
 
-	var xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+	// var xhr = new XMLHttpRequest();
+	// xhr.open("POST", url, true);
+	// xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
-	try
-	{
-		//console.log("test!");
+	// try
+	// {
+	// 	//console.log("test!");
 
-		//console.log("test1");
+	// 	//console.log("test1");
 
-		xhr.onreadystatechange = function() {
-    		if (this.readyState == 4 && this.status == 200) {
+	// 	xhr.onreadystatechange = function() {
+ //    		if (this.readyState == 4 && this.status == 200) {
 
-        		var JS = this.responseText;
-        		var JSLength = JS.length;
-				JS = JS.substr(1, (JSLength - 2));
+ //        		var JS = this.responseText;
+ //        		var JSLength = JS.length;
+	// 			JS = JS.substr(1, (JSLength - 2));
 
-				var jsonObject = JSON.parse(JS);
+	// 			var jsonObject = JSON.parse(JS);
 
-        		//localStorage.setItem(JSONtextID, JS);
-        		//console.log("woooooo");
+ //        		//localStorage.setItem(JSONtextID, JS);
+ //        		//console.log("woooooo");
     		
-    			//console.log("test2");
+ //    			//console.log("test2");
 
-				userID = jsonObject.UserId;
+	// 			userID = jsonObject.UserId;
 
-				//localStorage.setItem(jsonObject.UserID, userID);
+	// 			//localStorage.setItem(jsonObject.UserID, userID);
 
-				//check wether login was succesfull
-				if (userID == 0)
-				{
-					document.getElementById("submitMessage").innerHTML = "User or Password incorrect";
-					return;
-				}
+	// 			//check wether login was succesfull
+	// 			if (userID == 0)
+	// 			{
+	// 				document.getElementById("submitMessage").innerHTML = "User or Password incorrect";
+	// 				return;
+	// 			}
 
-				// firstName = jsonObject.firstName;
-				// lastName = jsonObject.lastName;
+	// 			// firstName = jsonObject.firstName;
+	// 			// lastName = jsonObject.lastName;
 
-				document.getElementById("uName").value = "";
-				document.getElementById("pWord").value = "";
+	// 			document.getElementById("uName").value = "";
+	// 			document.getElementById("pWord").value = "";
 
-				// redirection code
-				document.location.href = contactsURL;
-			}
-		};
+	// 			// redirection code
+	// 			document.location.href = contactsURL;
+	// 		}
+	// 	};
 
-		// send pacage to API
-		xhr.send(jsonPayload);
-	}
-	catch(err)
-	{
-		document.getElementById("submitMessage").innerHTML = err.message;
-	}
-	// End
+	// 	// send pacage to API
+	// 	xhr.send(jsonPayload);
+	// }
+	// catch(err)
+	// {
+	// 	document.getElementById("submitMessage").innerHTML = err.message;
+	// }
+	// // End
 
-	// test the function is running: alert("Login()");
+	// // test the function is running: alert("Login()");
 }
 
 function getContacts()
@@ -487,9 +490,7 @@ function createAccount()
 function showCreateAccount()
 {
 	document.getElementById("loginForm").style.display = "none";
-	document.getElementById("createAccountPrompt").style.display = "none";
 	document.getElementById("createAccountForm").style.display = "block";
-	document.getElementById("loginPrompt").style.display = "block";
 	document.getElementById("newFName").focus();
 	document.getElementById("submitMessage").innerHTML = "";
 }
@@ -497,9 +498,7 @@ function showCreateAccount()
 function showLogin()
 {
 	document.getElementById("loginForm").style.display = "block";
-	document.getElementById("createAccountPrompt").style.display = "block";
 	document.getElementById("createAccountForm").style.display = "none";
-	document.getElementById("loginPrompt").style.display = "none";
 	document.getElementById("uName").focus();
 	document.getElementById("submitMessage").innerHTML = "";
 }

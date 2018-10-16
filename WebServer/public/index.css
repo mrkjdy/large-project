@@ -1,3 +1,16 @@
+/* NEW */
+#createdBy
+{
+  position:fixed;
+  margin: 0;
+  padding: 1%;
+  bottom: 0;
+  right: 0;
+  color: #757575;
+}
+
+/* OLD */
+
 body
 {
   background-color: #e2e1e0;
@@ -6,7 +19,7 @@ body
   font-size: 16px;
 }
 
-#login-box
+#loginBox
 {
   position: fixed;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
@@ -19,13 +32,13 @@ body
   text-align: center;
 }
 
-#login-box p
+#loginBox p
 {
   font-size: 12px;
   padding: 10px;
 }
 
-#login-box input
+#loginBox input
 {
   width: 70%;
 }
@@ -65,11 +78,6 @@ input
 }
 
 #createAccountForm
-{
-  display: none;
-}
-
-#loginPrompt
 {
   display: none;
 }
