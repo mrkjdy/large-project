@@ -20,6 +20,10 @@ const bcrypt = require('bcrypt');
 // Defaults are for testing locally
 const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || "development";
+const DATABASE_HOST = process.env.DATABASE_HOST;
+const DATABASE_USER = process.env.DATABASE_USER;
+const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD;
+const DATABASE_NAME = process.env.DATABASE_NAME;
 
 
 
@@ -30,12 +34,12 @@ const NODE_ENV = process.env.NODE_ENV || "development";
 var app = express();
 
 // Database connection info
-var db = mysql.createPool({
+var dbPool = mysql.createPool({
 	connectionLimit: 10,
-	host     : 'us-cdbr-iron-east-01.cleardb.net',
-  	user     : 'bbfac4dc0a8c9d',
-  	password : 'dd4a3600',
-  	database : 'heroku_52d2990a9088f84'
+	host     : DATABASE_HOST,
+  	user     : DATABASE_USER,
+  	password : DATABASE_PASSWORD,
+  	database : DATABASE_NAME
 });
 
 const saltRounds = 10;
@@ -51,6 +55,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Starts listening on the port provided by heroku
 app.listen(PORT, function() {
 	console.log("Listening on " + PORT)
+	console.log("NODE_ENV: " + NODE_ENV)
 });
 
 // Redirects to HTTPS
