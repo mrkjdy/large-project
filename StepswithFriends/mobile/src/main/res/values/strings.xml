@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Step with Friends</string>
+    <string name="bottom_nav_home">Home</string>
+    <string name="bottom_nav_walk">Walk</string>
+    <string name="bottom_nav_settings">Settings</string>
+    <string name="bottom_nav_leaderboard">Leaderboard</string>
 </resources>
