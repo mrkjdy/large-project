@@ -10,12 +10,14 @@ const path = require('path');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const favicon = require('serve-favicon');
+const bcrypt = require('bcrypt');
 
 
 
 // Environment Variables
 // ----------------------------------------------------------------------
 
+// Defaults are for testing locally
 const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || "development";
 
@@ -36,6 +38,8 @@ var db = mysql.createPool({
   	database : 'heroku_52d2990a9088f84'
 });
 
+const saltRounds = 10;
+
 
 
 // App Config
@@ -52,6 +56,7 @@ app.listen(PORT, function() {
 // Redirects to HTTPS
 app.use(function (req, res, next) {
 	// The 'x-forwarded-proto' check is for Heroku
+	// NODE_ENV is set by Heroku
 	if (!req.secure && req.get('x-forwarded-proto') !== 'https' && NODE_ENV !== "development") {
 		return res.redirect('https://' + req.get('host') + req.url);
 	}
@@ -84,6 +89,23 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // Post and Get functions
 // ----------------------------------------------------------------------
+
+// Passwords need to be hashed before they are stored in the database!
+// To hash a password:
+// bcrypt.hash(<password>, saltRounds, function(err, hash)) {
+//	// Store hash in database here
+// }
+//
+// To check a password:
+// Load hash from DB
+// bcrypt.compare(<password>, <hash>, function(err, res) {
+//	if(res) {
+//		// password matches!
+//	}
+//	else {
+//		// password does not match!
+//	}
+// });
 
 app.get('/', function (req, res) {
   res.render('index')
