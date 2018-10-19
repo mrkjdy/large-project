@@ -6,15 +6,21 @@
   padding: 1%;
   bottom: 0;
   right: 0;
-  color: #757575;
+  color: #C1C8E4;
 }
-
+ /*<color name="colorPrimary">#8860D0</color>          <!-- PURPLE -->
+    <color name="colorPrimaryDark">#222629</color>      <!-- BLACK -->
+    <color name="colorAccent">#84CEEB</color>           <!-- LIGHT BLUE -->
+    <color name="colorSecondaryAccent">#C1C8E4</color>  <!-- GRAY -->
+    <color name="colorSecondary">#5AB9EA</color>        <!-- BLUE -->
+    <color name="colorTertiary">#5680E9</color>         <!-- BLUE/PURPLE -->
+    */
 /* OLD */
 
 body
 {
-  background-color: #e2e1e0;
-  font-family: 'Roboto', sans-serif;
+  background-color: #222629;
+  font-family: 'Oswald';
   color: #757575;
   font-size: 16px;
 }
@@ -61,7 +67,7 @@ input
 
 .button
 {
-  background-color: #4CAF50; /* Green */
+  background-color: #5AB9EA; /* Green */
   border: none;
   color: white;
   text-decoration: none;
@@ -69,7 +75,7 @@ input
 
 .button:hover
 {
-  background-color: #43A047; /* Green */
+  background-color: #84CEEB; /* Green */
 }
 
 #submitMessage
