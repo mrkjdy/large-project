@@ -14,12 +14,12 @@ const bcrypt = require('bcrypt');
 
 
 
-// Global Vars
+// Global vars
 // ----------------------------------------------------------------------
 
-// Defaults are for testing locally
-const PORT = process.env.PORT || 5000;
-const NODE_ENV = process.env.NODE_ENV || "development";
+// These are grabbed here because they are used multiple times
+const PORT = process.env.PORT;
+const NODE_ENV = process.env.NODE_ENV;
 
 // Creates the express server
 var app = express();
@@ -39,7 +39,7 @@ const saltRounds = 10;
 
 
 
-// App Config
+// App config
 // ----------------------------------------------------------------------
 
 // Sets public as the public folder
@@ -70,7 +70,7 @@ app.set('trust proxy', 1);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(session({
-	secret: 'T9LqJYlgFNQi46lBBGge',
+	secret: process.env.SESSION_SECRET,
 	resave: false,
 	saveUninitialized: false,
 	cookie: {
@@ -85,7 +85,7 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 
 
 
-// Post and Get functions
+// Post and get functions
 // ----------------------------------------------------------------------
 
 // Passwords need to be hashed before they are stored in the database!
