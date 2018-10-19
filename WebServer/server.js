@@ -14,34 +14,27 @@ const bcrypt = require('bcrypt');
 
 
 
-// Environment Variables
+// Global Vars
 // ----------------------------------------------------------------------
 
 // Defaults are for testing locally
 const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || "development";
-const DATABASE_HOST = process.env.DATABASE_HOST;
-const DATABASE_USER = process.env.DATABASE_USER;
-const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD;
-const DATABASE_NAME = process.env.DATABASE_NAME;
-
-
-
-// Global Vars
-// ----------------------------------------------------------------------
 
 // Creates the express server
 var app = express();
 
-// Database connection info
+// Database connection pool config
 var dbPool = mysql.createPool({
+	// Keep in mind our Ignite database can have 10 connections max
 	connectionLimit: 10,
-	host     : DATABASE_HOST,
-  	user     : DATABASE_USER,
-  	password : DATABASE_PASSWORD,
-  	database : DATABASE_NAME
+	host     : process.env.DATABASE_HOST,
+  	user     : process.env.DATABASE_USER,
+  	password : process.env.DATABASE_PASSWORD,
+  	database : process.env.DATABASE_NAME
 });
 
+// The cost factor for bcrypt
 const saltRounds = 10;
 
 
@@ -55,7 +48,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Starts listening on the port provided by heroku
 app.listen(PORT, function() {
 	console.log("Listening on " + PORT)
-	console.log("NODE_ENV: " + NODE_ENV)
+	console.log("NODE_ENV is " + NODE_ENV)
 });
 
 // Redirects to HTTPS

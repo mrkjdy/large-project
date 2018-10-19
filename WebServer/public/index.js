@@ -1,7 +1,10 @@
-var APIRoot = 'https://large-project.herokuapp.com/'; 
-var fileExtension = '.js'; 
-var contactsURL = '/contacts';
-var loginURL = '/';
+// Global vars
+// ----------------------------------------------------------------------
+
+const APIRoot = 'https://large-project.herokuapp.com/'; 
+const fileExtension = '.js'; 
+const contactsURL = '/contacts';
+const loginURL = '/';
 
 var userID = 0;
 var firstName = '';
@@ -9,12 +12,18 @@ var lastName = '';
 
 var JSONtextID = '';
 
+
+
+// Index.html functions
+// ----------------------------------------------------------------------
+
+// Hashing password on client is not necessary with HTTPS!
+// It will be hashed by server before being stored in DB!
+
+// Checks username and password with server and then redirects to scores
 function login() {
 	var user = document.getElementById("uName").value;
 	var pass = document.getElementById("pWord").value;
-
-	// Hashing password on client is not necessary with HTTPS!
-	// It will be hashed by server before being stored in DB!
 
 	document.getElementById("submitMessage").innerHTML = "";
 
@@ -59,6 +68,83 @@ function login() {
 		document.getElementById("submitMessage").innerHTML = err.message;
 	}
 }
+
+// Registers account info with server and then login()s
+function createAccount()
+{
+	var fName = document.getElementById("newFName").value;
+	var lName = document.getElementById("newLName").value;
+	var user = document.getElementById("newUName").value;
+	var newPWord1 = document.getElementById("newPWord1").value;
+	var newPWord2 = document.getElementById("newPword2").value;
+
+	if (user == "")
+	{
+		document.getElementById("submitMessage").innerHTML = "Enter a user name";
+		return;
+	}
+
+	// Check if passwords match
+	if (newPWord1 !== newPWord2)
+	{
+		document.getElementById("submitMessage").innerHTML = "Passwords don't match";
+		return;
+	}
+
+	// Check if username available
+	var jsonPayload = '{"username" : "' + user + '", "password" : "' + newPWord1 
+						+ '", "firstname" : "' + fName + '", "lastname" : "'
+						+ lName + '"}';
+	var url = '/register'; //+ fileExtension;
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+	try
+	{
+
+		xhr.onreadystatechange = function() 
+		{
+			if (this.readyState == 4 && this.status == 200) 
+			{
+				document.getElementById("uName").value = user;
+				document.getElementById("pWord").value = newPWord2;
+				login();
+			}
+			else if (this.status == 400)
+			{
+				document.getElementById("submitMessage").innerHTML = "Username already used";
+			}
+		};
+		xhr.send(jsonPayload);
+	}
+	catch(err)
+	{
+		document.getElementById("submitMessage").innerHTML = err.message;
+	}
+}
+
+function showCreateAccount()
+{
+	document.getElementById("loginForm").style.display = "none";
+	document.getElementById("createAccountForm").style.display = "block";
+	document.getElementById("newFName").focus();
+	document.getElementById("submitMessage").innerHTML = "";
+}
+
+function showLogin()
+{
+	document.getElementById("loginForm").style.display = "block";
+	document.getElementById("createAccountForm").style.display = "none";
+	document.getElementById("uName").focus();
+	document.getElementById("submitMessage").innerHTML = "";
+}
+
+
+
+// Scores.html functions
+// ----------------------------------------------------------------------
 
 function getContacts()
 {
@@ -397,81 +483,6 @@ function logout()
 	}
 
 	// test the function is running: alert("logout()");
-}
-
-function createAccount()
-{
-	var fName = document.getElementById("newFName").value;
-	var lName = document.getElementById("newLName").value;
-	var user = document.getElementById("newUName").value;
-	var newPWord1 = document.getElementById("newPWord1").value;
-	var newPWord2 = document.getElementById("newPword2").value;
-
-	if (user == "")
-	{
-		document.getElementById("submitMessage").innerHTML = "Enter a user name";
-		return;
-	}
-
-	// Check if passwords match
-	if (newPWord1 !== newPWord2)
-	{
-		document.getElementById("submitMessage").innerHTML = "Passwords don't match";
-		return;
-	}
-
-	newPWord1 = calcMD5(newPWord1);
-
-	// Check if username available
-	var jsonPayload = '{"username" : "' + user + '", "password" : "' + newPWord1 
-						+ '", "firstname" : "' + fName + '", "lastname" : "'
-						+ lName + '"}';
-	var url = '/register'; //+ fileExtension;
-
-	var xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-
-	try
-	{
-
-		xhr.onreadystatechange = function() 
-		{
-			if (this.readyState == 4 && this.status == 200) 
-			{
-				document.getElementById("uName").value = user;
-				document.getElementById("pWord").value = newPWord2;
-				login();
-			}
-			else if (this.status == 400)
-			{
-				document.getElementById("submitMessage").innerHTML = "Username already used";
-			}
-		};
-		xhr.send(jsonPayload);
-	}
-	catch(err)
-	{
-		// return error mesage
-	}
-
-	// set username and password then login
-}
-
-function showCreateAccount()
-{
-	document.getElementById("loginForm").style.display = "none";
-	document.getElementById("createAccountForm").style.display = "block";
-	document.getElementById("newFName").focus();
-	document.getElementById("submitMessage").innerHTML = "";
-}
-
-function showLogin()
-{
-	document.getElementById("loginForm").style.display = "block";
-	document.getElementById("createAccountForm").style.display = "none";
-	document.getElementById("uName").focus();
-	document.getElementById("submitMessage").innerHTML = "";
 }
 
 // populates contact table on page load
