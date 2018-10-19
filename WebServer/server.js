@@ -10,31 +10,32 @@ const path = require('path');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const favicon = require('serve-favicon');
-
-
-
-// Environment Variables
-// ----------------------------------------------------------------------
-
-const PORT = process.env.PORT || 5000;
-const NODE_ENV = process.env.NODE_ENV || "development";
+const bcrypt = require('bcrypt');
 
 
 
 // Global Vars
 // ----------------------------------------------------------------------
 
+// Defaults are for testing locally
+const PORT = process.env.PORT || 5000;
+const NODE_ENV = process.env.NODE_ENV || "development";
+
 // Creates the express server
 var app = express();
 
-// Database connection info
-var db = mysql.createPool({
+// Database connection pool config
+var dbPool = mysql.createPool({
+	// Keep in mind our Ignite database can have 10 connections max
 	connectionLimit: 10,
-	host     : 'us-cdbr-iron-east-01.cleardb.net',
-  	user     : 'bbfac4dc0a8c9d',
-  	password : 'dd4a3600',
-  	database : 'heroku_52d2990a9088f84'
+	host     : process.env.DATABASE_HOST,
+  	user     : process.env.DATABASE_USER,
+  	password : process.env.DATABASE_PASSWORD,
+  	database : process.env.DATABASE_NAME
 });
+
+// The cost factor for bcrypt
+const saltRounds = 10;
 
 
 
@@ -47,11 +48,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Starts listening on the port provided by heroku
 app.listen(PORT, function() {
 	console.log("Listening on " + PORT)
+	console.log("NODE_ENV is " + NODE_ENV)
 });
 
 // Redirects to HTTPS
 app.use(function (req, res, next) {
 	// The 'x-forwarded-proto' check is for Heroku
+	// NODE_ENV is set by Heroku
 	if (!req.secure && req.get('x-forwarded-proto') !== 'https' && NODE_ENV !== "development") {
 		return res.redirect('https://' + req.get('host') + req.url);
 	}
@@ -84,6 +87,23 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // Post and Get functions
 // ----------------------------------------------------------------------
+
+// Passwords need to be hashed before they are stored in the database!
+// To hash a password:
+// bcrypt.hash(<password>, saltRounds, function(err, hash)) {
+//	// Store hash in database here
+// }
+//
+// To check a password:
+// Load hash from DB
+// bcrypt.compare(<password>, <hash>, function(err, res) {
+//	if(res) {
+//		// password matches!
+//	}
+//	else {
+//		// password does not match!
+//	}
+// });
 
 app.get('/', function (req, res) {
   res.render('index')
