@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -30,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.action_walk:
                         Toast.makeText(MainActivity.this, "Action Walk Click", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.action_leaderboard:
+                        Toast.makeText(MainActivity.this, "Action Leaderboard Click", Toast.LENGTH_SHORT).show();
                         break;
                 }
             return true ;
