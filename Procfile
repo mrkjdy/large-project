@@ -1,1 +1,1 @@
-web: node WebServer/server.js
+web: OUTPUT=$(heroku config -s) && OUTPUT=$OUTPUT | tr '\n' ' ' && eval $OUTPUT node WebServer/server.js

@@ -18,8 +18,8 @@ const bcrypt = require('bcrypt');
 // ----------------------------------------------------------------------
 
 // These are grabbed here because they are used multiple times
-const PORT = process.env.PORT;
-const NODE_ENV = process.env.NODE_ENV;
+const PORT = process.env.PORT || 5000;
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // Creates the express server
 var app = express();
