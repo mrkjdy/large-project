@@ -1,1 +1,1 @@
-web: OUTPUT=$(heroku config -s) && OUTPUT=$OUTPUT | tr '\n' ' ' && eval $OUTPUT node WebServer/server.js
+web: if [ "$NODE_ENV" != "production" ]; then OUTPUT=$(heroku config -s) && OUTPUT=$OUTPUT | tr '\n' ' '; fi; eval $OUTPUT node Webserver/server.js
