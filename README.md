@@ -6,7 +6,7 @@ Keep in mind these are pretty basic, and many of these commands have other optio
 
 This makes a hidden folder in that directory called .git that git uses to manage branches, file changes, etc
 
-#### To mange repositorys (remotes) git can use:
+#### To manage repositorys (remotes) git can use:
 `git remote add [name of remote] [repo url]`
 
 `git remote rm [name of remote]`
@@ -91,7 +91,7 @@ then
 #### To run the server locally:
 `heroku local`
 
-I have modified the Procfile so that when you run `heroku local` it attempts to grab the config vars from heroku. If successful server.js should connect to the ClearDB database. If unsuccessful there may be errors, and the server may not connect to the database. If you would like to use a different database you can specify any environment variables you need:
+I have modified the Procfile so that when you run `heroku local` it attempts to grab the config vars from heroku. If successful server.js should connect to the ClearDB database. If unsuccessful there may be errors, and the server may not connect to the database. If you would like to use a different database you can specify any environment variables you needa:
 
 `VAR=blahblahblah OTHERVAR=blahblahblah ... heroku local`
 
