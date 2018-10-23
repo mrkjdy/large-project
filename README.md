@@ -91,7 +91,7 @@ then
 #### To run the server locally:
 `heroku local`
 
-I have modified the Procfile so that when you run `heroku local` it attempts to grab the config vars from heroku. If successful server.js should connect to the ClearDB database. If unsuccessful there may be errors, and the server may not connect to the database. If you would like to use a different database you can specify any environment variables you need like so:
+I have modified the Procfile so that when you run `heroku local` it attempts to grab the config vars from heroku. If successful server.js should connect to the ClearDB database. If unsuccessful there may be errors, and the server may not connect to the database. If you would like to use a different database you can specify any environment variables you need:
 
 `VAR=blahblahblah OTHERVAR=blahblahblah ... heroku local`
 
