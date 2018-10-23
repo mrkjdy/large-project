@@ -89,9 +89,12 @@ then
 `heroku logs -t`	(Prints live logs)
 
 #### To run the server locally:
-
-`node WebServer/server.js`
-
-or
-
 `heroku local`
+
+I have modified the Procfile so that when you run `heroku local` it attempts to grab the config vars from heroku. If successful server.js should connect to the ClearDB database. If unsuccessful there may be errors, and the server may not connect to the database. If you would like to use a different database you can specify any environment variables you need like so:
+
+`VAR=blahblahblah OTHERVAR=blahblahblah ... heroku local`
+
+for this project to specify an alternative database to connect to, and to give a session secret:
+
+`DATABASE_HOST=[host url] DATABASE_NAME=[database name] DATABASE_PASSWORD=[database password] DATABASE_USER=[database user] SESSION_SECRET=[secret] heroku local`
