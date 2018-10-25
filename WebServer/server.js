@@ -49,6 +49,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.listen(PORT, function() {
 	console.log("Listening on " + PORT)
 	console.log("NODE_ENV is " + NODE_ENV)
+	console.log(process.env.DATABASE_HOST)
 });
 
 // Redirects to HTTPS

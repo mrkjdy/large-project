@@ -1,1 +1,1 @@
-web: if [ "$NODE_ENV" != "production" ]; then OUTPUT=$(heroku config -s) && OUTPUT=$OUTPUT | tr '\n' ' '; fi; eval $OUTPUT node WebServer/server.js
+web: if [ "$NODE_ENV" != "production" ]; then undefinedVars=""; whileLoop=$(echo "while read -r line; do\neval \"varValue=\\\$\${line%%=*}\"\nif [ -z \$varValue ]; then\nundefinedVars=\"\$undefinedVars \$line\"\nfi\ndone <<E\n$(heroku config -s)\nE\necho \"\$undefinedVars\""); undefinedVars=$(eval "$whileLoop"); fi; eval $undefinedVars node WebServer/server.js
