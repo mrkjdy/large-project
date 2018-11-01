@@ -12,7 +12,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="AppTheme.PopupTheme">
+    <style name="AppTheme.PopupTheme" parent="AppTheme.PopupOverlay">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
