@@ -4,4 +4,9 @@
     <string name="bottom_nav_walk">Walk</string>
     <string name="bottom_nav_settings">Settings</string>
     <string name="bottom_nav_leaderboard">Leaderboard</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_info">Info</string>
+    <string name="title_activity_info_popup">InfoPopup</string>
 </resources>
