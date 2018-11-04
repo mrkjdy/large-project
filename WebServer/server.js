@@ -167,7 +167,7 @@ app.get('/', function (req, res) {
 app.post('/register', function(req, res) {
 	
 	// Check if correct format
-	if(checkInput(req.body.firstname, "name") && checkInput(req.body.lastname, "name") && checkInput(req.body.username, "username") && checkInput(req.body.password, "password") && checkInput(req.body.weight, "number") && checkInput(req.body.height, "number")) {
+	if(checkInput(req.body.firstname, "name") && checkInput(req.body.lastname, "name") && checkInput(req.body.username, "username") && checkInput(req.body.weight, "number") && checkInput(req.body.height, "number")) {
 		
 		// Create connection to database
 		dbPool.getConnection(function(err, tempCont){
