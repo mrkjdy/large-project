@@ -141,8 +141,6 @@ passport.deserializeUser(function(id, done) {
 	});
 });
 
-
-
 // Post and get functions
 // ----------------------------------------------------------------------
 
@@ -162,6 +160,8 @@ passport.deserializeUser(function(id, done) {
 //		// password does not match!
 //	}
 // });
+
+console.log("test");
 
 app.get('/', function (req, res) {
   res.render('index')
