@@ -37,7 +37,7 @@ var dbPool = mysql.createPool({
 // The cost factor for bcrypt
 const saltRounds = 10;
 
-
+console.log("test");
 
 // App config
 // ----------------------------------------------------------------------
@@ -160,8 +160,6 @@ passport.deserializeUser(function(id, done) {
 //		// password does not match!
 //	}
 // });
-
-console.log("test");
 
 app.get('/', function (req, res) {
   res.render('index')
