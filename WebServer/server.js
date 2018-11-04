@@ -215,6 +215,11 @@ app.post('/register', function(req, res) {
 		});
 	
 	} else {
+		console.log("firstname: " + checkInput(req.body.firstname, "name"));
+		console.log("lastname: " + checkInput(req.body.lastname, "name"));
+		console.log("username: " + checkInput(req.body.username, "username"));
+		console.log("height: " + checkInput(req.body.height, "number"));
+		console.log("weight: " + checkInput(req.body.weight, "number"));
 		res.status(401).send();
 	}
 });
@@ -264,7 +269,7 @@ var checkInput = function(input, type, callback) {
 			break;
 			
 		case "number":
-			returnVal = (typeof input === "number")
+			returnVal = (typeof input === "number");
 			break;
 		
 		default:
