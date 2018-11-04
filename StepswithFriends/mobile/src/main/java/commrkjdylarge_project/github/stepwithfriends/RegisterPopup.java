@@ -90,8 +90,8 @@ public class RegisterPopup extends AppCompatActivity {
                             startActivity(new Intent(RegisterPopup.this, Login.class));
                         }
 
-                        //@Override
-                        public void onFailure(int statusCode, Header[] headers, JSONObject errorResponse, Throwable e) {
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
                             // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                             // 401 Unauthorized
                             if(statusCode == 401) {
@@ -101,7 +101,7 @@ public class RegisterPopup extends AppCompatActivity {
                                 error.setText("Username is already registered");
                             // Other Error
                             } else {
-                                error.setText("Registration is currently unavailable");
+                                error.setText("Registration is currently unavailable (Error code: " + Integer.toString(statusCode) + ")");
                             }
                         }
 
