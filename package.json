@@ -4,6 +4,7 @@
   "description": "Steps with Friends",
   "main": "WebServer/server.js",
   "dependencies": {
+    "bcrypt": "^3.0.2",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
@@ -15,9 +16,7 @@
     "pug": "^2.0.3",
     "serve-favicon": "^2.5.0"
   },
-  "devDependencies": {
-    "bcrypt": "^3.0.2"
-  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
