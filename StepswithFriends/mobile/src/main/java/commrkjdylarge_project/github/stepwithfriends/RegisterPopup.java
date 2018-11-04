@@ -88,7 +88,6 @@ public class RegisterPopup extends AppCompatActivity {
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             // called when response HTTP status is "200 OK"
                             startActivity(new Intent(RegisterPopup.this, Login.class));
-                            // TODO: Fix bug that causes successfull registration to display as fail, not redirect
                         }
 
                         @Override
@@ -100,9 +99,13 @@ public class RegisterPopup extends AppCompatActivity {
                             // 470: Username unavailable
                             } else if(statusCode == 470) {
                                 error.setText("Username is already registered");
+                            // TODO: Find solution to onSuccess bug and get rid of this temporary fix
+                            } else if(statusCode == 200) {
+                                startActivity(new Intent(RegisterPopup.this, Login.class));
                             // Other Error
                             } else {
                                 error.setText("Registration is currently unavailable (Error code: " + Integer.toString(statusCode) + ")");
+
                             }
                         }
 
