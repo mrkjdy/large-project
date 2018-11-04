@@ -93,7 +93,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
 			if(err) {
 				return done(null, false);
 			} else {
-				tempCont.query("SELECT password FROM User WHERE login = ?;", [username, hash], function(err, result) {
+				tempCont.query("SELECT * FROM User WHERE login = ?;", [username], function(err, result) {
 					if(err) {
 						return done(true, false);
 					} else {
@@ -127,7 +127,7 @@ passport.deserializeUser(function(id, done) {
 	
 	dbPool.getConnection(function(err, tempCont) {
 		if(err) {
-			res.status(400).send('Connection Fail');
+			console.log(err);
 		} else {
 			tempCont.query("SELECT * FROM User WHERE user_id = ?;", [id], function(err, result) {
 				if(err) {
@@ -171,14 +171,14 @@ app.get('/', function (req, res) {
 app.post('/register', function(req, res) {
 	
 	// Check if correct format
-	if(checkInput(req.body.username, "username") && checkInput(req.body.firstname, "name") && checkInput(req.body.lastname, "name") && checkInput(req.body.password, "password")) {
+	if(checkInput(req.body.firstname, "name") && checkInput(req.body.lastname, "name") && checkInput(req.body.username, "username") && checkInput(req.body.password, "password") && checkInput(req.body.weight, "number") && checkInput(req.body.height, "number")) {
 		
 		// Create connection to database
 		dbPool.getConnection(function(err, tempCont){
 			
 			// Error if connection is not established
 			if(err) {
-				res.status(400).send('Connection Fail');
+				res.status(400).send();
 				
 			} else {
 				
@@ -187,24 +187,24 @@ app.post('/register', function(req, res) {
 					
 					// Check if query works
 					if(err) {
-						res.status(400).send('Query fail');
+						res.status(400).send();
 					} else {
 						
 						// Return if username exists
 						if(result != ""){
-							res.status(400).send('Username taken');
+							res.status(470).send();
 					
 						} else {
 							bcrypt.hash(req.body.password, saltRounds, function(err, hash)) {
 								// Add user to database
-								const sqlAddUser = "INSERT INTO User (dateCreated, dateLastLoggedIn, login, password, firstName, lastName) VALUES (";
-								tempCont.query(sqlAddUser + "NOW(), NOW(), '" + req.body.username + "', '" + hash + "', '" + req.body.firstname + "', '" + req.body.lastname + "')", function(err, result) {
+								const sqlAddUser = "INSERT INTO User (dateCreated, dateLastLoggedIn, login, password, firstName, lastName, height, weight) VALUES (";
+								tempCont.query(sqlAddUser + "NOW(), NOW(), '" + req.body.username + "', '" + hash + "', '" + req.body.firstname + "', '" + req.body.lastname + "', '" + req.body.height + "', '" + req.body.weight + "')", function(err, result) {
 								
 									// Check if query works
 									if(err) {
-										res.status(400).send('Query Fail');
+										res.status(400).send();
 									} else {
-										res.status(200).send('Query Success');	
+										res.status(200).send();	
 									}
 								
 									// End connection
@@ -219,8 +219,32 @@ app.post('/register', function(req, res) {
 		});
 	
 	} else {
-		res.status(400).send('Invalid Values');
+		res.status(401).send();
 	}
+});
+
+// Login function
+app.post('/login', function(req, res) {
+	
+	passport.authenticate('local', function(err, user, info) {
+		
+		if(err) {
+			return res.status(400).send();
+		}
+		if(!user) {
+		
+			return res.status(401).send();
+		}
+		
+		req.logIn(user, function(err) {
+			
+			if(err) {
+				return res.status(400).send();
+			}
+			
+			return res.status(200).send();
+		});
+	})(req, res);
 });
 
 // Helper functions
@@ -237,37 +261,14 @@ var checkInput = function(input, type, callback) {
 			var re = /^[a-z|\d]{1,20}$/i; // Format 5-20 characters and digit
 			returnVal = re.test(input);
 			break;
-
-		case "password":
-			 // var re= /[a-z\d]{32}$/;
-			 // returnVal= re.test(input);
-			 return true;
-			 break;
-			
-		case "email":
-			var re = /^[a-z\d]{1,20}@[a-z]{1,10}(\.[a-z]{3}){1,2}$/i; // Format 1-20 character @ 1-10 characters . extension
-			returnVal = re.test(input);
-			break;
-
-		case "emailsearch":
-			var re = /[[a-z\d]*@{0,1}(\.{0,1}[a-z]*)*$/i;
-			returnVal = re.test(input);
-			break;
 			
 		case "name":
 			var re = /^[a-z]{1,20}$/i; // Format 20 characters
 			returnVal = re.test(input);
 			break;
 			
-		case "phone":
-			var re = /(1){0,1}\d{10}$/i; // Format 18004445555 | 4074445555
-			var number = input.replace(/[^\d]/g, '');
-			returnVal = re.test(number);
-			break;
-
-		case "phonesearch":
-			var re = /\d{1,11}$/;
-			returnVal = re.test(input);
+		case "number":
+			returnVal = (typeof input === "number")
 			break;
 		
 		default:

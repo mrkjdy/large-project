@@ -25,9 +25,7 @@
         <activity android:name=".LogoutPopup"
             android:theme="@style/AppTheme.PopupTheme">
         </activity>
-        <activity android:name=".RegisterPopup"
-            android:theme="@style/AppTheme.PopupTheme">
-        </activity>
+        <activity android:name=".RegisterPopup"/>
         <activity android:name=".InfoPopup"
             android:theme="@style/AppTheme.PopupTheme">
         </activity>
