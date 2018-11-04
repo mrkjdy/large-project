@@ -19,6 +19,8 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         final AsyncHttpClient client = new AsyncHttpClient();
+        PersistentCookieStore cookieStore = new PersistentCookieStore(Login.this);
+        client.setCookieStore(cookieStore);
         final EditText username = (EditText) findViewById(R.id.loginField);
         final EditText password = (EditText) findViewById(R.id.passwordField);
         final TextView error = (TextView) findViewById(R.id.errorBox);
@@ -26,13 +28,15 @@ public class Login extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                PersistentCookieStore cookieStore = new PersistentCookieStore(Login.this);
-                client.setCookieStore(cookieStore);
+                if(username.length() == 0) {
+                    error.setText("Username is required");
+                } else if(password.length() == 0) {
+                    error.setText("Password is required");
+                }
                 RequestParams params = new RequestParams();
                 params.put("username", username.getText().toString());
                 params.put("password", password.getText().toString());
-                client.post("https://", params, new JsonHttpResponseHandler() {
+                client.post("https://large-project.herokuapp.com/login", params, new JsonHttpResponseHandler() {
                     @Override
                     public void onStart() {
                         // called before request is started
