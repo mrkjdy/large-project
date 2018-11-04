@@ -160,14 +160,12 @@ passport.deserializeUser(function(id, done) {
 // });
 
 app.get('/', function (req, res) {
-	console.log("test");
-	res.render('index')
+	res.render('index');
 })
 
 // Register function
 app.post('/register', function(req, res) {
 	
-	console.log("start registration");
 	// Check if correct format
 	if(checkInput(req.body.firstname, "name") && checkInput(req.body.lastname, "name") && checkInput(req.body.username, "username") && checkInput(req.body.password, "password") && checkInput(req.body.weight, "number") && checkInput(req.body.height, "number")) {
 		
@@ -193,7 +191,7 @@ app.post('/register', function(req, res) {
 							res.status(470).send();
 					
 						} else {
-							bcrypt.hash(req.body.password, saltRounds, function(err, hash)) {
+							bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
 								// Add user to database
 								const sqlAddUser = "INSERT INTO User (dateCreated, dateLastLoggedIn, login, password, firstName, lastName, height, weight) VALUES (";
 								tempCont.query(sqlAddUser + "NOW(), NOW(), '" + req.body.username + "', '" + hash + "', '" + req.body.firstname + "', '" + req.body.lastname + "', '" + req.body.height + "', '" + req.body.weight + "')", function(err, result) {
@@ -209,7 +207,7 @@ app.post('/register', function(req, res) {
 									tempCont.release();
 								
 								});
-							}
+							});
 						}
 					} 	
 				});	
