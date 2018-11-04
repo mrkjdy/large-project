@@ -104,7 +104,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
 							} else {
 								return done(null, false);
 							}
-						}
+						});
 					}
 				});
 			}
@@ -161,7 +161,7 @@ passport.deserializeUser(function(id, done) {
 
 app.get('/', function (req, res) {
 	console.log("test");
-  res.render('index')
+	res.render('index')
 })
 
 // Register function
