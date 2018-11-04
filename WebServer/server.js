@@ -197,6 +197,7 @@ app.post('/register', function(req, res) {
 					
 						} else {
 							bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+								console.log("Saving password " + req.body.password + " as " + hash);
 								// Add user to database
 								const sqlAddUser = "INSERT INTO User (dateCreated, dateLastLoggedIn, login, password, firstName, lastName, height, weight) VALUES (";
 								tempCont.query(sqlAddUser + "NOW(), NOW(), '" + req.body.username + "', '" + hash + "', '" + req.body.firstname + "', '" + req.body.lastname + "', '" + req.body.height + "', '" + req.body.weight + "')", function(err, result) {
