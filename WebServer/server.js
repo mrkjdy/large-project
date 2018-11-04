@@ -103,10 +103,8 @@ passport.use(new LocalStrategy(function(username, password, done) {
 				 					return done(false, result[0]);
 				 				});
 							} else if(err) {
-								console.log("bcrypt error comparing " + password + " and " + result[0].password + ": " + err);
 								return done(true, false);
 							} else {
-								console.log("bcrypt fail comparing " + password + " and " + result[0].password);
 								return done(false, false);
 							}
 						});
@@ -197,7 +195,6 @@ app.post('/register', function(req, res) {
 					
 						} else {
 							bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
-								console.log("Saving password " + req.body.password + " as " + hash);
 								// Add user to database
 								const sqlAddUser = "INSERT INTO User (dateCreated, dateLastLoggedIn, login, password, firstName, lastName, height, weight) VALUES (";
 								tempCont.query(sqlAddUser + "NOW(), NOW(), '" + req.body.username + "', '" + hash + "', '" + req.body.firstname + "', '" + req.body.lastname + "', '" + req.body.height + "', '" + req.body.weight + "')", function(err, result) {
