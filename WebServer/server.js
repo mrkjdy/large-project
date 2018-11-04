@@ -90,7 +90,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
 		dbPool.getConnection(function(err, tempCont) {
 			if(err) {
 				console.log(err);
-				return done(null, false);
+				return done(true, false);
 			} else {
 				tempCont.query("SELECT * FROM User WHERE login = ?;", [username], function(err, result) {
 					if(err) {
@@ -100,11 +100,14 @@ passport.use(new LocalStrategy(function(username, password, done) {
 							if(res) {
 								tempCont.query("UPDATE User SET dateLastLoggedIn = NOW() WHERE user_id = ?;", [result[0].UserID], function(err, result1) {
 				 					if(err) console.log(err);
-				 					return done(null, result[0]);
+				 					return done(false, result[0]);
 				 				});
+							} else if(err) {
+								console.log("bcrypt error comparing " + password + " and " + result[0].password + ": " + err);
+								return done(true, false);
 							} else {
-								console.log("bcrypt compare fail, password was " + result[0].password);
-								return done(null, false);
+								console.log("bcrypt fail comparing " + password + " and " + result[0].password);
+								return done(false, false);
 							}
 						});
 					}

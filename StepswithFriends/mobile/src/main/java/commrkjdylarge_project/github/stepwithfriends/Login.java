@@ -21,17 +21,17 @@ public class Login extends AppCompatActivity {
         final AsyncHttpClient client = new AsyncHttpClient();
         PersistentCookieStore cookieStore = new PersistentCookieStore(Login.this);
         client.setCookieStore(cookieStore);
-        final EditText username = (EditText) findViewById(R.id.loginField);
-        final EditText password = (EditText) findViewById(R.id.passwordField);
-        final TextView error = (TextView) findViewById(R.id.errorBox);
-        Button loginButton = (Button) findViewById(R.id.login_button);
+        final EditText username = findViewById(R.id.loginField);
+        final EditText password = findViewById(R.id.passwordField);
+        final TextView error = findViewById(R.id.errorBox);
+        Button loginButton = findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(username.length() == 0) {
-                    error.setText("Username is required");
+                    error.setText(getResources().getString(R.string.login_username_required));
                 } else if(password.length() == 0) {
-                    error.setText("Password is required");
+                    error.setText(getResources().getString(R.string.login_password_required));
                 }
                 RequestParams params = new RequestParams();
                 params.put("username", username.getText().toString());
@@ -53,10 +53,10 @@ public class Login extends AppCompatActivity {
                         // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                         // 401 Unauthorized
                         if(statusCode == 401) {
-                            error.setText("Username or Password is not valid");
+                            error.setText(getResources().getString(R.string.login_invalid_field));
                         // Other Error
                         } else {
-                            error.setText("Login is currently unavailable");
+                            error.setText(getResources().getString(R.string.login_error_other));
                         }
                     }
 
@@ -68,7 +68,7 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        Button registerButton = (Button) findViewById(R.id.register_button);
+        Button registerButton = (findViewById(R.id.register_button));
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

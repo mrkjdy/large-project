@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mainFrame = (FrameLayout) findViewById(R.id.main_frame);
+        mainFrame = findViewById(R.id.main_frame);
         settingsFrame = new SettingsFragment();
         homeFrame = new HomeFragment();
         walkFrame = new WalkFragment();
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         setFragment(homeFrame);
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

@@ -30,16 +30,16 @@ public class RegisterPopup extends AppCompatActivity {
         //int windowHeight = dm.heightPixels;
         //getWindow().setLayout((int) (windowWidth*.8), (int) (windowHeight*.8)); // Enter size Multiplier
         final AsyncHttpClient client = new AsyncHttpClient();
-        Button registerButton = (Button) findViewById(R.id.register_button);
-        Button backButton = (Button) findViewById(R.id.backButton);
-        final TextView error = (TextView) findViewById(R.id.errorBox);
-        final EditText firstname = (EditText) findViewById(R.id.firstnameField);
-        final EditText lastname = (EditText) findViewById(R.id.lastnameField);
-        final EditText username = (EditText) findViewById(R.id.usernameField);
-        final EditText password1 = (EditText) findViewById(R.id.password1Field);
-        final EditText password2 = (EditText) findViewById(R.id.password2Field);
-        final EditText weight = (EditText) findViewById(R.id.weightField);
-        final EditText height = (EditText) findViewById(R.id.heightField);
+        Button registerButton = findViewById(R.id.register_button);
+        Button backButton = findViewById(R.id.backButton);
+        final TextView error = findViewById(R.id.errorBox);
+        final EditText firstname = findViewById(R.id.firstnameField);
+        final EditText lastname = findViewById(R.id.lastnameField);
+        final EditText username = findViewById(R.id.usernameField);
+        final EditText password1 = findViewById(R.id.password1Field);
+        final EditText password2 = findViewById(R.id.password2Field);
+        final EditText weight = findViewById(R.id.weightField);
+        final EditText height = findViewById(R.id.heightField);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
