@@ -198,6 +198,7 @@ app.post('/register', function(req, res) {
 								
 									// Check if query works
 									if(err) {
+										console.log(err);
 										res.status(400).send();
 									} else {
 										res.status(200).send();	
@@ -215,7 +216,6 @@ app.post('/register', function(req, res) {
 		});
 	
 	} else {
-		console.log(typeof req.body.weight);
 		res.status(401).send();
 	}
 });
@@ -265,7 +265,7 @@ var checkInput = function(input, type, callback) {
 			break;
 			
 		case "number":
-			returnVal = (typeof input === "number");
+			returnVal = !isNaN(input);
 			break;
 		
 		default:
