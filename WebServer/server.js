@@ -89,6 +89,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
 		
 		dbPool.getConnection(function(err, tempCont) {
 			if(err) {
+				console.log(err);
 				return done(null, false);
 			} else {
 				tempCont.query("SELECT * FROM User WHERE login = ?;", [username], function(err, result) {
@@ -102,6 +103,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
 				 					return done(null, result[0]);
 				 				});
 							} else {
+								console.log("bcrypt compare fail, password was " + result[0].password);
 								return done(null, false);
 							}
 						});

@@ -88,6 +88,7 @@ public class RegisterPopup extends AppCompatActivity {
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             // called when response HTTP status is "200 OK"
                             startActivity(new Intent(RegisterPopup.this, Login.class));
+                            // TODO: Fix bug that causes successfull registration to display as fail, not redirect
                         }
 
                         @Override
