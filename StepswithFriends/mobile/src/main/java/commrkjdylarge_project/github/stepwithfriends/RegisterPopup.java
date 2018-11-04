@@ -87,7 +87,9 @@ public class RegisterPopup extends AppCompatActivity {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             // called when response HTTP status is "200 OK"
-                            startActivity(new Intent(RegisterPopup.this, Login.class));
+                            Intent intent = new Intent(RegisterPopup.this, Login.class);
+                            intent.putExtra("reg_success", true);
+                            startActivity(intent);
                         }
 
                         @Override
@@ -101,7 +103,9 @@ public class RegisterPopup extends AppCompatActivity {
                                 error.setText("Username is already registered");
                             // TODO: Find solution to onSuccess bug and get rid of this temporary fix
                             } else if(statusCode == 200) {
-                                startActivity(new Intent(RegisterPopup.this, Login.class));
+                                Intent intent = new Intent(RegisterPopup.this, Login.class);
+                                intent.putExtra("reg_success", true);
+                                startActivity(intent);
                             // Other Error
                             } else {
                                 error.setText("Registration is currently unavailable (Error code: " + Integer.toString(statusCode) + ")");

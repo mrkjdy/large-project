@@ -75,5 +75,9 @@ public class Login extends AppCompatActivity {
                 startActivity(new Intent(Login.this, RegisterPopup.class));
             }
         });
+
+        if(getIntent().getBooleanExtra("reg_success", false)) {
+            error.setText("Registration successful");
+        }
     }
 }
