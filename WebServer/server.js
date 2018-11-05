@@ -283,7 +283,11 @@ app.post('/getuserdata', function(req, res) {
 								console.log(err);
 								res.status(400).send();
 							} else {
-								res.status(200).send('{"table":"' + req.body.table + '","value":"' + result[0].stringify() + '"}');
+								if(result[0]) {
+									res.status(200).send('{"table":"' + req.body.table + '","value":"' + result[0].stringify() + '"}');
+								} else {
+									res.status(400).send();
+								}
 							}
 						});
 					}
