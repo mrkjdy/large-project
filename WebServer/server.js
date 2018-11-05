@@ -248,6 +248,19 @@ app.post('/login', function(req, res) {
 	})(req, res);
 });
 
+// Logout function
+app.post('/logout', function(req, res) {
+	req.logout();
+	req.session.destroy(function(err) {
+		if(err)	{
+			console.log(err);
+			res.status(400).send();
+		} else {
+			res.status(200).send();
+		}
+	});
+});
+
 // Get all user info
 app.post('/getuserdata', function(req, res) {
 	if(!req.user) {

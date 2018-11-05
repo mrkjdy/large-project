@@ -30,40 +30,31 @@ public class Login extends AppCompatActivity {
                     error.setText(getResources().getString(R.string.login_username_required));
                 } else if(password.length() == 0) {
                     error.setText(getResources().getString(R.string.login_password_required));
-                }
-                RequestParams params = new RequestParams();
-                params.put("username", username.getText().toString());
-                params.put("password", password.getText().toString());
-                client.post("https://large-project.herokuapp.com/login", params, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onStart() {
-                        // called before request is started
-                    }
-
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        // called when response HTTP status is "200 OK"
-                        ((SWFApp) getApplication()).setUserData(response);
-                        startActivity(new Intent(Login.this, MainActivity.class));
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
-                        // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                        // 401 Unauthorized
-                        if(statusCode == 401) {
-                            error.setText(getResources().getString(R.string.login_invalid_field));
-                        // Other Error
-                        } else {
-                            error.setText(getResources().getString(R.string.login_error_other));
+                } else {
+                    RequestParams params = new RequestParams();
+                    params.put("username", username.getText().toString());
+                    params.put("password", password.getText().toString());
+                    client.post("https://large-project.herokuapp.com/login", params, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            // called when response HTTP status is "200 OK"
+                            ((SWFApp) getApplication()).setUserData(response);
+                            startActivity(new Intent(Login.this, MainActivity.class));
                         }
-                    }
 
-                    @Override
-                    public void onRetry(int retryNo) {
-                        // called when request is retried
-                    }
-                });
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                            // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                            // 401 Unauthorized
+                            if (statusCode == 401) {
+                                error.setText(getResources().getString(R.string.login_invalid_field));
+                                // Other Error
+                            } else {
+                                error.setText(getResources().getString(R.string.login_error_other));
+                            }
+                        }
+                    });
+                }
             }
         });
 
