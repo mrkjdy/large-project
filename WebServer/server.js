@@ -120,7 +120,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
 
 // Uses user ID to generate session token
 passport.serializeUser(function(user, done) {
-	done(null, user.UserID);
+	done(null, user.user_id);
 });
 
 // Converts session token to user ID, gets user info from database
@@ -229,7 +229,6 @@ app.post('/login', function(req, res) {
 	passport.authenticate('local', function(err, user, info) {
 		
 		if(err) {
-			console.log("1: " + err);
 			return res.status(400).send();
 		}
 		if(!user) {
@@ -240,7 +239,7 @@ app.post('/login', function(req, res) {
 		req.logIn(user, function(err) {
 			
 			if(err) {
-				console.log("2: " + err);
+				console.log(err);
 				return res.status(400).send();
 			}
 			
