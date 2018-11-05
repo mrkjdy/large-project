@@ -7,6 +7,27 @@
 
     <!-- TODO: Update blank fragment layout -->
 
+     <LinearLayout
+        android:background="@drawable/gradientbackground"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:orientation="vertical"
+
+         >
+
+         <TextView
+             android:layout_gravity="center_horizontal"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="Username"
+             android:textColor="#fff"
+             android:textStyle="bold"
+             android:textSize="21sp"
+             />
+
+     </LinearLayout>
+
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
