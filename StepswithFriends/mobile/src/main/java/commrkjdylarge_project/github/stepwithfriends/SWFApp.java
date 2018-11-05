@@ -2,8 +2,6 @@ package commrkjdylarge_project.github.stepwithfriends;
 
 import android.app.Application;
 import com.loopj.android.http.*;
-import cz.msebera.android.httpclient.*;
-import org.json.JSONObject;
 
 public class SWFApp extends Application {
 
