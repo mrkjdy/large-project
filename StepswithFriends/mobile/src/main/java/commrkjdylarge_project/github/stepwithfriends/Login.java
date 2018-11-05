@@ -18,12 +18,10 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        final AsyncHttpClient client = new AsyncHttpClient();
-        PersistentCookieStore cookieStore = new PersistentCookieStore(Login.this);
-        client.setCookieStore(cookieStore);
         final EditText username = findViewById(R.id.loginField);
         final EditText password = findViewById(R.id.passwordField);
         final TextView error = findViewById(R.id.errorBox);
+        final AsyncHttpClient client = ((SWFApp) this.getApplication()).getClient();
         Button loginButton = findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override

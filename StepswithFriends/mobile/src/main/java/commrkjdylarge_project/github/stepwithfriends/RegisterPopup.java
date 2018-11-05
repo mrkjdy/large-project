@@ -29,7 +29,7 @@ public class RegisterPopup extends AppCompatActivity {
         //int windowWidth = dm.widthPixels;
         //int windowHeight = dm.heightPixels;
         //getWindow().setLayout((int) (windowWidth*.8), (int) (windowHeight*.8)); // Enter size Multiplier
-        final AsyncHttpClient client = new AsyncHttpClient();
+        final AsyncHttpClient client = ((SWFApp) this.getApplication()).getClient();
         Button registerButton = findViewById(R.id.register_button);
         Button backButton = findViewById(R.id.backButton);
         final TextView error = findViewById(R.id.errorBox);
