@@ -61,7 +61,11 @@ public class SettingsFragment extends Fragment {
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
                         // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-
+                        // TODO: Fix onSuccess bug here too
+                        if(statusCode == 200) {
+                            ((SWFApp) getActivity().getApplication()).resetUser();
+                            startActivity(new Intent(getActivity(), Login.class));
+                        }
                     }
                 });
             }
