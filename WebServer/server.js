@@ -243,14 +243,19 @@ app.post('/login', function(req, res) {
 				return res.status(400).send();
 			}
 			
-			console.log(typeof user);
 			return res.status(200).send(user);
 		});
 	})(req, res);
 });
 
 // Get all user info
-
+app.post('/getuserdata', function(req, res) {
+	if(!req.user) {
+		res.status(401).send();
+	} else {
+		res.status(200).send(req.user);
+	}
+});
 
 // Helper functions
 // ----------------------------------------------------------------------

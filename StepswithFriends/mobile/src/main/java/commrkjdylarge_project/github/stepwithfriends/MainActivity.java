@@ -69,30 +69,7 @@ public class MainActivity extends AppCompatActivity {
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                client.post("https://large-project.herokuapp.com/getuserdata", null, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onStart() {
-                        // called before request is started
-                    }
-
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        // called when response HTTP status is "200 OK"
-                        testText.setText(response.toString());
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
-                        // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                        // 401 Unauthorized
-                        testText.setText("Error code " + statusCode);
-                    }
-
-                    @Override
-                    public void onRetry(int retryNo) {
-                        // called when request is retried
-                    }
-                });
+                testText.setText(((SWFApp) getApplication()).getUserData().toString());
             }
         });
     }

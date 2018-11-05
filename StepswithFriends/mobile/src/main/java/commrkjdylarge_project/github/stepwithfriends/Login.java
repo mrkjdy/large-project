@@ -79,6 +79,4 @@ public class Login extends AppCompatActivity {
             error.setText("Registration successful");
         }
     }
-
-    //private
 }
