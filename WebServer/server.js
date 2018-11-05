@@ -11,7 +11,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const favicon = require('serve-favicon');
 const bcrypt = require('bcrypt');
-
+const schedule = require('node-schedule');
 
 
 // Global vars
@@ -275,16 +275,18 @@ app.post('/updateuserdata', function(req, res) {
 	if(!req.user) {
 		res.status(401).send();
 	} else {
-		if(!req.body.fields || !req.body.values || !req.body.table || req.body.fields.length != req.body.values.length || (req.body.table != "User" && req.body.table != "Daily Stats" && req.body.table != "Workout" && req.body.table != Friendship)) {
+		if(!req.body.fields || !req.body.values || !req.body.table || req.body.fields.length != req.body.values.length || (req.body.table != "User" && req.body.table != "Daily Stats" && req.body.table != "Workout" && req.body.table != "Friendship")) {
 			res.status(400).send();
 		} else {
-			boolean validRequest = false;
-			String updateValues = "";
-			for(int i=0; i<req.body.fields.length; i++) {
-				// TODO: Check with Meychelle about these values
+			var validRequest = false;
+			var updateValues = "";
+			for(var i=0; i<req.body.fields.length; i++) {
+				// !!! Ensure that all editable and only editable fields are present, and have correct type specified for validation
 				switch(req.body.fields[i]) {
+					//    field name
 					case "firstName":
-						validRequest = checkInput(req.body.values[i], "");
+						//                        field value          field type
+						validRequest = checkInput(req.body.values[i], "name");
 						break;
 					
 					case "lastName":
@@ -392,3 +394,20 @@ var checkInput = function(input, type, callback) {
 }
 
 // Create scheduled job (node-schedule) that updates user table with daily stats
+var dailyUpdateUserStats = schedule.scheduleJob('00 00 00 * * 0-6', function() {
+	
+	// !!! Query that adds points, distance, steps from Daily Stats to total_points, total_distance, total_steps in User
+	var updateQuery = "";
+	dbPool.getConnection(function(err, tempCont) {
+		if(err) {
+			console.log(err);
+		} else {
+			tempCont.query(updateQuery, function(err, result) {
+				if(err) {
+					console.log(err);
+				}
+			});
+		}
+		tempCont.release();
+	});
+});
