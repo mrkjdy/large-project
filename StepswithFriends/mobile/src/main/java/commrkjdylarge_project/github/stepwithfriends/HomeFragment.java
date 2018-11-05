@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment {
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                testText.setText(((SWFApp) getActivity().getApplication()).getUserData().toString());
+                testText.setText(((SWFApp) getActivity().getApplication()).getUserData("User").toString());
             }
         });
     }
