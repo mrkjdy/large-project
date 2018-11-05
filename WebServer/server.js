@@ -37,8 +37,6 @@ var dbPool = mysql.createPool({
 // The cost factor for bcrypt
 const saltRounds = 10;
 
-
-
 // App config
 // ----------------------------------------------------------------------
 
@@ -84,7 +82,65 @@ app.use(passport.session());
 
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
+// Passport initialization
+passport.use(new LocalStrategy(function(username, password, done) {
+	
+	if(checkInput(username, 'username') === true && password) {
+		
+		dbPool.getConnection(function(err, tempCont) {
+			if(err) {
+				console.log(err);
+				return done(true, false);
+			} else {
+				tempCont.query("SELECT * FROM User WHERE login = ?;", [username], function(err, result) {
+					if(err) {
+						return done(true, false);
+					} else {
+						bcrypt.compare(password, result[0].password, function(err, res) {
+							if(res) {
+								tempCont.query("UPDATE User SET dateLastLoggedIn = NOW() WHERE user_id = ?;", [result[0].UserID], function(err, result1) {
+				 					if(err) console.log(err);
+				 					return done(false, result[0]);
+				 				});
+							} else if(err) {
+								return done(true, false);
+							} else {
+								return done(false, false);
+							}
+						});
+					}
+				});
+			}
+			tempCont.release();
+		});
+	} else {
+		return done(null, false);
+	}
+}));
 
+// Uses user ID to generate session token
+passport.serializeUser(function(user, done) {
+	done(null, user.user_id);
+});
+
+// Converts session token to user ID, gets user info from database
+passport.deserializeUser(function(id, done) {
+	
+	dbPool.getConnection(function(err, tempCont) {
+		if(err) {
+			console.log(err);
+		} else {
+			tempCont.query("SELECT * FROM User WHERE user_id = ?;", [id], function(err, result) {
+				if(err) {
+					console.log(err);
+				} else {
+					done(null, result[0]);
+				}
+			});
+		}
+		tempCont.release();
+	});
+});
 
 // Post and get functions
 // ----------------------------------------------------------------------
@@ -107,5 +163,146 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 // });
 
 app.get('/', function (req, res) {
-  res.render('index')
-})
+	res.render('index');
+});
+
+// Register function
+app.post('/register', function(req, res) {
+	
+	// Check if correct format
+	if(checkInput(req.body.firstname, "name") && checkInput(req.body.lastname, "name") && checkInput(req.body.username, "username") && checkInput(req.body.weight, "number") && checkInput(req.body.height, "number")) {
+		
+		// Create connection to database
+		dbPool.getConnection(function(err, tempCont){
+			
+			// Error if connection is not established
+			if(err) {
+				res.status(400).send();
+				
+			} else {
+				
+				// Check if username exists
+				tempCont.query("SELECT * FROM User WHERE login = ?", [req.body.username], function(err, result){
+					
+					// Check if query works
+					if(err) {
+						res.status(400).send();
+					} else {
+						
+						// Return if username exists
+						if(result != ""){
+							res.status(470).send();
+					
+						} else {
+							bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+								// Add user to database
+								const sqlAddUser = "INSERT INTO User (dateCreated, dateLastLoggedIn, login, password, firstName, lastName, height, weight) VALUES (";
+								tempCont.query(sqlAddUser + "NOW(), NOW(), '" + req.body.username + "', '" + hash + "', '" + req.body.firstname + "', '" + req.body.lastname + "', '" + req.body.height + "', '" + req.body.weight + "')", function(err, result) {
+								
+									// Check if query works
+									if(err) {
+										console.log(err);
+										res.status(400).send();
+									} else {
+										res.status(200).send();	
+									}
+								
+									// End connection
+									tempCont.release();
+								
+								});
+							});
+						}
+					} 	
+				});	
+			}
+		});
+	
+	} else {
+		res.status(401).send();
+	}
+});
+
+// Login function
+app.post('/login', function(req, res) {
+	
+	passport.authenticate('local', function(err, user, info) {
+		
+		if(err) {
+			return res.status(400).send();
+		}
+		if(!user) {
+		
+			return res.status(401).send();
+		}
+		
+		req.logIn(user, function(err) {
+			
+			if(err) {
+				console.log(err);
+				return res.status(400).send();
+			}
+			
+			return res.status(200).send(user);
+		});
+	})(req, res);
+});
+
+// Logout function
+app.post('/logout', function(req, res) {
+	req.logout();
+	req.session.destroy(function(err) {
+		if(err)	{
+			console.log(err);
+			res.status(400).send();
+		} else {
+			res.status(200).send();
+		}
+	});
+});
+
+// Get all user info
+app.post('/getuserdata', function(req, res) {
+	if(!req.user) {
+		res.status(401).send();
+	} else {
+		res.status(200).send(req.user);
+	}
+});
+
+// Helper functions
+// ----------------------------------------------------------------------
+
+// Checks if input provided by user is formatted correctly for storage in database
+var checkInput = function(input, type, callback) {
+	
+	var returnVal = null;
+	
+	switch(type) {
+		
+		case "username":
+			var re = /^[a-z|\d]{1,20}$/i; // Format 5-20 characters and digit
+			returnVal = re.test(input);
+			break;
+			
+		case "name":
+			var re = /^[a-z]{1,20}$/i; // Format 20 characters
+			returnVal = re.test(input);
+			break;
+			
+		case "number":
+			returnVal = !isNaN(input);
+			break;
+		
+		default:
+			returnVal = null;
+			break;
+	}
+	
+	if(callback == undefined) {	
+		return returnVal;
+		
+	} else {
+		callback(returnVal);
+	}
+}

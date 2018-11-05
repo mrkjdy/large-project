@@ -3,8 +3,10 @@
     package="commrkjdylarge_project.github.stepwithfriends">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".SWFApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -25,9 +27,7 @@
         <activity android:name=".LogoutPopup"
             android:theme="@style/AppTheme.PopupTheme">
         </activity>
-        <activity android:name=".RegisterPopup"
-            android:theme="@style/AppTheme.PopupTheme">
-        </activity>
+        <activity android:name=".RegisterPopup"/>
         <activity android:name=".InfoPopup"
             android:theme="@style/AppTheme.PopupTheme">
         </activity>
