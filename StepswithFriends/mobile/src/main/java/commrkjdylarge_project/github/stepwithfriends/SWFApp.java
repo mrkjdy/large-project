@@ -13,7 +13,9 @@ import cz.msebera.android.httpclient.Header;
 public class SWFApp extends Application {
 
     private AsyncHttpClient asyncHttpClient = null;
-    private JSONObject userData = null;
+    private JSONObject userData_User = null;
+    private JSONObject userData_Daily_Stats = null;
+    private JSONObject userData_Workout = null;
     private boolean syncStatus = false;
 
     public AsyncHttpClient getClient() {
@@ -28,18 +30,51 @@ public class SWFApp extends Application {
     }
 
     // WARNING: Do not use this unless you are logging in, to update user data use updateUserData()
-    public void setUserData(JSONObject data) {
-        this.userData = data;
+    public void setUserData_User(JSONObject data) {
+        this.userData_User = data;
     }
 
-    public JSONObject getUserData() {
-        // Gets user data if it somehow wasn't initialized
-        if(this.userData == null) {
-            this.asyncHttpClient.post("https://large-project.herokuapp.com/getuserdata", null, new JsonHttpResponseHandler() {
+    // Use this to access the data object for a given table, will return null if invalid table or server error
+    public JSONObject getUserData(String table) {
+        JSONObject table_local = null;
+        switch(table) {
+            case "User":
+                table_local = this.userData_User;
+                break;
+
+            case "Workout":
+                table_local = this.userData_Workout;
+                break;
+
+            case "Daily Stats":
+                table_local = this.userData_Daily_Stats;
+                break;
+
+            default:
+                return null;
+        }
+        if(table_local == null) {
+            RequestParams params = new RequestParams();
+            params.put("table", table);
+            this.asyncHttpClient.post("https://large-project.herokuapp.com/getuserdata", params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     // called when response HTTP status is "200 OK"
-                    userData = response;
+                    try {
+                        switch(response.getString("table")) {
+                            case "User":
+                                userData_User = response.getJSONObject("value");
+                                break;
+
+                            case "Workout":
+                                userData_Workout = response.getJSONObject("value");
+                                break;
+
+                            case "Daily Stats":
+                                userData_Daily_Stats = response.getJSONObject("value");
+                                break;
+                        }
+                    } catch(Exception e) {}
                 }
 
                 @Override
@@ -48,12 +83,16 @@ public class SWFApp extends Application {
                 }
             });
         }
-        return this.userData;
+        return table_local;
     }
 
+    // WARNING: Do not use this unless you are ending your session
     public void resetUser() {
         this.asyncHttpClient = null;
-        this.userData = null;
+        this.userData_User = null;
+        this.userData_Daily_Stats = null;
+        this.userData_Workout = null;
+        this.syncStatus = false;
     }
 
     // TO UPDATE/SYNC USER DATA:
@@ -70,9 +109,26 @@ public class SWFApp extends Application {
             // need a field and value to update
             return false;
         } else {
+            JSONObject table_local = null;
+            switch(table) {
+                case "User":
+                    table_local = this.userData_User;
+                    break;
+
+                case "Workout":
+                    table_local = this.userData_Workout;
+                    break;
+
+                case "Daily Stats":
+                    table_local = this.userData_Daily_Stats;
+                    break;
+
+                default:
+                    return false;
+            }
             if(syncUserData(new String[] {field}, new Object[] {value}, table)) {
                 try {
-                    this.userData.put(field, value);
+                    table_local.put(field, value);
                 } catch(JSONException e) {
                     return false;
                 }
@@ -89,10 +145,27 @@ public class SWFApp extends Application {
             // need a field and value of same size to update
             return false;
         } else {
+            JSONObject table_local = null;
+            switch(table) {
+                case "User":
+                    table_local = this.userData_User;
+                    break;
+
+                case "Workout":
+                    table_local = this.userData_Workout;
+                    break;
+
+                case "Daily Stats":
+                    table_local = this.userData_Daily_Stats;
+                    break;
+
+                default:
+                    return false;
+            }
             if(syncUserData(fields, values, table)) {
                 try {
                     for(int i=0; i<fields.length; i++) {
-                        this.userData.put(fields[i], values[i]);
+                        table_local.put(fields[i], values[i]);
                     }
                 } catch(JSONException e) {
                     return false;
@@ -125,6 +198,4 @@ public class SWFApp extends Application {
         });
         return this.syncStatus;
     }
-
-
 }
