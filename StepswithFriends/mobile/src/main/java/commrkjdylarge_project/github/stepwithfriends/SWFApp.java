@@ -56,13 +56,21 @@ public class SWFApp extends Application {
         this.userData = null;
     }
 
+    // TO UPDATE/SYNC USER DATA:
+    // Call updateUserData(fields, values, table);
+    // In "fields", put a string or array of strings representing the fields being updated
+    // In "values", put an object or array of objects representing the values being updated
+    // NOTE: order of values must match order of fields
+    // In "table", put a string naming the table being updated
+    // Function will return true if data successfully synced, false if not
+    //
     // Used to update one user value
-    public boolean updateUserData(String field, Object value) {
-        if(field == null || value == null) {
+    public boolean updateUserData(String field, Object value, String table) {
+        if(field == null || value == null || table == null) {
             // need a field and value to update
             return false;
         } else {
-            if(syncUserData(new String[] {field}, new Object[] {value})) {
+            if(syncUserData(new String[] {field}, new Object[] {value}, table)) {
                 try {
                     this.userData.put(field, value);
                 } catch(JSONException e) {
@@ -76,12 +84,12 @@ public class SWFApp extends Application {
     }
 
     // Used to update multiple user values
-    public boolean updateUserData(String[] fields, Object[] values) {
-        if(fields == null || values == null || fields.length != values.length) {
+    public boolean updateUserData(String[] fields, Object[] values, String table) {
+        if(fields == null || values == null || fields.length != values.length || table == null) {
             // need a field and value of same size to update
             return false;
         } else {
-            if(syncUserData(fields, values)) {
+            if(syncUserData(fields, values, table)) {
                 try {
                     for(int i=0; i<fields.length; i++) {
                         this.userData.put(fields[i], values[i]);
@@ -96,11 +104,12 @@ public class SWFApp extends Application {
         }
     }
 
-    private boolean syncUserData(Object[] fields, Object[] values) {
+    private boolean syncUserData(Object[] fields, Object[] values, String table) {
         this.syncStatus = false;
         RequestParams params = new RequestParams();
         params.put("fields", fields);
         params.put("values", values);
+        params.put("table", table);
         this.asyncHttpClient.post("https://large-project.herokuapp.com/updateuserdata", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

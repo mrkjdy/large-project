@@ -270,6 +270,90 @@ app.post('/getuserdata', function(req, res) {
 	}
 });
 
+// Update user info in database
+app.post('/updateuserdata', function(req, res) {
+	if(!req.user) {
+		res.status(401).send();
+	} else {
+		if(!req.body.fields || !req.body.values || !req.body.table || req.body.fields.length != req.body.values.length || (req.body.table != "User" && req.body.table != "Daily Stats" && req.body.table != "Workout" && req.body.table != Friendship)) {
+			res.status(400).send();
+		} else {
+			boolean validRequest = false;
+			String updateValues = "";
+			for(int i=0; i<req.body.fields.length; i++) {
+				// TODO: Check with Meychelle about these values
+				switch(req.body.fields[i]) {
+					case "firstName":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					case "lastName":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					case "height":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+						
+					case "weight":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					case "steps":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					case "calories":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					case "distance":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					case "points":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					case "numOfPeople":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					case "coordinates":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					default:
+						validRequest = false;
+						break;
+				}
+				if(validRequest = false) {
+					i = req.body.fields.length;
+				} else {
+					updateValues += req.body.fields[i] + "='" + req.body.values[i] + "', '";
+				}
+			}
+			if(!validRequest) {
+				res.status(400).send();
+			} else {
+				dbPool.getConnection(function(err, tempCont){
+					if(err) {
+						res.status(400).send();
+					} else {
+						tempCont.query("UPDATE " + table + " SET " + updateValues.slice(0, -3) + " WHERE user_id=" + req.body.user_id + ";", function(err, result) {
+							if(err || !result) {
+								res.status(400).send();
+							} else {
+								res.status(200).send();
+							}
+						});
+					}
+				});
+			}
+		}
+	}
+});
+
 // Helper functions
 // ----------------------------------------------------------------------
 
@@ -286,7 +370,7 @@ var checkInput = function(input, type, callback) {
 			break;
 			
 		case "name":
-			var re = /^[a-z]{1,20}$/i; // Format 20 characters
+			var re = /^[a-z]{1,45}$/i; // Format 45 characters
 			returnVal = re.test(input);
 			break;
 			
@@ -306,3 +390,5 @@ var checkInput = function(input, type, callback) {
 		callback(returnVal);
 	}
 }
+
+// Create scheduled job (node-schedule) that updates user table with daily stats
