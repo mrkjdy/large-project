@@ -166,9 +166,6 @@ app.get('/', function (req, res) {
 	res.render('index');
 });
 
-// Database update
-app.post();
-
 // Register function
 app.post('/register', function(req, res) {
 	
