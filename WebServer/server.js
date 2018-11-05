@@ -229,6 +229,7 @@ app.post('/login', function(req, res) {
 	passport.authenticate('local', function(err, user, info) {
 		
 		if(err) {
+			console.log("1: " + err);
 			return res.status(400).send();
 		}
 		if(!user) {
@@ -239,13 +240,18 @@ app.post('/login', function(req, res) {
 		req.logIn(user, function(err) {
 			
 			if(err) {
+				console.log("2: " + err);
 				return res.status(400).send();
 			}
 			
-			return res.status(200).send();
+			console.log(typeof user);
+			return res.status(200).send(user);
 		});
 	})(req, res);
 });
+
+// Get all user info
+
 
 // Helper functions
 // ----------------------------------------------------------------------

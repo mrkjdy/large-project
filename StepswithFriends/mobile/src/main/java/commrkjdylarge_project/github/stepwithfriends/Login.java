@@ -43,6 +43,7 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         // called when response HTTP status is "200 OK"
+
                         startActivity(new Intent(Login.this, MainActivity.class));
                     }
 
@@ -78,4 +79,6 @@ public class Login extends AppCompatActivity {
             error.setText("Registration successful");
         }
     }
+
+    private
 }

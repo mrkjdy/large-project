@@ -6,6 +6,7 @@ import com.loopj.android.http.*;
 public class SWFApp extends Application {
 
     private AsyncHttpClient asyncHttpClient = null;
+    //private
 
     public AsyncHttpClient getClient() {
         if(this.asyncHttpClient == null) {
