@@ -278,7 +278,8 @@ app.post('/getuserdata', function(req, res) {
 						console.log(err);
 						res.status(400).send();
 					} else {
-						tempCont.query("SELECT * FROM ? WHERE user_id = ?;", [req.body.table.slice(1, -1), req.user.user_id], function(err, result) {
+						console.log(req.body.table);
+						tempCont.query("SELECT * FROM ? WHERE user_id = ?;", [req.body.table, req.user.user_id], function(err, result) {
 							if(err) {
 								console.log(err);
 								res.status(400).send();
