@@ -266,7 +266,35 @@ app.post('/getuserdata', function(req, res) {
 	if(!req.user) {
 		res.status(401).send();
 	} else {
-		res.status(200).send(req.user);
+		switch(req.body.table) {
+			case "User":
+				res.status(200).send(new JSONObject('{"table":"User","value":"' + req.user.stringify() + '"}'));
+				break;
+			
+			case "Workout":
+			case "Daily Stats":
+				dbPool.getConnection(function(err, tempCont) {
+					if(err) {
+						console.log(err);
+						res.status(400).send();
+					} else {
+						tempCont.query("SELECT * FROM ? WHERE user_id = ?;", [req.body.table, req.user.user_id], function(err, result) {
+							if(err) {
+								console.log(err);
+								res.status(400).send();
+							} else {
+								res.status(200).send('{"table":"' + req.body.table + '","value":"' + result[0].stringify() + '"}');
+							}
+						});
+					}
+					tempCont.release();
+				});
+				break;
+				
+			default:
+				res.status(400).send();
+				break;
+		}
 	}
 });
 
@@ -342,7 +370,7 @@ app.post('/updateuserdata', function(req, res) {
 					if(err) {
 						res.status(400).send();
 					} else {
-						tempCont.query("UPDATE " + table + " SET " + updateValues.slice(0, -3) + " WHERE user_id=" + req.body.user_id + ";", function(err, result) {
+						tempCont.query("UPDATE ? SET ? WHERE user_id=?;", [table, updateValues.slice(0, -3), req.body.user_id], function(err, result) {
 							if(err || !result) {
 								res.status(400).send();
 							} else {
