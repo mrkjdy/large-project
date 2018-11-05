@@ -43,7 +43,7 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         // called when response HTTP status is "200 OK"
-
+                        ((SWFApp) getApplication()).setUserData(response);
                         startActivity(new Intent(Login.this, MainActivity.class));
                     }
 

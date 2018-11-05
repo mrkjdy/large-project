@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final AsyncHttpClient client = ((SWFApp) this.getApplication()).getClient();
 
         mainFrame = findViewById(R.id.main_frame);
         settingsFrame = new SettingsFragment();
@@ -61,15 +60,6 @@ public class MainActivity extends AppCompatActivity {
                         break;
                 }
                 return true ;
-            }
-        });
-
-        Button testButton = findViewById(R.id.button_test);
-        final TextView testText = findViewById(R.id.text_test);
-        testButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                testText.setText(((SWFApp) getApplication()).getUserData().toString());
             }
         });
     }

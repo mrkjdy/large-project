@@ -7,6 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.loopj.android.http.AsyncHttpClient;
 
 
 /**
@@ -32,6 +36,15 @@ public class HomeFragment extends Fragment {
         //Use this to add buttons/values/etc
         //Use getView().findViewById();
         //Refer to SettingsFragment for an example
+        final AsyncHttpClient client = ((SWFApp) getActivity().getApplication()).getClient();
+        Button testButton = getView().findViewById(R.id.button_test);
+        final TextView testText = getView().findViewById(R.id.text_test);
+        testButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                testText.setText(((SWFApp) getActivity().getApplication()).getUserData().toString());
+            }
+        });
     }
 
 }
