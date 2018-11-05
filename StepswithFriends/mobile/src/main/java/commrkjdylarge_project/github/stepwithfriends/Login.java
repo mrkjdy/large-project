@@ -36,11 +36,6 @@ public class Login extends AppCompatActivity {
                 params.put("password", password.getText().toString());
                 client.post("https://large-project.herokuapp.com/login", params, new JsonHttpResponseHandler() {
                     @Override
-                    public void onStart() {
-                        // called before request is started
-                    }
-
-                    @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         // called when response HTTP status is "200 OK"
                         ((SWFApp) getApplication()).setUserData(response);
@@ -57,11 +52,6 @@ public class Login extends AppCompatActivity {
                         } else {
                             error.setText(getResources().getString(R.string.login_error_other));
                         }
-                    }
-
-                    @Override
-                    public void onRetry(int retryNo) {
-                        // called when request is retried
                     }
                 });
             }

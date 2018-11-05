@@ -46,4 +46,9 @@ public class SWFApp extends Application {
         }
         return this.userData;
     }
+
+    public void resetUser() {
+        this.asyncHttpClient = null;
+        this.userData = null;
+    }
 }
