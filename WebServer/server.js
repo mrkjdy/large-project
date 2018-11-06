@@ -11,7 +11,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const favicon = require('serve-favicon');
 const bcrypt = require('bcrypt');
-
+const schedule = require('node-schedule');
 
 
 // Global vars
@@ -266,7 +266,125 @@ app.post('/getuserdata', function(req, res) {
 	if(!req.user) {
 		res.status(401).send();
 	} else {
-		res.status(200).send(req.user);
+		switch(req.body.table) {
+			case "User":
+				res.status(200).send(new JSONObject('{"table":"User","value":"' + req.user.stringify() + '"}'));
+				break;
+			
+			case "Workout":
+			case "Daily Stats":
+				dbPool.getConnection(function(err, tempCont) {
+					if(err) {
+						console.log(err);
+						res.status(400).send();
+					} else {
+						tempCont.query("SELECT * FROM " + req.body.table + " WHERE user_id = " + req.user.user_id + ";", function(err, result) {
+							if(err) {
+								console.log(err);
+								res.status(400).send();
+							} else {
+								if(result[0]) {
+									res.status(200).send('{"table":"' + req.body.table + '","value":"' + result[0].stringify() + '"}');
+								} else {
+									res.status(400).send();
+								}
+							}
+						});
+					}
+					tempCont.release();
+				});
+				break;
+				
+			default:
+				res.status(400).send();
+				break;
+		}
+	}
+});
+
+// Update user info in database
+app.post('/updateuserdata', function(req, res) {
+	if(!req.user) {
+		res.status(401).send();
+	} else {
+		if(!req.body.fields || !req.body.values || !req.body.table || req.body.fields.length != req.body.values.length || (req.body.table != "User" && req.body.table != "Daily Stats" && req.body.table != "Workout" && req.body.table != "Friendship")) {
+			res.status(400).send();
+		} else {
+			var validRequest = false;
+			var updateValues = "";
+			for(var i=0; i<req.body.fields.length; i++) {
+				// !!! Ensure that all editable and only editable fields are present, and have correct type specified for validation
+				switch(req.body.fields[i]) {
+					//    field name
+					case "firstName":
+						//                        field value          field type
+						validRequest = checkInput(req.body.values[i], "name");
+						break;
+					
+					case "lastName":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					case "height":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+						
+					case "weight":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					case "steps":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					case "calories":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					case "distance":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					case "points":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					case "numOfPeople":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					case "coordinates":
+						validRequest = checkInput(req.body.values[i], "");
+						break;
+					
+					default:
+						validRequest = false;
+						break;
+				}
+				if(validRequest = false) {
+					i = req.body.fields.length;
+				} else {
+					updateValues += req.body.fields[i] + "='" + req.body.values[i] + "', '";
+				}
+			}
+			if(!validRequest) {
+				res.status(400).send();
+			} else {
+				dbPool.getConnection(function(err, tempCont){
+					if(err) {
+						res.status(400).send();
+					} else {
+						tempCont.query("UPDATE ? SET ? WHERE user_id=?;", [table, updateValues.slice(0, -3), req.body.user_id], function(err, result) {
+							if(err || !result) {
+								res.status(400).send();
+							} else {
+								res.status(200).send();
+							}
+						});
+					}
+				});
+			}
+		}
 	}
 });
 
@@ -286,7 +404,7 @@ var checkInput = function(input, type, callback) {
 			break;
 			
 		case "name":
-			var re = /^[a-z]{1,20}$/i; // Format 20 characters
+			var re = /^[a-z]{1,45}$/i; // Format 45 characters
 			returnVal = re.test(input);
 			break;
 			
@@ -306,3 +424,22 @@ var checkInput = function(input, type, callback) {
 		callback(returnVal);
 	}
 }
+
+// Create scheduled job (node-schedule) that updates user table with daily stats
+var dailyUpdateUserStats = schedule.scheduleJob('00 00 00 * * 0-6', function() {
+	
+	// !!! Query that adds points, distance, steps from Daily Stats to total_points, total_distance, total_steps in User
+	var updateQuery = "";
+	dbPool.getConnection(function(err, tempCont) {
+		if(err) {
+			console.log(err);
+		} else {
+			tempCont.query(updateQuery, function(err, result) {
+				if(err) {
+					console.log(err);
+				}
+			});
+		}
+		tempCont.release();
+	});
+});
