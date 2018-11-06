@@ -12,18 +12,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.ResponseHandlerInterface;
-
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.net.URI;
-
-import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpResponse;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,29 +33,11 @@ public class SettingsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
-        final AsyncHttpClient client = ((SWFApp) getActivity().getApplication()).getClient();
         Button logoutButton = getView().findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                client.post("https://large-project.herokuapp.com/logout", null, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        // called when response HTTP status is "200 OK"
-                        ((SWFApp) getActivity().getApplication()).resetUser();
-                        startActivity(new Intent(getActivity(), Login.class));
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
-                        // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                        // TODO: Fix onSuccess bug here too
-                        if(statusCode == 200) {
-                            ((SWFApp) getActivity().getApplication()).resetUser();
-                            startActivity(new Intent(getActivity(), Login.class));
-                        }
-                    }
-                });
+                startActivity(new Intent(getActivity(), LogoutPopup.class));
             }
         });
 
