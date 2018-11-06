@@ -5,3 +5,19 @@ head
 	meta(name='viewport', content='width=device-width, initial-scale=1')
 	link(href='https://fonts.googleapis.com/css?family=Oswald', rel='stylesheet')
 	p#createdBy Created by COP 4331 Group 4
+	#navBar
+		a#homeButton(href='/') Steps with Friends
+		#searchForm
+			form(onsubmit='search(); return false')
+				input#searchField(type='text' placeholder='Search users...')
+				input#submitSearch.button(type='submit' value='Login')
+		#notLoggedIn
+			a#loginLink(href='/login') Login
+			div or
+			a#createAccount(onclick='goToCreateAccount(); return false') Create Account
+		#loggedIn
+			#pendingRequests
+			a#profileLink(onclick='goToMyProfile(); return false')
+				img(title='My Profile' alt='My Profile')
+			#downButton
+			#downBox
