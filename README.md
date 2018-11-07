@@ -89,6 +89,9 @@ then
 `heroku logs -t`	(Prints live logs)
 
 #### To run the server locally:
+(Remember you need heroku and npm installed to run the server locally)
+(Also, for the start scipts to work you need to tell heroku what app this repo is using. See the section below)
+
 `heroku local`
 
 Note: the above command will use any vars you have set in the .env file, or none if the .env file does not exist
@@ -105,4 +108,5 @@ These scripts will also store the ClearDB vars in the .env file.
 
 If you wish to use your own vars then you should edit the .env file. This can be done to specify an alternative database.
 
-
+#### To add our heroku remote to the current repo:
+`heroku git:remote -a large-project`
