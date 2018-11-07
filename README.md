@@ -91,10 +91,18 @@ then
 #### To run the server locally:
 `heroku local`
 
-I have modified the Procfile so that when you run `heroku local` it attempts to grab the config vars from heroku. If successful server.js should connect to the ClearDB database. If unsuccessful there may be errors, and the server may not connect to the database. If you would like to use a different database you can specify any environment variables you needa:
+Note: the above command will use any vars you have set in the .env file, or none if the .env file does not exist
 
-`VAR=blahblahblah OTHERVAR=blahblahblah ... heroku local`
+To run the server locally with the ClearDB database use one of these commands:
 
-for this project to specify an alternative database to connect to, and to give a session secret:
+`./startWithHerokuVars.sh` for Linux/Mac
 
-`DATABASE_HOST=[host url] DATABASE_NAME=[database name] DATABASE_PASSWORD=[database password] DATABASE_USER=[database user] SESSION_SECRET=[secret] heroku local`
+or
+
+`startWithHerokuVars.bat` for Windows
+
+These scripts will also store the ClearDB vars in the .env file.
+
+If you wish to use your own vars then you should edit the .env file. This can be done to specify an alternative database.
+
+
