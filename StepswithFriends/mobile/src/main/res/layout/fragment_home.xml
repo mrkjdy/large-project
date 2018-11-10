@@ -37,27 +37,25 @@
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:layout_centerInParent="true"
-            android:layout_marginTop="221dp"
+            android:layout_marginBottom="18dp"
             android:gravity="center"
             android:text="50%"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="30sp"
+            app:layout_constraintBottom_toBottomOf="@+id/circularProgressbar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/circularProgressbar" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="252dp"
             android:layout_height="139dp"
-            android:layout_marginBottom="160dp"
+            android:layout_marginBottom="163dp"
             android:text="Steps"
             android:textAlignment="center"
             android:textSize="80sp"
             app:layout_constraintBottom_toBottomOf="@+id/tv"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
