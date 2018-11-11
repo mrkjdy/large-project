@@ -1,23 +1,17 @@
 package commrkjdylarge_project.github.stepwithfriends;
 
-import android.content.Intent;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.json.JSONObject;
-
-import cz.msebera.android.httpclient.Header;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private HomeFragment homeFrame;
     private WalkFragment walkFrame;
     private LeaderboardFragment leaderboardFrame;
+
+    private static final int ERROR_DIALOG_REQUEST = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +49,9 @@ public class MainActivity extends AppCompatActivity {
                         setFragment(settingsFrame);
                         break;
                     case R.id.action_walk:
-                        setFragment(walkFrame);
+                        if(isServicesOK()) {
+                            setFragment(walkFrame);
+                        }
                         break;
                     case R.id.action_leaderboard:
                         setFragment(leaderboardFrame);
@@ -69,6 +67,24 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentTransaction.replace(R.id.main_frame, fragment);
         fragmentTransaction.commit();
+    }
+
+    // Make sure google play services is available, need to verify this
+    public boolean isServicesOK(){
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
+
+        if(available == ConnectionResult.SUCCESS){
+            //everything is fine and the user can make map requests
+            return true;
+        }
+        else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+            //an error occured but we can resolve it
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(this, available, ERROR_DIALOG_REQUEST);
+            dialog.show();
+        }else{
+            Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
+        }
+        return false;
     }
 
     /**
