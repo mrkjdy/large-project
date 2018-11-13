@@ -9,6 +9,9 @@
     <string name="login_register_button">Register</string>
     <string name="login_username_hint">Username</string>
     <string name="login_password_hint">Password</string>
+    <string name="logout_confirmation">Are you sure you want to logout?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <!-- Error Messages -->
     <string name="login_username_required">Username is required</string>
