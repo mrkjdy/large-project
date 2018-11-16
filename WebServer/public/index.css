@@ -47,8 +47,29 @@ input[type=submit]:hover {
   background-color: #84CEEB;
 }
 
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 .shadedBox {
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.spaced {
+  margin: 10px;
+}
+
+.centerVertical {
+  text-align: center;
+  display: flex;
+  align-items: center;
 }
 
 
@@ -62,7 +83,7 @@ input[type=submit]:hover {
   padding: 1%;
   bottom: 0;
   right: 0;
-  color: #C1C8E4;
+  color: #000;
 }
 
 #navbar {
@@ -78,16 +99,6 @@ input[type=submit]:hover {
   z-index: 99 !important;
 }
 
-.spaced {
-  margin: 10px;
-}
-
-.centerVertical {
-  text-align: center;
-  display: flex;
-  align-items: center;
-}
-
 #leftnav {
   margin-left: 20px;
 }
@@ -96,24 +107,8 @@ input[type=submit]:hover {
   margin-right: 20px;
 }
 
-#loggedIn {
-  margin-right: 20px;
-  display: none;
-}
-
 #navbar input {
   border: 0px;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-a:hover {
-  color: #fff;
-  text-decoration: none;
-  cursor: pointer;
 }
 
 
@@ -121,12 +116,17 @@ a:hover {
 /* Index styles */
 /*////////////////////////////////////*/
 
+#tableTitle {
+  position: relative;
+  margin-top: 150px;
+}
+
 #indexTable {
   position: relative;
-  width: 80%;
+  width: 65%;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 200px;
+  margin-top: 20px;
   margin-bottom: 100px;
   background-color: #fff;
   border-radius: 4px;
@@ -147,7 +147,7 @@ tr:nth-child(even) {
   margin-left: auto;
   margin-right: auto;
   margin-top: 200px;
-  margin-bottom: 100px;
+  margin-bottom: 20px;
   background-color: #fff;
   border-radius: 4px;
   padding: 10px;
@@ -163,4 +163,10 @@ tr:nth-child(even) {
 
 #createAccountForm {
   display: none;
+}
+
+#submitMessage {
+  display: none;
+  padding: 10px;
+  color: #F00;
 }

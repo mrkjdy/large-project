@@ -4,7 +4,7 @@ head
 	script(src='index.js', type='text/javascript')
 	meta(name='viewport', content='width=device-width, initial-scale=1')
 	link(href='https://fonts.googleapis.com/css?family=Oswald', rel='stylesheet')
-	p#createdBy Created by COP 4331 Group 4
+	p#createdBy Group 4
 	#navbar.centerVertical.shadedBox
 		#leftnav.centerVertical
 			a#homeButton.spaced(href='/')
@@ -13,7 +13,7 @@ head
 				input#searchFields.spaced(type='text' placeholder='Search users...')
 				input#submitSearch(type='submit' value='Search')
 		#userBox.centerVertical
-			if user
+			if user_id
 				#pendingRequests
 				a#profileLink(onclick='goToMyProfile(); return false')
 					img(title='My Profile' alt='My Profile')

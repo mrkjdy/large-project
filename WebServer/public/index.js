@@ -3,7 +3,7 @@
 
 const APIRoot = 'https://large-project.herokuapp.com/'; 
 const fileExtension = '.js'; 
-const contactsURL = '/contacts';
+const indexURL = '/';
 const loginURL = '/';
 
 var userID = 0;
@@ -35,9 +35,7 @@ function login() {
 	var user = document.getElementById("uName").value;
 	var pass = document.getElementById("pWord").value;
 
-	document.getElementById("submitMessage").innerHTML = "";
-
-	// Create JSON pacage 
+	// Create JSON package 
 	var jsonPayload = '{"username" : "' + user + '", "password" : "' + pass + '"}';
 	var url = "/login";
 
@@ -55,19 +53,15 @@ function login() {
 
 				var jsonObject = JSON.parse(JS);
 
-				userID = jsonObject.UserId;
-
 				//check wether login was succesfull
-				if (userID == 0) {
-					document.getElementById("submitMessage").innerHTML = "User or Password incorrect";
-					return;
+				if (!jsonObject.loginSuccess) {
+					document.getElementById("submitMessage").innerHTML = "Username or Password incorrect";
+					document.getElementById("submitMessage").style.display = "inherit";
+					return false;
 				}
 
-				document.getElementById("uName").value = "";
-				document.getElementById("pWord").value = "";
-
 				// redirection code
-				document.location.href = contactsURL;
+				document.location.href = indexURL;
 			}
 		};
 
@@ -77,6 +71,8 @@ function login() {
 	catch(err) {
 		document.getElementById("submitMessage").innerHTML = err.message;
 	}
+
+	return false;
 }
 
 // Registers account info with server and then login()s

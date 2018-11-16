@@ -164,6 +164,7 @@ passport.deserializeUser(function(id, done) {
 
 app.get('/', function (req, res) {
 	res.render('index', req.user);
+	console.log(req.user);
 });
 
 app.get('/login', function (req, res) {
@@ -233,21 +234,21 @@ app.post('/login', function(req, res) {
 	passport.authenticate('local', function(err, user, info) {
 		
 		if(err) {
-			return res.status(400).send();
+			return res.status(400).send('Database Error');
 		}
 		if(!user) {
 		
-			return res.status(401).send();
+			return res.send(JSON.stringify([{ "loginSuccess": false }]));
 		}
 		
 		req.logIn(user, function(err) {
 			
 			if(err) {
 				console.log(err);
-				return res.status(400).send();
+				return res.status(400).send('Login Error');
 			}
 			
-			return res.status(200).send(user);
+			return res.send(JSON.stringify([{ "loginSuccess": true }]));
 		});
 	})(req, res);
 });
