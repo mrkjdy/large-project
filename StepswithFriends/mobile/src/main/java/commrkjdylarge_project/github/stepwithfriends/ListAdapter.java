@@ -29,6 +29,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
     private static Integer userPos;
     private Context context;
 
+    // TODO add a field that determines if an user in the leaderboard is our friend
     public ListAdapter(ArrayList<String> mImageName, ArrayList<String> mUserName, ArrayList<String> mUSerScore, Context context) {
         this.mImage = mImageName;
         this.mUserName = mUserName;
@@ -66,7 +67,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
             public void onClick(View v) {
                 Log.d(TAG, "onClick: clicked on: " + mUserName.get(i));
 
-                //TODO: add functionality to add a friend here
+                //TODO: add functionality to add or delete a friend here
                 Toast.makeText(context, mUserName.get(i), Toast.LENGTH_SHORT).show();
             }
         });
@@ -75,6 +76,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
     @Override
     public int getItemCount() {
         return (MAX_ITEMS < mUserName.size()) ? MAX_ITEMS : mUserName.size();
+    }
+
+    // TODO add a field that determines if an user in the leaderboard is our friend
+    public void setData(ArrayList<String> mImageName, ArrayList<String> mUserName, ArrayList<String> mUSerScore, Context context)
+    {
+        notifyDataSetChanged(); // Notify that the dataset has changed, and updates the recyclerview
     }
 
 
