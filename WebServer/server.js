@@ -163,7 +163,11 @@ passport.deserializeUser(function(id, done) {
 // });
 
 app.get('/', function (req, res) {
-	res.render('index');
+	res.render('index', req.user);
+});
+
+app.get('/login', function (req, res) {
+	res.render('login');
 });
 
 // Register function

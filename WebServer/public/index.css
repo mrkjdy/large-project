@@ -1,6 +1,62 @@
-/* NEW */
-#createdBy
-{
+/* COLORS
+  #8860D0 <!-- PURPLE -->
+  #222629 <!-- BLACK -->
+  #84CEEB <!-- LIGHT BLUE -->
+  #C1C8E4 <!-- GRAY -->
+  #5AB9EA <!-- BLUE -->
+  #5680E9 <!-- BLUE/PURPLE -->
+*/
+
+
+/*////////////////////////////////////*/
+/* Body styles */
+/*////////////////////////////////////*/
+
+body {
+  background-color: #C1C8E4;
+  font-family: 'Oswald';
+  color: #757575;
+  font-size: 16px;
+  text-align: center;
+}
+
+select {
+  padding: 10px;
+  outline: 0;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
+input {
+  padding: 10px;
+  outline: 0;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 2px solid #e2e2e2;
+}
+
+input[type=submit] {
+  background-color: #5AB9EA;
+  border: none;
+  color: white;
+  text-decoration: none;
+}
+
+input[type=submit]:hover {
+  background-color: #84CEEB;
+}
+
+.shadedBox {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+
+/*////////////////////////////////////*/
+/* Header styles */
+/*////////////////////////////////////*/
+
+#createdBy {
   position:fixed;
   margin: 0;
   padding: 1%;
@@ -8,109 +64,103 @@
   right: 0;
   color: #C1C8E4;
 }
- /*
-   #8860D0 <!-- PURPLE -->
-   #222629 <!-- BLACK -->
-   #84CEEB <!-- LIGHT BLUE -->
-   #C1C8E4 <!-- GRAY -->
-   #5AB9EA <!-- BLUE -->
-   #5680E9 <!-- BLUE/PURPLE -->
-*/
 
-/* OLD */
-
-body
-{
-  background-color: #222629;
-  font-family: 'Oswald';
-  color: #757575;
-  font-size: 16px;
-}
-
-#loginBox
-{
+#navbar {
   position: fixed;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-  background: #fff;
-  border-radius: 4px;
-  width: 300px;
-  margin: -150px 0px 0px -150px;
-  top: 30%;
-  left: 50%;
-  text-align: center;
-}
-
-#loginBox p
-{
-  font-size: 12px;
-  padding: 10px;
-}
-
-#loginBox input
-{
-  width: 70%;
-}
-
-select
-{
-  padding: 10px;
-  outline: 0;
-  margin: 8px 0;
-  box-sizing: border-box;
-}
-
-input
-{
-  padding: 10px;
-  outline: 0;
-  margin: 8px 0;
-  box-sizing: border-box;
-}
-
-.button
-{
-  background-color: #5AB9EA; /* Green */
-  border: none;
-  color: white;
+  width: 100%;
+  height: 100px;
+  background: #5680E9;
+  top: 0px;
+  left: 0px;
   text-decoration: none;
+  justify-content: space-between;
+  color: #000;
+  z-index: 99 !important;
 }
 
-.button:hover
-{
-  background-color: #84CEEB; /* Green */
+.spaced {
+  margin: 10px;
 }
 
-#submitMessage
-{
-  color: red;
+.centerVertical {
+  text-align: center;
+  display: flex;
+  align-items: center;
 }
 
-#createAccountForm
-{
+#leftnav {
+  margin-left: 20px;
+}
+
+#userBox {
+  margin-right: 20px;
+}
+
+#loggedIn {
+  margin-right: 20px;
   display: none;
 }
 
-#contacts-box
-{
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-  background: #fff;
-  border-radius: 4px;
-  margin: 10px 10px 40px 10px;
-  text-align: center;
-  padding: 3px;
+#navbar input {
+  border: 0px;
 }
 
-button {
-     background:none!important;
-     color:inherit;
-     border:none; 
-     padding:0!important;
-     font: inherit;
-     /*border is optional*/
-     border-bottom:1px solid #444; 
-     cursor: pointer;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-#pointer {
+a:hover {
+  color: #fff;
+  text-decoration: none;
   cursor: pointer;
+}
+
+
+/*////////////////////////////////////*/
+/* Index styles */
+/*////////////////////////////////////*/
+
+#indexTable {
+  position: relative;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 200px;
+  margin-bottom: 100px;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+
+/*////////////////////////////////////*/
+/* Login styles */
+/*////////////////////////////////////*/
+
+#loginBox {
+  position: relative;
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 200px;
+  margin-bottom: 100px;
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+#loginBox p {
+  padding: 10px;
+}
+
+#loginBox input {
+  width: 70%;
+}
+
+#createAccountForm {
+  display: none;
 }

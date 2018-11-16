@@ -12,10 +12,20 @@ var lastName = '';
 
 var JSONtextID = '';
 
+////////////////////////////////////
+// New functions
+////////////////////////////////////
+
+function goToCreateAccount() {
+	window.location.replace('/login?createAccount=1');
+}
 
 
-// Index.html functions
-// ----------------------------------------------------------------------
+
+////////////////////////////////////
+// Old functions
+////////////////////////////////////
+
 
 // Hashing password on client is not necessary with HTTPS!
 // It will be hashed by server before being stored in DB!
