@@ -89,7 +89,6 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 passport.use(new LocalStrategy(function(username, password, done) {
 	
 	if(checkInput(username, 'username') === true && password) {
-		
 		dbPool.getConnection(function(err, tempCont) {
 			if(err) {
 				console.log(err);
@@ -97,6 +96,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
 			} else {
 				tempCont.query("SELECT * FROM User WHERE login = ?;", [username], function(err, result) {
 					if(err) {
+						console.log(err);
 						return done(true, false);
 					} else {
 						bcrypt.compare(password, result[0].password, function(err, res) {
@@ -106,6 +106,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
 				 					return done(false, result[0]);
 				 				});
 							} else if(err) {
+								console.log(err);
 								return done(true, false);
 							} else {
 								return done(false, false);
@@ -237,14 +238,11 @@ app.post('/register', function(req, res) {
 
 // Login function
 app.post('/login', function(req, res) {
-	
 	passport.authenticate('local', function(err, user, info) {
-		
 		if(err) {
 			return res.status(400).send();
 		}
 		if(!user) {
-		
 			return res.status(401).send();
 		}
 		
@@ -507,9 +505,9 @@ var getNewTopUsers = function() {
 					topRankedUsers = result;
 				}
 			});
+			tempCont.release();
 		}
 	});
-	tempCont.release();
 }
 
 // Scheduled job to update top users
