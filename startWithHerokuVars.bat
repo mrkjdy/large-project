@@ -1,2 +1,2 @@
 @echo off
-heroku config -s >.env && heroku local
+heroku config -s -a large-project >.env && heroku local
