@@ -98,6 +98,8 @@ passport.use(new LocalStrategy(function(username, password, done) {
 					if(err) {
 						console.log(err);
 						return done(true, false);
+					} else if(!result[0]) {
+						return done(false, false);
 					} else {
 						bcrypt.compare(password, result[0].password, function(err, res) {
 							if(res) {
