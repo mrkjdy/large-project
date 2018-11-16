@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -17,6 +18,9 @@ import com.loopj.android.http.AsyncHttpClient;
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment {
+
+    ProgressBar progress1, progress2;
+    int step = 0;
 
 
     public HomeFragment() {
@@ -32,19 +36,11 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         //Use this to add buttons/values/etc
         //Use getView().findViewById();
         //Refer to SettingsFragment for an example
-        final AsyncHttpClient client = ((SWFApp) getActivity().getApplication()).getClient();
-        Button testButton = getView().findViewById(R.id.button_test);
-        final TextView testText = getView().findViewById(R.id.text_test);
-        testButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                testText.setText(((SWFApp) getActivity().getApplication()).getUserData("User").toString());
-            }
-        });
-    }
 
+
+    }
 }

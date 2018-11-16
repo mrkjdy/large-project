@@ -20,4 +20,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_info">Info</string>
     <string name="title_activity_info_popup">InfoPopup</string>
+
+    <!-- Google Map API Key -->
+    <string name="google_maps_API_key">AIzaSyA-P_czspGO2Dy0i3SMYtKLAoc0iFkVF8E</string>
 </resources>
