@@ -37,6 +37,9 @@ var dbPool = mysql.createPool({
 // The cost factor for bcrypt
 const saltRounds = 10;
 
+// Top 100 Users, periodically updated to save the database
+var topRankedUsers;
+
 // App config
 // ----------------------------------------------------------------------
 
@@ -86,7 +89,6 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 passport.use(new LocalStrategy(function(username, password, done) {
 	
 	if(checkInput(username, 'username') === true && password) {
-		
 		dbPool.getConnection(function(err, tempCont) {
 			if(err) {
 				console.log(err);
@@ -94,6 +96,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
 			} else {
 				tempCont.query("SELECT * FROM User WHERE login = ?;", [username], function(err, result) {
 					if(err) {
+						console.log(err);
 						return done(true, false);
 					} else {
 						bcrypt.compare(password, result[0].password, function(err, res) {
@@ -103,6 +106,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
 				 					return done(false, result[0]);
 				 				});
 							} else if(err) {
+								console.log(err);
 								return done(true, false);
 							} else {
 								return done(false, false);
@@ -140,6 +144,11 @@ passport.deserializeUser(function(id, done) {
 		}
 		tempCont.release();
 	});
+});
+
+// Startup functions
+app.on('listening', function() {
+	getNewTopUsers();
 });
 
 // Post and get functions
@@ -230,14 +239,11 @@ app.post('/register', function(req, res) {
 
 // Login function
 app.post('/login', function(req, res) {
-	
 	passport.authenticate('local', function(err, user, info) {
-		
 		if(err) {
 			return res.status(400).send('Database Error');
 		}
 		if(!user) {
-		
 			return res.send(JSON.stringify([{ "loginSuccess": false }]));
 		}
 		
@@ -277,7 +283,6 @@ app.post('/getuserdata', function(req, res) {
 				break;
 			
 			case "Workout":
-			case "Daily Stats":
 				dbPool.getConnection(function(err, tempCont) {
 					if(err) {
 						console.log(err);
@@ -312,7 +317,7 @@ app.post('/updateuserdata', function(req, res) {
 	if(!req.user) {
 		res.status(401).send();
 	} else {
-		if(!req.body.fields || !req.body.values || !req.body.table || req.body.fields.length != req.body.values.length || (req.body.table != "User" && req.body.table != "Daily Stats" && req.body.table != "Workout" && req.body.table != "Friendship")) {
+		if(!req.body.fields || !req.body.values || !req.body.table || req.body.fields.length != req.body.values.length || (req.body.table != "User" && req.body.table != "Workout" && req.body.table != "Friendship")) {
 			res.status(400).send();
 		} else {
 			var validRequest = false;
@@ -387,8 +392,45 @@ app.post('/updateuserdata', function(req, res) {
 							}
 						});
 					}
+					tempCont.release();
 				});
 			}
+		}
+	}
+});
+
+// Gets top 100 users, must specify if global or friends
+app.post('/gettopusers', function(req, res) {
+	if(!req.body.group) {
+		res.status(400).send();
+	} else {
+		if(req.body.group === "global") {
+			if(topRankedUsers) {
+				res.status(200).send(topRankedUsers);
+			} else {
+				res.status(400).send();
+			}
+		} else if(req.body.group === "friends") {
+			if(!req.user) {
+				res.status(401).send();
+			} else {
+				dbPool.getConnection(function(err, tempCont){
+				if(err) {
+					res.status(400).send();
+				} else {
+					tempCont.query("SELECT login, total_points FROM user WHERE EXISTS (SELECT * FROM friendship WHERE user_one_id = ? OR user_two_id = ?) ORDER BY total_points LIMIT 100;", [req.user.user_id, req.user.user_id], function(err, result) {
+						if(err || !result) {
+							res.status(400).send();
+						} else {
+							res.status(200).send(result);
+						}
+					});
+				}
+				tempCont.release();
+			});
+			}
+		} else {
+			res.status(400).send();
 		}
 	}
 });
@@ -447,4 +489,29 @@ var dailyUpdateUserStats = schedule.scheduleJob('00 00 00 * * 0-6', function() {
 		}
 		tempCont.release();
 	});
+});
+
+// Updates the top users variable
+var getNewTopUsers = function() {
+	dbPool.getConnection(function(err, tempCont){
+		if(err) {
+			topRankedUsers = false;
+			console.log(err);
+		} else {
+			tempCont.query("SELECT login, total_points FROM User ORDER BY total_points LIMIT 100;", function(err, result) {
+				if(err || !result) {
+					topRankedUsers = false;
+					console.log(err);
+				} else {
+					topRankedUsers = result;
+				}
+			});
+			tempCont.release();
+		}
+	});
+}
+
+// Scheduled job to update top users
+var updateTopUsers = schedule.scheduleJob('*/5 * * * *', function() {
+	getNewTopUsers();
 });
