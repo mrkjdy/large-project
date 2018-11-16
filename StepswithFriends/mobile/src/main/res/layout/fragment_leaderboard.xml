@@ -93,6 +93,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:background="@color/colorPrimary"
                 app:srcCompat="@android:drawable/ic_input_add" />
         </android.support.constraint.ConstraintLayout>
 
