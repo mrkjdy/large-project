@@ -2,7 +2,7 @@ doctype html
 html(lang='en')
 	include head
 	body
-		#loginBox
+		#loginBox.shadedBox
 			h2 STEPS WITH FRIENDS
 			#loginForm
 				form(onsubmit='login(); return false')
@@ -10,11 +10,11 @@ html(lang='en')
 					br
 					input#pWord(type='password' placeholder='Password')
 					br
-					input#submitLogin.button(type='submit' value='Login')
+					input#submitLogin(type='submit' value='Login')
 					br
 				#submitMessage
 				p Not registered? 
-					button#showCreateAccount(type='button' onclick='showCreateAccount()') Create an account
+					a#showCreateAccount(onclick='showCreateAccount(); return false') Create an account
 			#createAccountForm
 				form(onsubmit='createAccount(); return false')
 					input#newFName(type='text' placeholder='First Name' autofocus)
@@ -27,8 +27,8 @@ html(lang='en')
 					br
 					input#newPWord2(type='password' placeholder='Confirm Password')
 					br
-					input#submitCreateAccount.button(type='submit' value='Create Account')
+					input#submitCreateAccount(type='submit' value='Create Account')
 					br
 				#submitMessage
 				p Already have an account? 
-					button#showLogin(type="button" onclick="showLogin()") Go to login page
+					a#showLogin(onclick="showLogin(); return false") Login
