@@ -280,10 +280,8 @@ app.post('/getuserdata', function(req, res) {
 		res.status(401).send();
 	} else {
 		switch(req.body.table) {
+			// TODO: Update this so that password doesn't get sent to user
 			case "User":
-				res.status(200).send('{"table":"User","value":"' + req.user.stringify() + '"}');
-				break;
-			
 			case "Workout":
 				dbPool.getConnection(function(err, tempCont) {
 					if(err) {
@@ -465,8 +463,6 @@ var checkInput = function(input, type, callback) {
 			returnVal = null;
 			break;
 	}
-	
-	console.log("input is " + returnVal + ": " + type + ", " + input);
 	
 	if(callback == undefined) {	
 		return returnVal;
