@@ -4,8 +4,7 @@ import android.app.Application;
 
 import com.loopj.android.http.*;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -15,6 +14,7 @@ public class SWFApp extends Application {
     private JSONObject userData_User = null;
     private JSONObject userData_Workout = null;
     private boolean syncStatus = false;
+    private JSONArray tempObject = null;
 
     public AsyncHttpClient getClient() {
         if(this.asyncHttpClient == null) {
@@ -77,6 +77,24 @@ public class SWFApp extends Application {
         this.userData_User = null;
         this.userData_Workout = null;
         this.syncStatus = false;
+    }
+
+    public JSONArray getTop100(String group) {
+        RequestParams params = new RequestParams();
+        params.put("group", group);
+        tempObject = null;
+        this.asyncHttpClient.post("https://large-project.herokuapp.com/gettopusers", params, new JsonHttpResponseHandler() {
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                // called when response HTTP status is "200 OK"
+                tempObject = response;
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+            }
+        });
+        return tempObject;
     }
 
     // TO UPDATE/SYNC USER DATA:
