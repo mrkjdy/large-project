@@ -57,20 +57,26 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        Switch publicSwitch = getView().findViewById(R.id.public_switch);
+        final Switch publicSwitch = getView().findViewById(R.id.public_switch);
         publicSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
                     // Set public statuc on leaderboard
+                    if(!((SWFApp) getActivity().getApplication()).updateUserData("isPrivate", false,"User")) {
+                        publicSwitch.setChecked(false);
+                    }
                 } else {
                     // Set private status on leaderboard
+                    if(!((SWFApp) getActivity().getApplication()).updateUserData("isPrivate", true,"User")) {
+                        publicSwitch.setChecked(true);
+                    }
                 }
             }
         });
 
         Switch locationSwitch = getView().findViewById(R.id.location_switch);
-        publicSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        locationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
