@@ -94,7 +94,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
 				console.log(err);
 				return done(true, false);
 			} else {
-				tempCont.query("SELECT * FROM User WHERE login = ?;", [username], function(err, result) {
+				tempCont.query("SELECT password FROM User WHERE login = ?;", [username], function(err, result) {
 					if(err) {
 						console.log(err);
 						return done(true, false);
@@ -105,7 +105,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
 							if(res) {
 								tempCont.query("UPDATE User SET dateLastLoggedIn = NOW() WHERE user_id = ?;", [result[0].UserID], function(err, result1) {
 				 					if(err) console.log(err);
-				 					return done(false, result[0]);
+				 					return done(false, true);
 				 				});
 							} else if(err) {
 								console.log(err);
@@ -175,7 +175,6 @@ app.on('listening', function() {
 
 app.get('/', function (req, res) {
 	res.render('index', req.user);
-	console.log(req.user);
 });
 
 app.get('/login', function (req, res) {
