@@ -20,10 +20,11 @@
 
     <Button
         android:id="@+id/yes_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="114dp"
+        android:layout_height="51dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
+        android:background="@drawable/button"
         android:text="@string/yes"
         app:layout_constraintEnd_toStartOf="@+id/no_button"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,10 +32,11 @@
 
     <Button
         android:id="@+id/no_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="114dp"
+        android:layout_height="51dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/button"
         android:text="@string/no"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/yes_button"
