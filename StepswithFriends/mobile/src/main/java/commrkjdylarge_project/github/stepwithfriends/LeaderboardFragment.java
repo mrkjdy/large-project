@@ -64,9 +64,9 @@ public class LeaderboardFragment extends Fragment {
 
         // TODO: here we would get the info from the leaderboar and make it into the entries
         JSONArray object = ((SWFApp) getActivity().getApplication()).getTop100("global");
-        if(object != null) {
+        //if(object != null) {
             Log.d(TAG, object.toString());
-        }
+        //}
 
         // TODO: delete untill the End comment after the database has been incorporated -this section is just for testing-
         mImages.add("https://c1.staticflickr.com/5/4636/25316407448_de5fbf183d_o.jpg");

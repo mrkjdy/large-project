@@ -83,18 +83,21 @@ public class SWFApp extends Application {
         RequestParams params = new RequestParams();
         params.put("group", group);
         tempObject = null;
-        this.asyncHttpClient.post("https://large-project.herokuapp.com/gettopusers", params, new JsonHttpResponseHandler() {
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                // called when response HTTP status is "200 OK"
-                tempObject = response;
-            }
+        try {
+            this.asyncHttpClient.post("https://large-project.herokuapp.com/gettopusers", params, new JsonHttpResponseHandler() {
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    // called when response HTTP status is "200 OK"
+                    tempObject = response;
+                }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-            }
-        });
-        return tempObject;
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                    // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                }
+            });
+        } finally {
+            return tempObject;
+        }
     }
 
     // TO UPDATE/SYNC USER DATA:
