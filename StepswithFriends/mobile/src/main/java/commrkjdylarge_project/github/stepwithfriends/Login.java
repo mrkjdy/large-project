@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.loopj.android.http.*;
 import cz.msebera.android.httpclient.*;
-import org.json.JSONObject;
+import org.json.*;
 
 public class Login extends AppCompatActivity {
 
@@ -37,9 +37,9 @@ public class Login extends AppCompatActivity {
                     client.post("https://large-project.herokuapp.com/login", params, new JsonHttpResponseHandler() {
                         // TODO: Fix bug where login fails when heroku is idle
                         @Override
-                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                             // called when response HTTP status is "200 OK"
-                            ((SWFApp) getApplication()).setUserData_User(response);
+                            ((SWFApp) getApplication()).getUserData("User");
                             startActivity(new Intent(Login.this, MainActivity.class));
                         }
 

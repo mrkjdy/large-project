@@ -13,7 +13,6 @@ public class SWFApp extends Application {
 
     private AsyncHttpClient asyncHttpClient = null;
     private JSONObject userData_User = null;
-    private JSONObject userData_Daily_Stats = null;
     private JSONObject userData_Workout = null;
     private boolean syncStatus = false;
 
@@ -28,11 +27,6 @@ public class SWFApp extends Application {
         }
     }
 
-    // WARNING: Do not use this unless you are logging in, to update user data use updateUserData()
-    public void setUserData_User(JSONObject data) {
-        this.userData_User = data;
-    }
-
     // Use this to access the data object for a given table, will return null if invalid table or server error
     public JSONObject getUserData(String table) {
         JSONObject table_local;
@@ -43,10 +37,6 @@ public class SWFApp extends Application {
 
             case "Workout":
                 table_local = this.userData_Workout;
-                break;
-
-            case "Daily Stats":
-                table_local = this.userData_Daily_Stats;
                 break;
 
             default:
@@ -68,10 +58,6 @@ public class SWFApp extends Application {
                             case "Workout":
                                 userData_Workout = response.getJSONObject("value");
                                 break;
-
-                            case "Daily Stats":
-                                userData_Daily_Stats = response.getJSONObject("value");
-                                break;
                         }
                     } catch(Exception e) {}
                 }
@@ -89,7 +75,6 @@ public class SWFApp extends Application {
     public void resetUser() {
         this.asyncHttpClient = null;
         this.userData_User = null;
-        this.userData_Daily_Stats = null;
         this.userData_Workout = null;
         this.syncStatus = false;
     }
@@ -116,10 +101,6 @@ public class SWFApp extends Application {
 
                 case "Workout":
                     table_local = this.userData_Workout;
-                    break;
-
-                case "Daily Stats":
-                    table_local = this.userData_Daily_Stats;
                     break;
 
                 default:
@@ -153,10 +134,6 @@ public class SWFApp extends Application {
 
                 case "Workout":
                     table_local = this.userData_Workout;
-                    break;
-
-                case "Daily Stats":
-                    table_local = this.userData_Daily_Stats;
                     break;
 
                 default:
