@@ -466,6 +466,8 @@ var checkInput = function(input, type, callback) {
 			break;
 	}
 	
+	console.log("input is " + returnVal + ": " + type + ", " + input);
+	
 	if(callback == undefined) {	
 		return returnVal;
 		
