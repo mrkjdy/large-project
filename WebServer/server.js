@@ -410,12 +410,14 @@ app.post('/updateuserdata', function(req, res) {
 // Gets top 100 users, must specify if global or friends
 app.post('/gettopusers', function(req, res) {
 	if(!req.body.group) {
+		console.log("no group specified");
 		res.status(400).send();
 	} else {
 		if(req.body.group === "global") {
 			if(topRankedUsers) {
 				res.status(200).send(topRankedUsers);
 			} else {
+				console.log("no toprankedusers generated");
 				res.status(400).send();
 			}
 		} else if(req.body.group === "friends") {
