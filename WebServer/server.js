@@ -299,7 +299,7 @@ app.post('/getuserdata', function(req, res) {
 											table: req.body.table,
 											value: result[0]
 										}
-									););
+									));
 								} else {
 									res.status(400).send();
 								}
