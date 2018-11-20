@@ -294,7 +294,12 @@ app.post('/getuserdata', function(req, res) {
 								res.status(400).send();
 							} else {
 								if(result[0]) {
-									res.status(200).send('{"table":"' + req.body.table + '","value":"' + result[0] + '"}');
+									res.status(200).send(JSON.stringify(
+										{
+											table: req.body.table,
+											value: result[0]
+										}
+									););
 								} else {
 									res.status(400).send();
 								}
