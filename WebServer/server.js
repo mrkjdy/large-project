@@ -371,6 +371,9 @@ app.post('/updateuserdata', function(req, res) {
 					case "coordinates":
 						validRequest = checkInput(req.body.values[i], "");
 						break;
+						
+					case "isPrivate":
+						validRequest = checkInput(req.body.values[i], "boolean");
 					
 					default:
 						validRequest = false;
@@ -463,6 +466,9 @@ var checkInput = function(input, type, callback) {
 		case "number":
 			returnVal = !isNaN(input);
 			break;
+			
+		case "boolean":
+			returnVal = (input === true || input === false);
 		
 		default:
 			returnVal = null;
