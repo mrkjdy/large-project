@@ -281,7 +281,7 @@ app.post('/getuserdata', function(req, res) {
 	} else {
 		switch(req.body.table) {
 			case "User":
-				res.status(200).send(new JSONObject('{"table":"User","value":"' + req.user.stringify() + '"}'));
+				res.status(200).send('{"table":"User","value":"' + req.user.stringify() + '"}');
 				break;
 			
 			case "Workout":
