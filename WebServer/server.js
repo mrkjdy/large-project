@@ -77,7 +77,8 @@ app.use(session({
 	saveUninitialized: false,
 	cookie: {
 		secure: true,
-		maxAge: 86400000
+		maxAge: 86400000,
+		secure: (NODE_ENV === 'development' ? false : true)
 	}
 }));
 app.use(passport.initialize());
