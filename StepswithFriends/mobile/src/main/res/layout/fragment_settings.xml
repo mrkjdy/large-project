@@ -18,10 +18,10 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginTop="24dp"
-            tools:src="@drawable/download"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
 
         <Button
             android:id="@+id/logout_button"
@@ -96,7 +96,6 @@
                     android:layout_height="50dp"
                     android:layout_marginTop="12dp"
                     android:background="@drawable/settings_input"
-                    android:checked="false"
                     android:gravity="start|center_vertical"
                     android:text="  Discoverable by Public "
                     android:thumbTint="@color/colorSecondaryAccent"
