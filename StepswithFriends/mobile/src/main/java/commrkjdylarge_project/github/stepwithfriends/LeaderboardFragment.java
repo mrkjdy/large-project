@@ -113,7 +113,7 @@ public class LeaderboardFragment extends Fragment {
 
                 searchBox.setText("");
                 Toast.makeText(getActivity(), "Searching", Toast.LENGTH_SHORT).show();
-                initImageBitMaps(1);
+                initImageBitMaps(2);
                 adapter.setData(mImages, mUsrNames, mUsrScores, getActivity());
             }
         });
