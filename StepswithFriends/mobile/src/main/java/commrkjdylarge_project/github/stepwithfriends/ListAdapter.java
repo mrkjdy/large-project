@@ -60,7 +60,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
 
         viewHolder.usrName.setText(mUserName.get(i));
         viewHolder.score.setText(mUserScore.get(i));
-        viewHolder.pos.setText(userPos.toString());
+        viewHolder.pos.setText(""+(i + 1));
 
         viewHolder.addFriend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +81,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
     // TODO add a field that determines if an user in the leaderboard is our friend
     public void setData(ArrayList<String> mImageName, ArrayList<String> mUserName, ArrayList<String> mUSerScore, Context context)
     {
+        this.mImage = mImageName;
+        this.mUserName = mUserName;
+        this.mUserScore = mUSerScore;
+        this.context = context;
         notifyDataSetChanged(); // Notify that the dataset has changed, and updates the recyclerview
     }
 
