@@ -5,7 +5,7 @@
     android:id="@+id/lead_entry"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/ic_layout_border">
+    android:background="@drawable/settings_input">
 
     <TextView
         android:id="@+id/tv_lead_pos"
@@ -78,7 +78,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/settings_input"
         app:srcCompat="@android:drawable/ic_input_add" />
 
 </android.support.constraint.ConstraintLayout>
