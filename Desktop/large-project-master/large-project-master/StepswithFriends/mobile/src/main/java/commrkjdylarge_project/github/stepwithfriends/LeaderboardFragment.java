@@ -12,8 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.*;
@@ -66,10 +64,7 @@ public class LeaderboardFragment extends Fragment {
         //Use this to add buttons/values/etc
         //Use getView().findViewById();
         //Refer to SettingsFragment for an example
-        final Button searcherBtn = getView().findViewById(R.id.search_cmd);
-        final EditText searchBox = getView().findViewById(R.id.search_box);
-
-        final Button worldBtn = getView().findViewById(R.id.bt_world);
+        Button worldBtn = getView().findViewById(R.id.bt_world);
         worldBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,7 +74,7 @@ public class LeaderboardFragment extends Fragment {
             }
         });
 
-        final Button friendBtn = getView().findViewById(R.id.bt_friends);
+        Button friendBtn = getView().findViewById(R.id.bt_friends);
         friendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,32 +84,11 @@ public class LeaderboardFragment extends Fragment {
             }
         });
 
-        final Button searchBtn = getView().findViewById(R.id.bt_search);
+        Button searchBtn = getView().findViewById(R.id.bt_search);
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Search Button", Toast.LENGTH_SHORT).show();
-                worldBtn.setVisibility(View.GONE);
-                friendBtn.setVisibility(View.GONE);
-                searchBtn.setVisibility(View.GONE);
-                searchBox.setVisibility(View.VISIBLE);
-                searcherBtn.setVisibility(View.VISIBLE);
-            }
-        });
-
-        searcherBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                worldBtn.setVisibility(View.VISIBLE);
-                friendBtn.setVisibility(View.VISIBLE);
-                searchBtn.setVisibility(View.VISIBLE);
-                searchBox.setVisibility(View.GONE);
-                searcherBtn.setVisibility(View.GONE);
-
-                searchBox.setText("");
-                Toast.makeText(getActivity(), "Searching", Toast.LENGTH_SHORT).show();
-                initImageBitMaps(2);
-                adapter.setData(mImages, mUsrNames, mUsrScores, getActivity());
+                Toast.makeText(getActivity(), "Loaded Friends", Toast.LENGTH_SHORT).show();
             }
         });
     }
