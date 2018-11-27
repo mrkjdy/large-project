@@ -21,41 +21,80 @@
             android:layout_width="450dp"
             android:layout_height="450dp"
             android:layout_centerInParent="true"
+            android:layout_marginBottom="8dp"
             android:indeterminate="false"
             android:max="100"
             android:progress="100"
             android:progressDrawable="@drawable/circle"
             android:secondaryProgress="100"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
 
         <TextView
             android:id="@+id/tv"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginBottom="18dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:gravity="center"
             android:text="50%"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="@+id/circularProgressbar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toEndOf="@+id/circularProgressbar"
+            app:layout_constraintStart_toStartOf="@+id/circularProgressbar"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/textView"
-            android:layout_width="252dp"
-            android:layout_height="139dp"
-            android:layout_marginBottom="163dp"
+            android:layout_width="wrap_content"
+            android:layout_height="105dp"
             android:text="Steps"
             android:textAlignment="center"
             android:textSize="80sp"
-            app:layout_constraintBottom_toBottomOf="@+id/tv"
+            app:layout_constraintBottom_toBottomOf="@+id/circularProgressbar"
+            app:layout_constraintEnd_toEndOf="@+id/circularProgressbar"
+            app:layout_constraintStart_toStartOf="@+id/circularProgressbar"
+            app:layout_constraintTop_toTopOf="@+id/circularProgressbar"
+            app:layout_constraintVertical_bias="0.469" />
+
+        <ImageView
+            android:id="@+id/calorieImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/calorie"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/circularProgressbar"
+            app:layout_constraintVertical_bias="0.275" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Calories"
+            android:textSize="20sp"
+            android:textColor="#ffffff"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintStart_toEndOf="@id/calorieImage"
+            app:layout_constraintTop_toBottomOf="@+id/circularProgressbar"
+            app:layout_constraintVertical_bias="0.324" />
 
     </android.support.constraint.ConstraintLayout>
 </FrameLayout>
