@@ -51,6 +51,7 @@ app.listen(PORT, function() {
 	console.log("Listening on " + PORT)
 	console.log("NODE_ENV is " + NODE_ENV)
 	console.log(process.env.DATABASE_HOST)
+	getNewTopUsers();
 });
 
 // Redirects to HTTPS
@@ -150,11 +151,6 @@ passport.deserializeUser(function(id, done) {
 	});
 });
 
-// Startup functions
-app.on('listening', function() {
-	getNewTopUsers();
-});
-
 // Post and get functions
 // ----------------------------------------------------------------------
 
@@ -176,11 +172,42 @@ app.on('listening', function() {
 // });
 
 app.get('/', function (req, res) {
-	res.render('index', req.user);
+	// topRankedUsers may be null if server was just started
+	res.render('index', {
+        user: req.user,
+        top: topRankedUsers
+    });
 });
 
 app.get('/login', function (req, res) {
-	res.render('login');
+	res.render('login', {
+        user: req.user
+    });
+});
+
+app.get('/create-account', function (req, res) {
+	res.render('create-account', {
+        user: req.user
+    });
+});
+
+app.get('/user/:username', function (req, res) {
+	// get user info
+	req.params.username;
+
+	// if not found display 404
+
+	// if found render page
+	res.render('profile', {
+		user: req.user,
+		profile: userinfo
+	});
+});
+
+app.get('/404', function (req, res) {
+	res.render('404', {
+        user: req.user
+    });
 });
 
 // Register function
@@ -445,6 +472,12 @@ app.post('/gettopusers', function(req, res) {
 	}
 });
 
+// Display 404 for 
+// MUST BE AT BOTTOM OF THIS SECTION!
+app.use(function(req, res, next) {
+	res.status(404).redirect('/404');
+});
+
 // Helper functions
 // ----------------------------------------------------------------------
 
@@ -528,3 +561,31 @@ var getNewTopUsers = function() {
 var updateTopUsers = schedule.scheduleJob('*/5 * * * *', function() {
 	getNewTopUsers();
 });
+
+var getUserPageData = function(username) {
+	dbPool.getConnection(function(err, tempCont) {
+		if(err) {
+			console.log(err);
+			return null;
+		} else {
+			tempCont.query("SELECT * FROM User WHERE login = " + username + " AND (isPrivate = false OR EXISTS (SELECT * FROM friendship WHERE user_one_id = ? AND user_two_id = ?);", function(err, result) {
+				if(err) {
+					console.log(err);
+					return null;
+				} else {
+					if(result[0]) {
+						res.status(200).send(JSON.stringify(
+							{
+								table: req.body.table,
+								value: result[0]
+							}
+						));
+					} else {
+						return null;
+					}
+				}
+			});
+		}
+		tempCont.release();
+	});
+}

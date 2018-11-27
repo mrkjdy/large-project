@@ -4,7 +4,7 @@ html(lang='en')
 	body
 		#loginBox.shadedBox
 			h2 STEPS WITH FRIENDS
-			#loginForm
+			#loginForm(style="display:none")
 				form(onsubmit='login(); return false')
 					input#uName(type='text' placeholder='Username' autofocus)
 					br
@@ -14,7 +14,7 @@ html(lang='en')
 					br
 				p Not registered? 
 					a#showCreateAccount(onclick='showCreateAccount(); return false') Create an account
-			#createAccountForm(style="display:none")
+			#createAccountForm
 				form(onsubmit='createAccount(); return false')
 					input#newFName(type='text' placeholder='First Name' autofocus)
 					br
