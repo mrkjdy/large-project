@@ -19,15 +19,15 @@
             android:id="@+id/circularProgressbar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="450dp"
-            android:layout_height="450dp"
+            android:layout_height="364dp"
             android:layout_centerInParent="true"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="7dp"
             android:indeterminate="false"
             android:max="100"
             android:progress="100"
             android:progressDrawable="@drawable/circle"
             android:secondaryProgress="100"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
@@ -65,36 +65,104 @@
             app:layout_constraintTop_toTopOf="@+id/circularProgressbar"
             app:layout_constraintVertical_bias="0.469" />
 
-        <ImageView
-            android:id="@+id/calorieImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/calorie"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/circularProgressbar"
-            app:layout_constraintVertical_bias="0.275" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="0dp"
+            android:layout_height="359dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="Calories"
-            android:textSize="20sp"
-            android:textColor="#ffffff"
+            android:layout_marginBottom="9dp"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.05"
-            app:layout_constraintStart_toEndOf="@id/calorieImage"
-            app:layout_constraintTop_toBottomOf="@+id/circularProgressbar"
-            app:layout_constraintVertical_bias="0.324" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/circularProgressbar">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="148dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/calorieImage"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:src="@drawable/calorie" />
+
+                <TextView
+                    android:id="@+id/calorieText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Calorie"
+                    android:textColor="#ffffff"
+                    android:layout_gravity="center"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/milesIMage"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:src="@drawable/miles" />
+
+                <TextView
+                    android:id="@+id/milesText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Miles"
+                    android:layout_gravity="center"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="136dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/scoreImage"
+                    android:layout_width="47dp"
+                    android:layout_height="47dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:src="@drawable/score" />
+
+                <TextView
+                    android:id="@+id/scoreText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Score"
+                    android:layout_gravity="center"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/bonusImage"
+                    android:layout_width="47dp"
+                    android:layout_height="47dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:src="@drawable/bonus" />
+
+                <TextView
+                    android:id="@+id/bounsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:text="Bonus"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>
 </FrameLayout>
