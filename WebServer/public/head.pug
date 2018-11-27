@@ -15,7 +15,7 @@ head
 		#userBox.centerVertical
 			if user
 				a.spaced(onclick='showPendingRequests(); return false') Requests
-				a.spaced(onclick='goToMyProfile(); return false')
+				a.spaced(href='/myprofile')
 					img(title='My Profile' alt='My Profile')
 				a.spaced(href='/settings') Settings
 				a.spaced(href='/logout') Logout

@@ -192,15 +192,39 @@ app.get('/create-account', function (req, res) {
 });
 
 app.get('/user/:username', function (req, res) {
-	// get user info
-	req.params.username;
+
+	var userinfo = null, globalrank = 0, friendrank = 0, friendtable = topRankedUsers;
+
+
+	if (req.user.login === req.params.username)
+		userinfo = req.user;
+	else
+		userinfo = getUserPageData(req.params.username);
 
 	// if not found display 404
+	if (userinfo != null) {
+		res.render('profile', {
+			user: req.user,
+			userinfo: userinfo,
+			globalrank: globalrank,
+			friendrank: friendrank,
+			friendtable: friendtable
+		});
+	}
+	else {
+		res.status(404).redirect('/404');
+	}
+});
 
-	// if found render page
+app.get('/myprofile', function (req, res) {
+	var globalrank = 0, friendrank = 0, friendtable = topRankedUsers;
+
 	res.render('profile', {
 		user: req.user,
-		profile: userinfo
+		userinfo: req.user,
+		globalrank: globalrank,
+		friendrank: friendrank,
+		friendtable: friendtable
 	});
 });
 
@@ -574,12 +598,7 @@ var getUserPageData = function(username) {
 					return null;
 				} else {
 					if(result[0]) {
-						res.status(200).send(JSON.stringify(
-							{
-								table: req.body.table,
-								value: result[0]
-							}
-						));
+						return result[0];
 					} else {
 						return null;
 					}

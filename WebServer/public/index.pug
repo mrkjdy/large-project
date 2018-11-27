@@ -12,5 +12,6 @@ html(lang='en')
 				each val, index in top
 					tr
 						td= index + 1
-						td= val.login
+						td 
+							a(href='/user/' + val.login) #{val.login}
 						td= val.total_points
