@@ -110,6 +110,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
+            <EditText
+                android:id="@+id/search_box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Search"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:visibility="gone" />
+
             <Button
                 android:id="@+id/bt_world"
                 android:layout_width="wrap_content"
@@ -130,6 +140,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Search" />
+
+            <Button
+                android:id="@+id/search_cmd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Search"
+                android:visibility="gone" />
         </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>
