@@ -11,12 +11,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -39,9 +39,9 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 /**
  * A simple {@link Fragment} subclass.
  */
-public class WalkFragment extends Fragment implements OnMapReadyCallback {
+public class WalkFragment extends Fragment implements OnMapReadyCallback, StartFragment.StartToWalk, SessionFragment.SessionToWalk {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "WalkActivity";
 
     private static final String FINE_LOCATION = android.Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = android.Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -56,6 +56,18 @@ public class WalkFragment extends Fragment implements OnMapReadyCallback {
     private long UPDATE_INTERVAL = 1000;
     private ArrayList<LatLng> routePoints;
     private Boolean track = false;
+
+    @Override
+    public void startClicked() {
+        track = true;
+    }
+
+    @Override
+    public void stopClicked() {
+        track = false;
+        routePoints.clear();
+        mMap.clear();
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -90,23 +102,9 @@ public class WalkFragment extends Fragment implements OnMapReadyCallback {
         getLocationPermission();
         startLocationUpdates(); //Need to edit to be more responsive
 
-        Button startBtn = (Button) getView().findViewById(R.id.startBtn);
-        startBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                track = true;
-            }
-        });
-
-        Button stopBtn = (Button) getView().findViewById(R.id.stopBtn);
-        stopBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                track = false;
-                routePoints.clear();
-                mMap.clear();
-            }
-        });
+        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.sessionFrame, new StartFragment());
+        fragmentTransaction.commit();
     }
 
     protected void startLocationUpdates(){
