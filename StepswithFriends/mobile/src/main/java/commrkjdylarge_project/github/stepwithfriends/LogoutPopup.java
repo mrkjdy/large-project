@@ -25,7 +25,7 @@ public class LogoutPopup extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
         int height = dm.heightPixels;
-        getWindow().setLayout((int) (width*.8), (int) (height*.8)); // Enter size Multiplier
+        getWindow().setLayout((int) (width*.8), (int) (height*.3)); // Enter size Multiplier
 
         final AsyncHttpClient client = ((SWFApp) getApplication()).getClient();
         Button yesButton = findViewById(R.id.yes_button);

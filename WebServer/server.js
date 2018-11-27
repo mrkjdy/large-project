@@ -77,7 +77,8 @@ app.use(session({
 	saveUninitialized: false,
 	cookie: {
 		secure: true,
-		maxAge: 86400000
+		maxAge: 86400000,
+		secure: (NODE_ENV === 'development' ? false : true)
 	}
 }));
 app.use(passport.initialize());
@@ -414,6 +415,7 @@ app.post('/gettopusers', function(req, res) {
 	} else {
 		if(req.body.group === "global") {
 			if(topRankedUsers) {
+				console.log(topRankedUsers);
 				res.status(200).send(topRankedUsers);
 			} else {
 				res.status(400).send();
