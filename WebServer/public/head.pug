@@ -7,19 +7,19 @@ head
 	p#createdBy Group 4
 	#navbar.centerVertical.shadedBox
 		#leftnav.centerVertical
-			a#homeButton.spaced(href='/')
+			a.spaced(href='/')
 				h2 STEPS WITH FRIENDS
 			form.spaced(onsubmit='search(); return false')
 				input#searchFields.spaced(type='text' placeholder='Search users...')
-				input#submitSearch(type='submit' value='Search')
+				input(type='submit' value='Search')
 		#userBox.centerVertical
-			if user_id
-				#pendingRequests
-				a#profileLink.spaced(onclick='goToMyProfile(); return false')
+			if user
+				a.spaced(onclick='showPendingRequests(); return false') Requests
+				a.spaced(onclick='goToMyProfile(); return false')
 					img(title='My Profile' alt='My Profile')
-				#downButton
-				#downBox
+				a.spaced(href='/settings') Settings
+				a.spaced(href='/logout') Logout
 			else
-				a#loginLink.spaced(href='/login') Login
+				a.spaced(href='/login') Login
 				div or
-				a#createAccount.spaced(onclick='goToCreateAccount(); return false') Create an Account
+				a.spaced(href='/create-account') Create an Account

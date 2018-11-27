@@ -16,10 +16,6 @@ var JSONtextID = '';
 // New functions
 ////////////////////////////////////
 
-function goToCreateAccount() {
-	window.location.replace('/login?createAccount=1');
-}
-
 
 
 ////////////////////////////////////
