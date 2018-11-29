@@ -12,17 +12,21 @@ import cz.msebera.android.httpclient.Header;
 public class SWFApp extends Application {
 
     private AsyncHttpClient asyncHttpClient = null;
+    private SyncHttpClient syncHttpClient = null;
     private JSONObject userData_User = null;
     private JSONObject userData_Workout = null;
-    private boolean syncStatus = false;
-    private JSONArray tempObject = null;
+    private volatile boolean syncStatus = false;
+    private volatile JSONArray tempObject = null;
+    private volatile RequestParams tempParams = null;
     private String url = null;
 
     public AsyncHttpClient getClient() {
         if(this.asyncHttpClient == null) {
             this.asyncHttpClient = new AsyncHttpClient();
+            this.syncHttpClient = new SyncHttpClient();
             PersistentCookieStore cookieStore = new PersistentCookieStore(getApplicationContext());
             this.asyncHttpClient.setCookieStore(cookieStore);
+            this.syncHttpClient.setCookieStore(cookieStore);
             if(Settings.Secure.getInt(this.getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED ,0) == 1) {
                 System.out.println("using localhost");
                 this.url = "http://localhost:5000";
@@ -91,22 +95,36 @@ public class SWFApp extends Application {
     public JSONArray getTop100(String group) {
         RequestParams params = new RequestParams();
         params.put("group", group);
-        tempObject = null;
-        try {
-            this.asyncHttpClient.post(this.url + "/gettopusers", params, new JsonHttpResponseHandler() {
-                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                    // called when response HTTP status is "200 OK"
-                    tempObject = response;
-                }
+        this.tempObject = null;
+        this.syncStatus = false;
+        this.tempParams = params;
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
-                    // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                }
-            });
-        } finally {
-            return tempObject;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                syncHttpClient.post(url + "/gettopusers", tempParams, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        // called when response HTTP status is "200 OK"
+                        tempObject = response;
+                        syncStatus = true;
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                        // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                        syncStatus = true;
+                    }
+                });
+            }
+        }).start();
+
+        while(!this.syncStatus) {
+            try {
+                Thread.sleep(100);
+            } catch(Exception e) {}
         }
+        return this.tempObject;
     }
 
     // TO UPDATE/SYNC USER DATA:

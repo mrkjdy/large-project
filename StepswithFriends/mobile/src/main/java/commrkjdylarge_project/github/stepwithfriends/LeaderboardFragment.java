@@ -20,6 +20,8 @@ import org.json.*;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,6 +39,11 @@ public class LeaderboardFragment extends Fragment {
     private RecyclerView recyclerView;
     private ListAdapter adapter;
 
+    private TextView userName;
+    private TextView userScore;
+    private TextView userRank;
+    private CircleImageView userImage;
+
     public String searchString = "";
 
     public LeaderboardFragment() {
@@ -52,6 +59,13 @@ public class LeaderboardFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_leaderboard, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_lead);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        userName = rootView.findViewById(R.id.tv_usr_name2);
+        userScore = rootView.findViewById(R.id.tv_usr_score2);
+        userImage = rootView.findViewById(R.id.usr_image2);
+        userRank = rootView.findViewById(R.id.tv_lead_pos2);
+
+        // TODO: get user info and update the user layout
 
         initImageBitMaps(0);
 
@@ -131,47 +145,47 @@ public class LeaderboardFragment extends Fragment {
 
         // TODO: here we would get the info from the leaderboar and make it into the entries
         // and use the boolean on the method to determine if to get all users or just friends
-        JSONArray object = ((SWFApp) getActivity().getApplication()).getTop100("global");
-        //if(object != null) {
-        //    Log.d(TAG, object.toString());
-        //}
 
-        // TODO: delete untill the End comment after the database has been incorporated -this section is just for testing-
-        mImages.add("https://c1.staticflickr.com/5/4636/25316407448_de5fbf183d_o.jpg");
-        mUsrNames.add("Havasu Falls");
-        mUsrScores.add("999999");
+        switch(mode)
+        {
+            case 0:
+                JSONArray object = ((SWFApp) getActivity().getApplication()).getTop100("global");
 
-        mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
-        mUsrNames.add("Trondheim");
-        mUsrScores.add("999967");
+                for (int i = 0; i < object.length(); i++)
+                {
+                    try {
+                        mImages.add("https://c1.staticflickr.com/5/4636/25316407448_de5fbf183d_o.jpg");
+                        JSONObject temp = (JSONObject) object.get(i);
+                        mUsrNames.add(temp.get("login").toString());
+                        mUsrScores.add(temp.get("total_points").toString());
+                    } catch (Exception e) {}
+                }
 
-        mImages.add("https://i.redd.it/qn7f9oqu7o501.jpg");
-        mUsrNames.add("Portugal");
-        mUsrScores.add("999944");
+                break;
+            case 1:
+                mImages.add("https://i.redd.it/0h2gm1ix6p501.jpg");
+                mUsrNames.add("Mahahual");
+                mUsrScores.add("999922");
 
-        mImages.add("https://i.redd.it/j6myfqglup501.jpg");
-        mUsrNames.add("Rocky Mountain");
-        mUsrScores.add("999933");
+                mImages.add("https://i.redd.it/k98uzl68eh501.jpg");
+                mUsrNames.add("Frozen Lake");
+                mUsrScores.add("999911");
 
-        mImages.add("https://i.redd.it/0h2gm1ix6p501.jpg");
-        mUsrNames.add("Mahahual");
-        mUsrScores.add("999922");
+                mImages.add("https://i.redd.it/glin0nwndo501.jpg");
+                mUsrNames.add("White Sands Desert");
+                mUsrScores.add("999900");
+                break;
+            case 2:
+                mImages.add("https://i.redd.it/obx4zydshg601.jpg");
+                mUsrNames.add("Austrailia");
+                mUsrScores.add("999888");
 
-        mImages.add("https://i.redd.it/k98uzl68eh501.jpg");
-        mUsrNames.add("Frozen Lake");
-        mUsrScores.add("999911");
-
-        mImages.add("https://i.redd.it/glin0nwndo501.jpg");
-        mUsrNames.add("White Sands Desert");
-        mUsrScores.add("999900");
-
-        mImages.add("https://i.redd.it/obx4zydshg601.jpg");
-        mUsrNames.add("Austrailia");
-        mUsrScores.add("999888");
-
-        mImages.add("https://i.imgur.com/ZcLLrkY.jpg");
-        mUsrNames.add("Washington");
-        mUsrScores.add("999777");
-        // End
+                mImages.add("https://i.imgur.com/ZcLLrkY.jpg");
+                mUsrNames.add("Washington");
+                mUsrScores.add("999777");
+                break;
+            default:
+                break;
+        }
     }
 }
