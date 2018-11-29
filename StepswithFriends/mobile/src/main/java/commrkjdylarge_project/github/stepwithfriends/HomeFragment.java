@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment {
         mProgress.setProgressDrawable(drawable);
 
         percent = getView().findViewById(R.id.tv);
-        percent = getView().findViewById(R.id.textView);
+        stepsTxtView = getView().findViewById(R.id.textView);
 
         new Thread(new Runnable() {
 
@@ -75,13 +75,12 @@ public class HomeFragment extends Fragment {
                             // TODO Auto-generated method stub
                             mProgress.setProgress(pStatus);
                             percent.setText(pStatus + "%");
-
                         }
                     });
                     try {
                         // Sleep for 200 milliseconds.
                         // Just to display the progress slowly
-                        Thread.sleep(16); //thread will take approx 3 seconds to finish
+                        Thread.sleep(100); //thread will take approx 3 seconds to finish
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -90,9 +89,8 @@ public class HomeFragment extends Fragment {
         }).start();
 
     }
-
     public void putArgument(Bundle args){
-        String step = args.getString("steps");
-        stepsTxtView.setText(""+step);
+        String step = args.getString("step");
+        stepsTxtView.setText(step);
     }
 }
