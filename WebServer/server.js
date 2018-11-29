@@ -51,6 +51,7 @@ app.listen(PORT, function() {
 	console.log("Listening on " + PORT)
 	console.log("NODE_ENV is " + NODE_ENV)
 	console.log(process.env.DATABASE_HOST)
+	getNewTopUsers();
 });
 
 // Redirects to HTTPS
@@ -150,11 +151,6 @@ passport.deserializeUser(function(id, done) {
 	});
 });
 
-// Startup functions
-app.on('listening', function() {
-	getNewTopUsers();
-});
-
 // Post and get functions
 // ----------------------------------------------------------------------
 
@@ -176,11 +172,66 @@ app.on('listening', function() {
 // });
 
 app.get('/', function (req, res) {
-	res.render('index', req.user);
+	// topRankedUsers may be null if server was just started
+	res.render('index', {
+        user: req.user,
+        top: topRankedUsers
+    });
 });
 
 app.get('/login', function (req, res) {
-	res.render('login');
+	res.render('login', {
+        user: req.user
+    });
+});
+
+app.get('/create-account', function (req, res) {
+	res.render('create-account', {
+        user: req.user
+    });
+});
+
+app.get('/user/:username', function (req, res) {
+
+	var userinfo = null, globalrank = 0, friendrank = 0, friendtable = topRankedUsers;
+
+
+	if (req.user.login === req.params.username)
+		userinfo = req.user;
+	else
+		userinfo = getUserPageData(req.params.username);
+
+	// if not found display 404
+	if (userinfo != null) {
+		res.render('profile', {
+			user: req.user,
+			userinfo: userinfo,
+			globalrank: globalrank,
+			friendrank: friendrank,
+			friendtable: friendtable
+		});
+	}
+	else {
+		res.status(404).redirect('/404');
+	}
+});
+
+app.get('/myprofile', function (req, res) {
+	var globalrank = 0, friendrank = 0, friendtable = topRankedUsers;
+
+	res.render('profile', {
+		user: req.user,
+		userinfo: req.user,
+		globalrank: globalrank,
+		friendrank: friendrank,
+		friendtable: friendtable
+	});
+});
+
+app.get('/404', function (req, res) {
+	res.render('404', {
+        user: req.user
+    });
 });
 
 // Register function
@@ -393,6 +444,7 @@ app.post('/updateuserdata', function(req, res) {
 					if(err) {
 						res.status(400).send();
 					} else {
+						console.log(updateValues);
 						tempCont.query("UPDATE ? SET ? WHERE user_id=?;", [table, updateValues.slice(0, -3), req.body.user_id], function(err, result) {
 							if(err || !result) {
 								res.status(400).send();
@@ -425,24 +477,103 @@ app.post('/gettopusers', function(req, res) {
 				res.status(401).send();
 			} else {
 				dbPool.getConnection(function(err, tempCont){
-				if(err) {
-					res.status(400).send();
-				} else {
-					tempCont.query("SELECT login, total_points FROM user WHERE EXISTS (SELECT * FROM friendship WHERE user_one_id = ? OR user_two_id = ?) ORDER BY total_points LIMIT 100;", [req.user.user_id, req.user.user_id], function(err, result) {
-						if(err || !result) {
-							res.status(400).send();
-						} else {
-							res.status(200).send(result);
-						}
-					});
-				}
-				tempCont.release();
-			});
+					if(err) {
+						res.status(400).send();
+					} else {
+						tempCont.query("SELECT login, total_points FROM user WHERE EXISTS (SELECT * FROM friendship WHERE user_one_id = ? OR user_two_id = ?) ORDER BY total_points LIMIT 100;", [req.user.user_id, req.user.user_id], function(err, result) {
+							if(err || !result) {
+								res.status(400).send();
+							} else {
+								res.status(200).send(result);
+							}
+						});
+					}
+					tempCont.release();
+				});
 			}
 		} else {
 			res.status(400).send();
 		}
 	}
+});
+
+// Add a friend
+app.post('/addfriend', function(req, res) {
+	if(!req.user) {
+		res.status(401).send();
+	} else {
+		if(req.body.username) {
+			dbPool.getConnection(function(err, tempCont) {
+				if(err) {
+					res.status(400).send();
+				} else {
+					tempCont.query("SELECT * FROM Friendship WHERE (user_one_id = ? AND user_two_id = (SELECT user_id FROM User WHERE login = ?)) OR (user_one_id = (SELECT user_id FROM User WHERE login = ?) AND user_two_id = ?);", [req.user.user_id, req.body.username, req.body.username, req.user.user_id], function(err, result) {
+						if(err) {
+							res.status(400).send();
+						} else if(result) {
+							res.status(200).send();
+						} else {
+							tempCont.query("INSERT INTO Friendship VALUES (?, (SELECT user_id FROM User WHERE login = ?), 0, 0);", [req.user.user_id, req.body.username], function(err, result1) {
+								if(err || !result) {
+									res.status(400).send();
+								} else {
+									res.status(200).send();
+								}
+							});
+						}
+					});
+				}
+				tempCont.release();
+			});
+		} else {
+			res.status(400).send();
+		}
+	}
+});
+
+// Remove a friend
+app.post('/removefriend', function(req, res) {
+	if(!req.user) {
+		res.status(401).send();
+	} else {
+		if(req.body.username) {
+			dbPool.getConnection(function(err, tempCont) {
+				if(err) {
+					res.status(400).send();
+				} else {
+					tempCont.query("DELETE FROM Friendship WHERE (user_one_id = ? AND user_two_id = (SELECT user_id FROM User WHERE login = ?)) OR (user_one_id = (SELECT user_id FROM User WHERE login = ?) AND user_two_id = ?)", [req.user.user_id, req.body.username, req.body.username, req.user.user_id], function(err, result) {
+						if(err) {
+							res.status(400).send();
+						} else {
+							res.status(200).send();
+						}
+					});
+				}
+				tempCont.release();
+			});
+		} else {
+			res.status(400).send();
+		}
+	}
+});
+
+// Search for user page info
+//app.post('/getuserinfo', function(req, res) {
+	
+//});
+
+app.post('', function(req, res) {
+	
+});
+
+app.post('', function(req, res) {
+	
+});
+
+// Display 404 for 
+// MUST BE AT BOTTOM OF THIS SECTION!
+app.use(function(req, res, next) {
+	res.status(404).redirect('/404');
 });
 
 // Helper functions
@@ -528,3 +659,26 @@ var getNewTopUsers = function() {
 var updateTopUsers = schedule.scheduleJob('*/5 * * * *', function() {
 	getNewTopUsers();
 });
+
+var getUserPageData = function(username) {
+	dbPool.getConnection(function(err, tempCont) {
+		if(err) {
+			console.log(err);
+			return null;
+		} else {
+			tempCont.query("SELECT * FROM User WHERE login = " + username + " AND (isPrivate = false OR EXISTS (SELECT * FROM friendship WHERE user_one_id = ? AND user_two_id = ?);", function(err, result) {
+				if(err) {
+					console.log(err);
+					return null;
+				} else {
+					if(result[0]) {
+						return result[0];
+					} else {
+						return null;
+					}
+				}
+			});
+		}
+		tempCont.release();
+	});
+}

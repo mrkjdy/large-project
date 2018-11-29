@@ -18,6 +18,7 @@ body {
   color: #757575;
   font-size: 16px;
   text-align: center;
+  margin-top: 200px;
 }
 
 select {
@@ -159,10 +160,6 @@ tr:nth-child(even) {
 
 #loginBox input {
   width: 70%;
-}
-
-#createAccountForm {
-  display: none;
 }
 
 #submitMessage {
