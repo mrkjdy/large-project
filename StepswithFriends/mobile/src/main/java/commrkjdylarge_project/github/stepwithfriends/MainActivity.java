@@ -238,11 +238,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void getSteps(){
-        int steps = 10;
-        Bundle args = new Bundle();
-        args.putInt("step",steps);
 
-        homeFrame.putArgument(args);
+        for(int i = 0; i < 15; i++)
+        {
+            String steps = "" + i;
+            Bundle args = new Bundle();
+            args.putString("steps",steps);
+            homeFrame.putArgument(args);
+        }
+
+
+
+
     }
 
     private void takeStep() {
