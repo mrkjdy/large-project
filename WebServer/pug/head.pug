@@ -1,7 +1,7 @@
 head
 	title STEPS WITH FRIENDS
-	link(href='index.css', rel='stylesheet')
-	script(src='index.js', type='text/javascript')
+	link(href='/index.css', rel='stylesheet')
+	script(src='/index.js', type='text/javascript')
 	meta(name='viewport', content='width=device-width, initial-scale=1')
 	link(href='https://fonts.googleapis.com/css?family=Oswald', rel='stylesheet')
 	p#createdBy Group 4
@@ -9,8 +9,8 @@ head
 		#leftnav.centerVertical
 			a.spaced(href='/')
 				h2 STEPS WITH FRIENDS
-			form.spaced(onsubmit='search(); return false')
-				input#searchFields.spaced(type='text' placeholder='Search users...')
+			form.spaced(onsubmit='window.location.href = \'/search/\' + encodeURI(document.getElementById("searchField").value); return false')
+				input#searchField.spaced(type='text' placeholder='Search users...')
 				input(type='submit' value='Search')
 		#userBox.centerVertical
 			if user
@@ -18,7 +18,7 @@ head
 				a.spaced(href='/myprofile')
 					img(title='My Profile' alt='My Profile')
 				a.spaced(href='/settings') Settings
-				a.spaced(href='/logout') Logout
+				a.spaced(onclick='logout(); return false') Logout
 			else
 				a.spaced(href='/login') Login
 				div or

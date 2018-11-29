@@ -51,7 +51,7 @@ public class StartFragment extends Fragment {
             public void onClick(View v) {
                 startToWalk.startClicked();
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                fragmentTransaction.add(R.id.sessionFrame, new SessionFragment());
+                fragmentTransaction.replace(R.id.sessionFrame, new SessionFragment());
                 fragmentTransaction.commit();
             }
         });
