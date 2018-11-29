@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="colorPrimary">#C1C8E4</color>          <!-- GRAY -->
-    <color name="colorPrimaryDark">#222629</color>      <!-- BLACK -->
-    <color name="colorAccent">#84CEEB</color>           <!-- LIGHT BLUE -->
-    <color name="colorSecondaryAccent">#8860D0</color>  <!-- PURPLE -->
-    <color name="colorSecondary">#5AB9EA</color>        <!-- BLUE -->
-    <color name="colorTertiary">#5680E9</color>         <!-- BLUE/PURPLE -->
-</resources>
