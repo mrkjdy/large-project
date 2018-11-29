@@ -39,7 +39,7 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 /**
  * A simple {@link Fragment} subclass.
  */
-public class WalkFragment extends Fragment implements OnMapReadyCallback, StartFragment.StartToWalk, SessionFragment.SessionToWalk {
+public class WalkFragment extends Fragment implements OnMapReadyCallback, StartFragment.StartToWalk, SessionFragment.SessionToWalk, ResultFragment.ResultToWalk {
 
     private static final String TAG = "WalkActivity";
 
@@ -65,6 +65,12 @@ public class WalkFragment extends Fragment implements OnMapReadyCallback, StartF
     @Override
     public void stopClicked() {
         track = false;
+        //routePoints.clear();
+        //mMap.clear();
+    }
+
+    @Override
+    public void endClicked() {
         routePoints.clear();
         mMap.clear();
     }
