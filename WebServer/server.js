@@ -444,6 +444,7 @@ app.post('/updateuserdata', function(req, res) {
 					if(err) {
 						res.status(400).send();
 					} else {
+						console.log(updateValues);
 						tempCont.query("UPDATE ? SET ? WHERE user_id=?;", [table, updateValues.slice(0, -3), req.body.user_id], function(err, result) {
 							if(err || !result) {
 								res.status(400).send();
