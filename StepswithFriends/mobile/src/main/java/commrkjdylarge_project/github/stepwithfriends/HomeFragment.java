@@ -92,7 +92,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void putArgument(Bundle args){
-        int step = args.getInt("step");
+        String step = args.getString("steps");
         stepsTxtView.setText(""+step);
     }
 }
