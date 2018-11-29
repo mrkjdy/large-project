@@ -3,7 +3,6 @@ package commrkjdylarge_project.github.stepwithfriends;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,28 +11,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Chronometer;
+import android.widget.TextView;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SessionFragment extends Fragment {
+public class ResultFragment extends Fragment {
 
-    private Chronometer chronometer;
-    private SessionToWalk sessionToWalk;
+    private ResultToWalk resultToWalk;
 
-    public interface SessionToWalk {
-        void stopClicked();
+    public interface ResultToWalk {
+        void endClicked();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        sessionToWalk = (SessionToWalk) getParentFragment();
+        resultToWalk = (ResultToWalk) getParentFragment();
+
     }
 
-    public SessionFragment() {
+    public ResultFragment() {
         // Required empty public constructor
     }
 
@@ -42,33 +41,27 @@ public class SessionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_session, container, false);
+        return inflater.inflate(R.layout.fragment_result, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        chronometer = getView().findViewById(R.id.chronometer);
-        chronometer.setFormat("Time: %s");
-        chronometer.setBase(SystemClock.elapsedRealtime());;
-        chronometer.start();
+        Bundle b = getArguments();
+        String time = b.getString("Time");
 
-        final Bundle args = new Bundle();
+        TextView timeView = (TextView) getView().findViewById(R.id.timeView);
+        timeView.setText(time);
 
-        Button stop = (Button) getView().findViewById(R.id.stopButton);
-        stop.setOnClickListener(new View.OnClickListener() {
+        Button end = (Button) getView().findViewById(R.id.endButton);
+        end.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chronometer.stop();
-                sessionToWalk.stopClicked();
-
-                args.putString("Time", chronometer.getText().toString());
-                ResultFragment resultFragment = new ResultFragment();
-                resultFragment.setArguments(args);
+                resultToWalk.endClicked();
 
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.sessionFrame, resultFragment);
+                fragmentTransaction.replace(R.id.sessionFrame, new StartFragment());
                 fragmentTransaction.commit();
             }
         });
