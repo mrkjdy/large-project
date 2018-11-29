@@ -93,6 +93,6 @@ public class HomeFragment extends Fragment {
 
     public void putArgument(Bundle args){
         String step = args.getString("steps");
-        stepsTxtView.setText(""+step);
+        stepsTxtView.setText(step);
     }
 }
