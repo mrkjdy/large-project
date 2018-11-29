@@ -25,7 +25,7 @@ public class HomeFragment extends Fragment {
     int pStatus = 0;
     private Handler handler = new Handler();
     TextView percent;
-    TextView steps;
+    TextView stepsTxtView;
 
 
     public HomeFragment() {
@@ -89,5 +89,10 @@ public class HomeFragment extends Fragment {
             }
         }).start();
 
+    }
+
+    public void putArgument(Bundle args){
+        int step = args.getInt("step");
+        stepsTxtView.setText(""+step);
     }
 }

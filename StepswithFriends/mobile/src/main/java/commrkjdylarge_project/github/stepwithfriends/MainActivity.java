@@ -203,7 +203,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void onGetAllUserSuccess(List<Step> users) {
         stepList.clear();
         stepList.addAll(users);
+        getSteps();
         //adapter.notifyDataSetChanged();
+    }
+
+    public void getSteps(){
+        int steps = 10;
+        Bundle args = new Bundle();
+        args.putInt("step",steps);
+
+        homeFrame.putArgument(args);
     }
 
     private void takeStep() {
