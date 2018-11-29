@@ -1,4 +1,4 @@
-package com.example.josen.v5_step_sensor;
+package commrkjdylarge_project.github.stepwithfriends;
 
 
 import android.arch.persistence.room.ColumnInfo;
