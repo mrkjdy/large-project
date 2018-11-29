@@ -108,12 +108,14 @@ public class LeaderboardFragment extends Fragment {
                 worldBtn.setVisibility(View.VISIBLE);
                 friendBtn.setVisibility(View.VISIBLE);
                 searchBtn.setVisibility(View.VISIBLE);
+                searchString = searchBox.getText().toString();
                 searchBox.setVisibility(View.GONE);
                 searcherBtn.setVisibility(View.GONE);
 
                 searchBox.setText("");
                 Toast.makeText(getActivity(), "Searching", Toast.LENGTH_SHORT).show();
                 initImageBitMaps(2);
+                searchString = "";
                 adapter.setData(mImages, mUsrNames, mUsrScores, getActivity());
             }
         });

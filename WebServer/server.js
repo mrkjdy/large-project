@@ -453,6 +453,7 @@ app.post('/updateuserdata', function(req, res) {
 					if(err) {
 						res.status(400).send();
 					} else {
+						console.log(updateValues);
 						tempCont.query("UPDATE ? SET ? WHERE user_id=?;", [table, updateValues.slice(0, -3), req.body.user_id], function(err, result) {
 							if(err || !result) {
 								res.status(400).send();
@@ -485,24 +486,97 @@ app.post('/gettopusers', function(req, res) {
 				res.status(401).send();
 			} else {
 				dbPool.getConnection(function(err, tempCont){
-				if(err) {
-					res.status(400).send();
-				} else {
-					tempCont.query("SELECT login, total_points FROM user WHERE EXISTS (SELECT * FROM friendship WHERE user_one_id = ? OR user_two_id = ?) ORDER BY total_points LIMIT 100;", [req.user.user_id, req.user.user_id], function(err, result) {
-						if(err || !result) {
-							res.status(400).send();
-						} else {
-							res.status(200).send(result);
-						}
-					});
-				}
-				tempCont.release();
-			});
+					if(err) {
+						res.status(400).send();
+					} else {
+						tempCont.query("SELECT login, total_points FROM user WHERE EXISTS (SELECT * FROM friendship WHERE user_one_id = ? OR user_two_id = ?) ORDER BY total_points LIMIT 100;", [req.user.user_id, req.user.user_id], function(err, result) {
+							if(err || !result) {
+								res.status(400).send();
+							} else {
+								res.status(200).send(result);
+							}
+						});
+					}
+					tempCont.release();
+				});
 			}
 		} else {
 			res.status(400).send();
 		}
 	}
+});
+
+// Add a friend
+app.post('/addfriend', function(req, res) {
+	if(!req.user) {
+		res.status(401).send();
+	} else {
+		if(req.body.username) {
+			dbPool.getConnection(function(err, tempCont) {
+				if(err) {
+					res.status(400).send();
+				} else {
+					tempCont.query("SELECT * FROM Friendship WHERE (user_one_id = ? AND user_two_id = (SELECT user_id FROM User WHERE login = ?)) OR (user_one_id = (SELECT user_id FROM User WHERE login = ?) AND user_two_id = ?);", [req.user.user_id, req.body.username, req.body.username, req.user.user_id], function(err, result) {
+						if(err) {
+							res.status(400).send();
+						} else if(result) {
+							res.status(200).send();
+						} else {
+							tempCont.query("INSERT INTO Friendship VALUES (?, (SELECT user_id FROM User WHERE login = ?), 0, 0);", [req.user.user_id, req.body.username], function(err, result1) {
+								if(err || !result) {
+									res.status(400).send();
+								} else {
+									res.status(200).send();
+								}
+							});
+						}
+					});
+				}
+				tempCont.release();
+			});
+		} else {
+			res.status(400).send();
+		}
+	}
+});
+
+// Remove a friend
+app.post('/removefriend', function(req, res) {
+	if(!req.user) {
+		res.status(401).send();
+	} else {
+		if(req.body.username) {
+			dbPool.getConnection(function(err, tempCont) {
+				if(err) {
+					res.status(400).send();
+				} else {
+					tempCont.query("DELETE FROM Friendship WHERE (user_one_id = ? AND user_two_id = (SELECT user_id FROM User WHERE login = ?)) OR (user_one_id = (SELECT user_id FROM User WHERE login = ?) AND user_two_id = ?)", [req.user.user_id, req.body.username, req.body.username, req.user.user_id], function(err, result) {
+						if(err) {
+							res.status(400).send();
+						} else {
+							res.status(200).send();
+						}
+					});
+				}
+				tempCont.release();
+			});
+		} else {
+			res.status(400).send();
+		}
+	}
+});
+
+// Search for user page info
+//app.post('/getuserinfo', function(req, res) {
+	
+//});
+
+app.post('', function(req, res) {
+	
+});
+
+app.post('', function(req, res) {
+	
 });
 
 // Display 404 for 

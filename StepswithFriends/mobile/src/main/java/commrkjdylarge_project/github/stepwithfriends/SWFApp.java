@@ -1,6 +1,7 @@
 package commrkjdylarge_project.github.stepwithfriends;
 
 import android.app.Application;
+import android.provider.Settings;
 
 import com.loopj.android.http.*;
 
@@ -15,12 +16,20 @@ public class SWFApp extends Application {
     private JSONObject userData_Workout = null;
     private boolean syncStatus = false;
     private JSONArray tempObject = null;
+    private String url = null;
 
     public AsyncHttpClient getClient() {
         if(this.asyncHttpClient == null) {
             this.asyncHttpClient = new AsyncHttpClient();
             PersistentCookieStore cookieStore = new PersistentCookieStore(getApplicationContext());
             this.asyncHttpClient.setCookieStore(cookieStore);
+            if(Settings.Secure.getInt(this.getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED ,0) == 1) {
+                System.out.println("using localhost");
+                this.url = "http://localhost:5000";
+            } else {
+                System.out.println("using herokuapp");
+                this.url = "https://large-project.herokuapp.com";
+            }
             return this.asyncHttpClient;
         } else {
             return this.asyncHttpClient;
@@ -45,7 +54,7 @@ public class SWFApp extends Application {
         if(table_local == null) {
             RequestParams params = new RequestParams();
             params.put("table", table);
-            this.asyncHttpClient.post("https://large-project.herokuapp.com/getuserdata", params, new JsonHttpResponseHandler() {
+            this.asyncHttpClient.post(this.url + "/getuserdata", params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     // called when response HTTP status is "200 OK"
@@ -84,7 +93,7 @@ public class SWFApp extends Application {
         params.put("group", group);
         tempObject = null;
         try {
-            this.asyncHttpClient.post("https://large-project.herokuapp.com/gettopusers", params, new JsonHttpResponseHandler() {
+            this.asyncHttpClient.post(this.url + "/gettopusers", params, new JsonHttpResponseHandler() {
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                     // called when response HTTP status is "200 OK"
                     tempObject = response;
@@ -182,7 +191,7 @@ public class SWFApp extends Application {
         params.put("fields", fields);
         params.put("values", values);
         params.put("table", table);
-        this.asyncHttpClient.post("https://large-project.herokuapp.com/updateuserdata", params, new JsonHttpResponseHandler() {
+        this.asyncHttpClient.post(this.url + "/updateuserdata", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 // called when response HTTP status is "200 OK"
