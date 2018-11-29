@@ -1,0 +1,17 @@
+doctype html
+html(lang='en')
+	include head
+	body
+		if searchString
+			h2#tableTitle Search Results for #{searchString}
+		table#indexTable.shadedBox
+			tr
+				th Rank
+				th User
+				th Points
+			if searchResults
+				each val, index in searchResults
+					tr(onclick="window.location.href='/user/" + val.login + "'; return false")
+						td= index + 1
+						td= val.login
+						td= val.total_points

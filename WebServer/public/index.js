@@ -4,7 +4,6 @@
 const APIRoot = 'https://large-project.herokuapp.com/'; 
 const fileExtension = '.js'; 
 const indexURL = '/';
-const loginURL = '/';
 
 var userID = 0;
 var firstName = '';
@@ -16,12 +15,20 @@ var JSONtextID = '';
 // New functions
 ////////////////////////////////////
 
+function logout() {
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "/logout", true);
 
-
-////////////////////////////////////
-// Old functions
-////////////////////////////////////
-
+	xhr.onload = function(e) {
+		if (this.readyState == 4 && this.status == 200) {
+			document.location.href = indexURL;
+		}
+	}
+	xhr.onerror = function(e) {
+		alert("Logout unsuccessful!");
+	}
+	xhr.send(null);
+}
 
 // Hashing password on client is not necessary with HTTPS!
 // It will be hashed by server before being stored in DB!
@@ -33,11 +40,9 @@ function login() {
 
 	// Create JSON package 
 	var jsonPayload = '{"username" : "' + user + '", "password" : "' + pass + '"}';
-	var url = "/login";
 
 	var xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+	xhr.open("POST", "/login", true);
 
 	try {
 		xhr.onreadystatechange = function() {
@@ -97,7 +102,7 @@ function createAccount()
 	var jsonPayload = '{"username" : "' + user + '", "password" : "' + newPWord1 
 						+ '", "firstname" : "' + fName + '", "lastname" : "'
 						+ lName + '"}';
-	var url = '/register'; //+ fileExtension;
+	var url = '/register';
 
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
@@ -143,6 +148,11 @@ function showLogin()
 	document.getElementById("submitMessage").innerHTML = "";
 }
 
+
+
+////////////////////////////////////
+// Old functions
+////////////////////////////////////
 
 
 // Scores.html functions
@@ -447,45 +457,3 @@ function deleteContact(index, id)
 
 	// test the function is running: alert("deleteContact()");
 }
-
-function logout()
-{
-	// // Return to login page and end the session
-	// userID = 0;
-	// firstName = "";
-	// lastName = "";
-	// localStorage.setItem(JSONtextID, "{UserId:0}");
-
-	// document.location.href = loginURL;
-	// // End
-
-	//var jsonPayload = '{"hello" : ' + 0 + '}';
-	var url = '/logout';
-
-	var xhr = new XMLHttpRequest();
-	xhr.open("GET", url, true);
-	//xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-
-
-	try
-	{
-		xhr.onreadystatechange = function() 
-		{
-			if (this.readyState == 4 && this.status == 200)
-			{
-				document.location.href = loginURL;
-			}
-			
-		}
-		xhr.send(null);
-	}
-	catch(err)
-	{
-
-	}
-
-	// test the function is running: alert("logout()");
-}
-
-// populates contact table on page load
-window.onload = getContacts;

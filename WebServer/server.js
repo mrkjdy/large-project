@@ -66,7 +66,7 @@ app.use(function (req, res, next) {
 
 // Sets pug as view engine
 app.set('view engine', 'pug')
-app.set('views', path.join(__dirname, 'public'));
+app.set('views', path.join(__dirname, 'pug'));
 
 // Body-parser initialization
 app.set('trust proxy', 1);
@@ -193,11 +193,13 @@ app.get('/create-account', function (req, res) {
 
 app.get('/user/:username', function (req, res) {
 
-	var userinfo = null, globalrank = 0, friendrank = 0, friendtable = topRankedUsers;
+	var userinfo = null, own = false, globalrank = 0, friendrank = 0, friendtable = topRankedUsers;
 
 
-	if (req.user.login === req.params.username)
+	if (req.user.login === req.params.username) {
 		userinfo = req.user;
+		own = true;
+	}
 	else
 		userinfo = getUserPageData(req.params.username);
 
@@ -208,7 +210,8 @@ app.get('/user/:username', function (req, res) {
 			userinfo: userinfo,
 			globalrank: globalrank,
 			friendrank: friendrank,
-			friendtable: friendtable
+			friendtable: friendtable,
+			own: own
 		});
 	}
 	else {
@@ -217,21 +220,27 @@ app.get('/user/:username', function (req, res) {
 });
 
 app.get('/myprofile', function (req, res) {
-	var globalrank = 0, friendrank = 0, friendtable = topRankedUsers;
-
-	res.render('profile', {
-		user: req.user,
-		userinfo: req.user,
-		globalrank: globalrank,
-		friendrank: friendrank,
-		friendtable: friendtable
-	});
+	res.redirect('/user/' + req.user.login);
 });
 
 app.get('/404', function (req, res) {
 	res.render('404', {
         user: req.user
     });
+});
+
+app.get('/search/:searchstring', function (req, res) {
+	// get table from database
+	var searchString = decodeURI(req.params.searchstring);
+	console.log(searchString);
+	var searchResults = search(searchString);
+
+	// render table
+	res.render('search', {
+		user: req.user,
+		searchResults: searchResults,
+		searchString: searchString
+	});
 });
 
 // Register function
@@ -568,7 +577,7 @@ var getNewTopUsers = function() {
 			topRankedUsers = false;
 			console.log(err);
 		} else {
-			tempCont.query("SELECT login, total_points FROM User ORDER BY total_points LIMIT 100;", function(err, result) {
+			tempCont.query("SELECT login, total_points FROM User ORDER BY total_points DESC LIMIT 100;", function(err, result) {
 				if(err || !result) {
 					topRankedUsers = false;
 					console.log(err);
@@ -607,4 +616,8 @@ var getUserPageData = function(username) {
 		}
 		tempCont.release();
 	});
+}
+
+var search = function(searchString) {
+	return "123";
 }

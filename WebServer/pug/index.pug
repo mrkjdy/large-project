@@ -10,8 +10,7 @@ html(lang='en')
 				th Points
 			if top
 				each val, index in top
-					tr
+					tr(onclick="window.location.href='/user/" + val.login + "'; return false")
 						td= index + 1
-						td 
-							a(href='/user/' + val.login) #{val.login}
+						td= val.login
 						td= val.total_points
