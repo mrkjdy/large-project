@@ -66,6 +66,12 @@ public class LeaderboardFragment extends Fragment {
         userRank = rootView.findViewById(R.id.tv_lead_pos2);
 
         // TODO: get user info and update the user layout
+        JSONObject usr = ((SWFApp) getActivity().getApplication()).getUserData("User");
+
+        try
+        {
+            userName.setText(usr.get("login").toString());
+        } catch (Exception e) {}
 
         initImageBitMaps(0);
 
