@@ -32,7 +32,7 @@ public class LeaderboardFragment extends Fragment {
 
     //vars
     private ArrayList<String> mUsrNames = new ArrayList<>();
-    private ArrayList<String> mImages = new ArrayList<>();
+    private ArrayList<Boolean> mFriend = new ArrayList<>();
     private ArrayList<String> mUsrScores = new ArrayList<>();
 
     private View rootView;
@@ -71,11 +71,12 @@ public class LeaderboardFragment extends Fragment {
         try
         {
             userName.setText(usr.get("login").toString());
+            userScore.setText(usr.get("total_points").toString());
         } catch (Exception e) {}
 
         initImageBitMaps(0);
 
-        adapter = new ListAdapter(mImages, mUsrNames, mUsrScores, getActivity());
+        adapter = new ListAdapter(mFriend, mUsrNames, mUsrScores, getActivity());
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         return rootView;
@@ -94,7 +95,7 @@ public class LeaderboardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 initImageBitMaps(0);
-                adapter.setData(mImages, mUsrNames, mUsrScores, getActivity());
+                adapter.setData(mFriend, mUsrNames, mUsrScores, getActivity());
                 Toast.makeText(getActivity(), "Loaded World", Toast.LENGTH_SHORT).show();
             }
         });
@@ -104,7 +105,7 @@ public class LeaderboardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 initImageBitMaps(1);
-                adapter.setData(mImages, mUsrNames, mUsrScores, getActivity());
+                adapter.setData(mFriend, mUsrNames, mUsrScores, getActivity());
                 Toast.makeText(getActivity(), "Loaded Friends", Toast.LENGTH_SHORT).show();
             }
         });
@@ -136,7 +137,7 @@ public class LeaderboardFragment extends Fragment {
                 Toast.makeText(getActivity(), "Searching", Toast.LENGTH_SHORT).show();
                 initImageBitMaps(2);
                 searchString = "";
-                adapter.setData(mImages, mUsrNames, mUsrScores, getActivity());
+                adapter.setData(mFriend, mUsrNames, mUsrScores, getActivity());
             }
         });
     }
@@ -144,7 +145,7 @@ public class LeaderboardFragment extends Fragment {
     private void initImageBitMaps(int mode) // mode 0: world; mode 1: friends; mode 3: search;
     {
 
-        mImages.clear();
+        mFriend.clear();
         mUsrNames.clear();
         mUsrScores.clear();
         Log.d(TAG, "initImageBitMaps: preparing bitmaps");
@@ -157,36 +158,46 @@ public class LeaderboardFragment extends Fragment {
             case 0:
                 JSONArray object = ((SWFApp) getActivity().getApplication()).getTop100("global");
 
-                for (int i = 0; i < object.length(); i++)
+                if (object != null)
                 {
-                    try {
-                        mImages.add("https://c1.staticflickr.com/5/4636/25316407448_de5fbf183d_o.jpg");
-                        JSONObject temp = (JSONObject) object.get(i);
-                        mUsrNames.add(temp.get("login").toString());
-                        mUsrScores.add(temp.get("total_points").toString());
-                    } catch (Exception e) {}
+                    for (int i = object.length() - 1; i >= 0; i--)
+                    {
+                        try {
+                            JSONObject temp = (JSONObject) object.get(i);
+                            Log.d(TAG, "initImageBitMaps: " + temp.toString());
+                            mUsrNames.add(temp.get("login").toString());
+                            mUsrScores.add(temp.get("total_points").toString());
+                            //mFriend.add(temp.getBoolean("isFriend"));
+                            mFriend.add(false);
+                        } catch (Exception e) {}
+                    }
                 }
 
                 break;
             case 1:
-                mImages.add("https://i.redd.it/0h2gm1ix6p501.jpg");
-                mUsrNames.add("Mahahual");
-                mUsrScores.add("999922");
+                JSONArray friend = ((SWFApp) getActivity().getApplication()).getTop100("friends");
 
-                mImages.add("https://i.redd.it/k98uzl68eh501.jpg");
-                mUsrNames.add("Frozen Lake");
-                mUsrScores.add("999911");
+                if (friend != null)
+                {
+                    for (int i = friend.length() - 1; i >= 0; i--)
+                    {
+                        try {
+                            JSONObject temp = (JSONObject) friend.get(i);
+                            Log.d(TAG, "initImageBitMaps: " + temp.toString());
+                            mUsrNames.add(temp.get("login").toString());
+                            mUsrScores.add(temp.get("total_points").toString());
+                            mFriend.add(true);
+                        } catch (Exception e) {}
+                    }
+                }
 
-                mImages.add("https://i.redd.it/glin0nwndo501.jpg");
-                mUsrNames.add("White Sands Desert");
-                mUsrScores.add("999900");
                 break;
             case 2:
-                mImages.add("https://i.redd.it/obx4zydshg601.jpg");
+                mFriend.add(false);
                 mUsrNames.add("Austrailia");
                 mUsrScores.add("999888");
 
-                mImages.add("https://i.imgur.com/ZcLLrkY.jpg");
+                mFriend.add(false);
                 mUsrNames.add("Washington");
                 mUsrScores.add("999777");
                 break;
