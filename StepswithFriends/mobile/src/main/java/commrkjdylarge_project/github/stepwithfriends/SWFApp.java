@@ -11,6 +11,10 @@ import cz.msebera.android.httpclient.Header;
 
 public class SWFApp extends Application {
 
+    //////////////////////////////////////
+    private boolean useLOCALHOST = true;
+    //////////////////////////////////////
+
     private AsyncHttpClient asyncHttpClient = null;
     private SyncHttpClient syncHttpClient = null;
     private JSONObject userData_User = null;
@@ -18,7 +22,7 @@ public class SWFApp extends Application {
     private volatile boolean syncStatus = false;
     private volatile JSONArray tempObject = null;
     private volatile RequestParams tempParams = null;
-    private String url = null;
+    private String url = "https://large-project.herokuapp.com";
 
     public AsyncHttpClient getClient() {
         if(this.asyncHttpClient == null) {
@@ -27,12 +31,11 @@ public class SWFApp extends Application {
             PersistentCookieStore cookieStore = new PersistentCookieStore(getApplicationContext());
             this.asyncHttpClient.setCookieStore(cookieStore);
             this.syncHttpClient.setCookieStore(cookieStore);
-            if(Settings.Secure.getInt(this.getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED ,0) == 1) {
+            if(useLOCALHOST) {
                 System.out.println("using localhost");
-                this.url = "http://localhost:5000";
+                this.url = "http://10.0.2.2:5000";
             } else {
                 System.out.println("using herokuapp");
-                this.url = "https://large-project.herokuapp.com";
             }
             return this.asyncHttpClient;
         } else {

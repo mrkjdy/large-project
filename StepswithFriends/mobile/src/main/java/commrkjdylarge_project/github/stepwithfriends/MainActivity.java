@@ -129,13 +129,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // load all data
         loadData();
 
+
         mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         if(mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) != null)
         {
             mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
             mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
-
 
     }
 
@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-
+        takeStep();
     }
 
     @Override
@@ -239,14 +239,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void getSteps(){
 
-        for(int i = 0; i < 15; i++)
-        {
-            String steps = "" + i;
-            Bundle args = new Bundle();
-            args.putString("step",steps);
-            homeFrame.putArgument(args);
-        }
-
+        String steps = "" + cStep.getNumStep();
+        //String steps = "hellooo";
+        Bundle args = new Bundle();
+        args.putString("val1",steps);
+        homeFrame.putArgument(args);
     }
 
     private void takeStep() {
@@ -289,9 +286,4 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         compositeDisposable.add(disposable);
     }
-
-
-
-
-
 }

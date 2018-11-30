@@ -10,11 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.os.Handler;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.loopj.android.http.AsyncHttpClient;
 
 
 /**
@@ -58,7 +55,7 @@ public class HomeFragment extends Fragment {
         mProgress.setProgressDrawable(drawable);
 
         percent = getView().findViewById(R.id.tv);
-        stepsTxtView = getView().findViewById(R.id.textView);
+        stepsTxtView = getView().findViewById(R.id.stepTextView);
 
         new Thread(new Runnable() {
 
@@ -75,12 +72,13 @@ public class HomeFragment extends Fragment {
                             // TODO Auto-generated method stub
                             mProgress.setProgress(pStatus);
                             percent.setText(pStatus + "%");
+
                         }
                     });
                     try {
                         // Sleep for 200 milliseconds.
                         // Just to display the progress slowly
-                        Thread.sleep(100); //thread will take approx 3 seconds to finish
+                        Thread.sleep(16); //thread will take approx 3 seconds to finish
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -89,8 +87,9 @@ public class HomeFragment extends Fragment {
         }).start();
 
     }
+
     public void putArgument(Bundle args){
-        String step = args.getString("step");
+        String step = args.getString("val1");
         stepsTxtView.setText(step);
     }
 }
