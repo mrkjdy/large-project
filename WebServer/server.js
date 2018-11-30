@@ -12,7 +12,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const favicon = require('serve-favicon');
 const bcrypt = require('bcrypt');
 const schedule = require('node-schedule');
-
+const cdnurl = "";
 
 // Global vars
 // ----------------------------------------------------------------------
@@ -550,7 +550,7 @@ app.post('/removefriend', function(req, res) {
 				if(err) {
 					res.status(400).send();
 				} else {
-					tempCont.query("DELETE FROM Friendship WHERE (user_one_id = ? AND user_two_id = (SELECT user_id FROM User WHERE login = ?)) OR (user_one_id = (SELECT user_id FROM User WHERE login = ?) AND user_two_id = ?)", [req.user.user_id, req.body.username, req.body.username, req.user.user_id], function(err, result) {
+					tempCont.query("DELETE FROM Friendship WHERE (user_one_id = ? AND user_two_id = (SELECT user_id FROM User WHERE login = ?)) OR (user_one_id = (SELECT user_id FROM User WHERE login = ?) AND user_two_id = ?);", [req.user.user_id, req.body.username, req.body.username, req.user.user_id], function(err, result) {
 						if(err) {
 							res.status(400).send();
 						} else {
@@ -566,17 +566,83 @@ app.post('/removefriend', function(req, res) {
 	}
 });
 
-// Search for user page info
-//app.post('/getuserinfo', function(req, res) {
-	
-//});
-
-app.post('', function(req, res) {
-	
+// Search for user info
+app.post('/searchuserinfo', function(req, res) {
+	if(!req.user) {
+		res.status(401).send();
+	} else {
+		if(req.body.username) {
+			dbPool.getConnection(function(err, tempCont) {
+				if(err) {
+					console.log(err);
+					res.status(400).send();
+				} else {
+					tempCont.query("SELECT login, total_points, CASE WHEN EXISTS (SELECT * FROM Friendship WHERE (user_one_id = ? AND user_two_id = (SELECT user_id FROM User WHERE login = ?)) OR (user_one_id = (SELECT user_id FROM User WHERE login = ?) AND user_two_id = ?)) THEN 'TRUE' ELSE 'FALSE' END AS isFriend FROM User WHERE login = ? AND isPrivate = false;", [req.user.user_id, req.body.username, req.body.username, req.user.user_id, req.body.username], function(err, result) {
+						if(err) {
+							console.log(err);
+							res.status(400).send();
+						} else if(!result[0]) {
+							res.status(200).send(null);
+						} else {
+							res.status(200).send(result[0]);
+						}
+					});
+				}
+				tempCont.release();
+			});
+		} else {
+			res.status(400).send();
+		}
+	}
 });
 
-app.post('', function(req, res) {
-	
+// Get URL for a profile pic
+app.post('/getUserPicURL', function(req, res) {
+	if(!req.user) {
+		res.status(401).send();
+	} else {
+		if(req.body.username) {
+			dbPool.getConnection(function(err, tempCont) {
+				if(err) {
+					console.log(err);
+					res.status(400).send();
+				} else {
+					tempCont.query("SELECT user_id, photo_type FROM User WHERE login = ?;", [req.body.username], function(err, result) {
+						if(err) {
+							console.log(err);
+							res.status(400).send();
+						} else if(!result[0]) {
+							res.status(400).send();
+						} else {
+							let url = cdnurl + result[0].user_id + "." + result[0].photo_type;
+							res.status(200).send(url);
+						}
+					});
+				}
+				tempCont.release();
+			});
+		} else {
+			res.status(400).send();
+		}
+	}
+});
+
+// Upload a profile pic
+app.post('/addUserPic', function(req, res) {
+	if(!req.user) {
+		res.status(401).send();
+	} else if(!req.files.photo) {
+		res.status(400).send();
+	} else {
+		let photo = req.files.photo;
+		if(photo.mimetype.localeCompare('image/png') === 0 || photo.mimetype.localeCompare('image/jpeg') === 0) {
+			
+			//Do something
+			
+		} else {
+			res.status(400).send();
+		}
+	}
 });
 
 // Display 404 for 
@@ -675,7 +741,7 @@ var getUserPageData = function(username) {
 			console.log(err);
 			return null;
 		} else {
-			tempCont.query("SELECT * FROM User WHERE login = " + username + " AND (isPrivate = false OR EXISTS (SELECT * FROM friendship WHERE user_one_id = ? AND user_two_id = ?);", function(err, result) {
+			tempCont.query("SELECT * FROM User WHERE login = ? AND (isPrivate = false OR EXISTS (SELECT * FROM friendship WHERE user_one_id = ? AND user_two_id = ?);", [username], function(err, result) {
 				if(err) {
 					console.log(err);
 					return null;
@@ -694,4 +760,27 @@ var getUserPageData = function(username) {
 
 var search = function(searchString) {
 	return "123";
+}
+
+var getUserIndex = function(username) {
+	dbPool.getConnection(function(err, tempCont) {
+		if(err) {
+			console.log(err);
+			return null;
+		} else {
+			tempCont.query("SELECT COUNT(*) + 1 AS value FROM User WHERE total_points > (SELECT total_points FROM User WHERE login = ?);", [username], function(err, result) {
+				if(err) {
+					console.log(err);
+					return null;
+				} else {
+					if(result[0]) {
+						return result[0].value;
+					} else {
+						return null;
+					}
+				}
+			});
+		}
+		tempCont.release();
+	});
 }
