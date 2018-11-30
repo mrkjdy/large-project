@@ -53,6 +53,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
     {
         Log.d(TAG, "onBindViewHolder: called");
 
+//        Transforms URLs into images
 //        Glide.with(context)
 //                .asBitmap()
 //                .load(mImage.get(i))
@@ -96,6 +97,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
             });
         }
 
+        if (mUserName.get(i).equals(LeaderboardFragment.nameOfUser))
+        {
+            viewHolder.addFriend.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

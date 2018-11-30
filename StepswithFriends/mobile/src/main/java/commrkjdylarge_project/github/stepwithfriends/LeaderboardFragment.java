@@ -45,6 +45,7 @@ public class LeaderboardFragment extends Fragment {
     private CircleImageView userImage;
 
     public String searchString = "";
+    static public String nameOfUser = "";
 
     public LeaderboardFragment() {
         // Required empty public constructor
@@ -70,7 +71,8 @@ public class LeaderboardFragment extends Fragment {
 
         try
         {
-            userName.setText(usr.get("login").toString());
+            nameOfUser = usr.get("login").toString();
+            userName.setText(nameOfUser);
             userScore.setText(usr.get("total_points").toString());
         } catch (Exception e) {}
 
