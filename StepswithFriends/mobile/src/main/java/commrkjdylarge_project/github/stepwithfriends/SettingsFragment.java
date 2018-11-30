@@ -56,7 +56,7 @@ public class SettingsFragment extends Fragment {
                 startActivity(new Intent(getActivity(), NotificationPopup.class)); //popup or fragment
             }
         });
-
+/*
         final Switch publicSwitch = getView().findViewById(R.id.public_switch);
         publicSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -74,6 +74,7 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
+*/
 
         Switch locationSwitch = getView().findViewById(R.id.location_switch);
         locationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
