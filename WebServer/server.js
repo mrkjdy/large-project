@@ -786,7 +786,7 @@ var getUserIndex = function(username) {
 }
 
 var withinRange = function(latA, longA, latB, longB) {
-	radius = Math.sqrt((latA-latB)^2 + (longA-longB)^2)
+	radius = Math.sqrt(Math.Pow(latA-latB,2) + Math.Pow(longA-longB,2))
 
 	// Wiki:
 	// one latitudinal degree is 110.6 kilometres
