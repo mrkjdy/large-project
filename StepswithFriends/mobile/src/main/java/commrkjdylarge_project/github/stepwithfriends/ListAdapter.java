@@ -96,11 +96,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
                 }
             });
         }
-
-        if (mUserName.get(i).equals(LeaderboardFragment.nameOfUser))
-        {
-            viewHolder.addFriend.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override
