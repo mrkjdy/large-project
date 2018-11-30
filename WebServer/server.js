@@ -476,7 +476,6 @@ app.post('/gettopusers', function(req, res) {
 	} else {
 		if(req.body.group === "global") {
 			if(topRankedUsers) {
-				console.log(topRankedUsers);
 				res.status(200).send(topRankedUsers);
 			} else {
 				res.status(400).send();
@@ -597,53 +596,53 @@ app.post('/searchuserinfo', function(req, res) {
 });
 
 // Get URL for a profile pic
-app.post('/getUserPicURL', function(req, res) {
-	if(!req.user) {
-		res.status(401).send();
-	} else {
-		if(req.body.username) {
-			dbPool.getConnection(function(err, tempCont) {
-				if(err) {
-					console.log(err);
-					res.status(400).send();
-				} else {
-					tempCont.query("SELECT user_id, photo_type FROM User WHERE login = ?;", [req.body.username], function(err, result) {
-						if(err) {
-							console.log(err);
-							res.status(400).send();
-						} else if(!result[0]) {
-							res.status(400).send();
-						} else {
-							let url = cdnurl + result[0].user_id + "." + result[0].photo_type;
-							res.status(200).send(url);
-						}
-					});
-				}
-				tempCont.release();
-			});
-		} else {
-			res.status(400).send();
-		}
-	}
-});
+// app.post('/getUserPicURL', function(req, res) {
+	// if(!req.user) {
+		// res.status(401).send();
+	// } else {
+		// if(req.body.username) {
+			// dbPool.getConnection(function(err, tempCont) {
+				// if(err) {
+					// console.log(err);
+					// res.status(400).send();
+				// } else {
+					// tempCont.query("SELECT user_id, photo_type FROM User WHERE login = ?;", [req.body.username], function(err, result) {
+						// if(err) {
+							// console.log(err);
+							// res.status(400).send();
+						// } else if(!result[0]) {
+							// res.status(400).send();
+						// } else {
+							// let url = cdnurl + result[0].user_id + "." + result[0].photo_type;
+							// res.status(200).send(url);
+						// }
+					// });
+				// }
+				// tempCont.release();
+			// });
+		// } else {
+			// res.status(400).send();
+		// }
+	// }
+// });
 
-// Upload a profile pic
-app.post('/addUserPic', function(req, res) {
-	if(!req.user) {
-		res.status(401).send();
-	} else if(!req.files.photo) {
-		res.status(400).send();
-	} else {
-		let photo = req.files.photo;
-		if(photo.mimetype.localeCompare('image/png') === 0 || photo.mimetype.localeCompare('image/jpeg') === 0) {
+// // Upload a profile pic
+// app.post('/addUserPic', function(req, res) {
+	// if(!req.user) {
+		// res.status(401).send();
+	// } else if(!req.files.photo) {
+		// res.status(400).send();
+	// } else {
+		// let photo = req.files.photo;
+		// if(photo.mimetype.localeCompare('image/png') === 0 || photo.mimetype.localeCompare('image/jpeg') === 0) {
 			
-			//Do something
+			// //Do something
 			
-		} else {
-			res.status(400).send();
-		}
-	}
-});
+		// } else {
+			// res.status(400).send();
+		// }
+	// }
+// });
 
 // Display 404 for 
 // MUST BE AT BOTTOM OF THIS SECTION!
