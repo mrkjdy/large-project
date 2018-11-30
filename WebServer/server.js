@@ -792,8 +792,8 @@ var withinRange = function(latA, longA, latB, longB) {
 	// one latitudinal degree is 110.6 kilometres
 	// one longitudinal degree is 96.5 km
 
-	// 0.5 km radius ~= sqrt (2 x (0.05 degrees)^2) ~= 0.005
-	if radius < 0.005 {
+	// 0.5 km radius ~= sqrt (2 x (0.05 degrees)^2) ~= 0.0707
+	if radius < 0.0707 {
 		return true;
 	} else {
 		return false;
