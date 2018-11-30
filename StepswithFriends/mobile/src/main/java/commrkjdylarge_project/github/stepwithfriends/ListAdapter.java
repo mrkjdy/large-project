@@ -49,7 +49,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, final int i)
+    public void onBindViewHolder(final ViewHolder viewHolder, final int i)
     {
         Log.d(TAG, "onBindViewHolder: called");
 
@@ -71,7 +71,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
                     Log.d(TAG, "onClick: clicked on: " + mUserName.get(i));
 
                     //TODO: add functionality to delete a friend here
+                    //TODO: show a popup confirming to delete the friend
                     Toast.makeText(context, mUserName.get(i), Toast.LENGTH_SHORT).show();
+                    viewHolder.addFriend.setImageResource(android.R.drawable.ic_input_add);
+                    mFriend.set(i, false);
+                    notifyDataSetChanged();
                 }
             });
         }
@@ -85,6 +89,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
 
                     //TODO: add functionality to add a friend here
                     Toast.makeText(context, mUserName.get(i), Toast.LENGTH_SHORT).show();
+                    viewHolder.addFriend.setImageResource(android.R.drawable.ic_delete);
+                    mFriend.set(i, true);
+                    notifyDataSetChanged();
                 }
             });
         }

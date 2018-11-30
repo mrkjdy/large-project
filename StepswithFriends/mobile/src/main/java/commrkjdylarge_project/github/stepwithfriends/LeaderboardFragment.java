@@ -160,7 +160,7 @@ public class LeaderboardFragment extends Fragment {
 
                 if (object != null)
                 {
-                    for (int i = object.length() - 1; i >= 0; i--)
+                    for (int i = 0; i < object.length(); i++)
                     {
                         try {
                             JSONObject temp = (JSONObject) object.get(i);
@@ -179,7 +179,7 @@ public class LeaderboardFragment extends Fragment {
 
                 if (friend != null)
                 {
-                    for (int i = friend.length() - 1; i >= 0; i--)
+                    for (int i = 0; i < friend.length(); i++)
                     {
                         try {
                             JSONObject temp = (JSONObject) friend.get(i);
