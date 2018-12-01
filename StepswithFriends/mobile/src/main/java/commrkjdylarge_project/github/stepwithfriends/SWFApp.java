@@ -12,7 +12,7 @@ import cz.msebera.android.httpclient.Header;
 public class SWFApp extends Application {
 
     //////////////////////////////////////
-    private boolean useLOCALHOST = false;
+    private boolean useLOCALHOST = true;
     //////////////////////////////////////
 
     private AsyncHttpClient asyncHttpClient = null;
@@ -24,6 +24,10 @@ public class SWFApp extends Application {
     private volatile JSONObject otherTempObject = null;
     private volatile RequestParams tempParams = null;
     private String url = "https://large-project.herokuapp.com";
+
+    public String getURL() {
+        return this.url;
+    }
 
     public AsyncHttpClient getClient() {
         if(this.asyncHttpClient == null) {
@@ -212,7 +216,7 @@ public class SWFApp extends Application {
         this.syncStatus = false;
         RequestParams params = new RequestParams();
         params.put("username", username);
-        this.asyncHttpClient.post(this.url = "/addfriend", params, new JsonHttpResponseHandler() {
+        this.asyncHttpClient.post(this.url + "/addfriend", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 // called when response HTTP status is "200 OK"
@@ -233,7 +237,7 @@ public class SWFApp extends Application {
         this.syncStatus = false;
         RequestParams params = new RequestParams();
         params.put("username", username);
-        this.asyncHttpClient.post(this.url = "/removefriend", params, new JsonHttpResponseHandler() {
+        this.asyncHttpClient.post(this.url + "/removefriend", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 // called when response HTTP status is "200 OK"
@@ -254,7 +258,7 @@ public class SWFApp extends Application {
         this.otherTempObject = null;
         RequestParams params = new RequestParams();
         params.put("username", username);
-        this.asyncHttpClient.post(this.url = "/searchuserinfo", params, new JsonHttpResponseHandler() {
+        this.asyncHttpClient.post(this.url + "/searchuserinfo", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 // called when response HTTP status is "200 OK"

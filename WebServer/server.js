@@ -453,7 +453,6 @@ app.post('/updateuserdata', function(req, res) {
 					if(err) {
 						res.status(400).send();
 					} else {
-						console.log(updateValues);
 						tempCont.query("UPDATE ? SET ? WHERE user_id=?;", [table, updateValues.slice(0, -3), req.body.user_id], function(err, result) {
 							if(err || !result) {
 								res.status(400).send();
@@ -518,10 +517,10 @@ app.post('/addfriend', function(req, res) {
 					tempCont.query("SELECT * FROM Friendship WHERE (user_one_id = ? AND user_two_id = (SELECT user_id FROM User WHERE login = ?)) OR (user_one_id = (SELECT user_id FROM User WHERE login = ?) AND user_two_id = ?);", [req.user.user_id, req.body.username, req.body.username, req.user.user_id], function(err, result) {
 						if(err) {
 							res.status(400).send();
-						} else if(result) {
+						} else if(result[0]) {
 							res.status(200).send();
 						} else {
-							tempCont.query("INSERT INTO Friendship VALUES (?, (SELECT user_id FROM User WHERE login = ?), 0, 0);", [req.user.user_id, req.body.username], function(err, result1) {
+							tempCont.query("INSERT INTO Friendship (user_one_id, user_two_id) VALUES (?, (SELECT user_id FROM User WHERE login = ?));", [req.user.user_id, req.body.username], function(err, result1) {
 								if(err || !result) {
 									res.status(400).send();
 								} else {
@@ -776,6 +775,7 @@ var updateTopUsers = schedule.scheduleJob('*/5 * * * *', function() {
 	getNewTopUsers();
 });
 
+//Needs to be updates to use join table
 var getUserPageData = function(username) {
 	dbPool.getConnection(function(err, tempCont) {
 		if(err) {
