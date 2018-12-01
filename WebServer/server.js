@@ -595,47 +595,47 @@ app.post('/searchuserinfo', function(req, res) {
 	}
 });
 
-app.post('/joinsession', function(req, res) {
-	if(!req.user) {
-		res.status(401).send();
-	} else {
-		dbPool.getConnection(function(err, tempCont) {
-			if(err) {
-				console.log(err);
-				res.status(400).send();
-			} else {
-				tempCont.query("SELECT latitude, longitude, session_id FROM User INNER JOIN Friendship ON (User.user_id = Friendship.user_one_id AND Friendship.user_two_id = ?) OR (Friendship.user_one_id = ? AND User.user_id = Friendship.user_two_id);", [req.user.user_id, req.user.user_id], function(err, result) {
-					if(err) {
-						console.log(err);
-						res.status(400).send();
-					} else if(!result) {
-						//Create new session
-						tempCont.query("", [], function(err, result1) {
-							if(err) {
-								console.log(err);
-								res.status(400).send();
-							} else {
+// app.post('/joinsession', function(req, res) {
+	// if(!req.user) {
+		// res.status(401).send();
+	// } else {
+		// dbPool.getConnection(function(err, tempCont) {
+			// if(err) {
+				// console.log(err);
+				// res.status(400).send();
+			// } else {
+				// tempCont.query("SELECT latitude, longitude, session_id FROM User INNER JOIN Friendship ON (User.user_id = Friendship.user_one_id AND Friendship.user_two_id = ?) OR (Friendship.user_one_id = ? AND User.user_id = Friendship.user_two_id);", [req.user.user_id, req.user.user_id], function(err, result) {
+					// if(err) {
+						// console.log(err);
+						// res.status(400).send();
+					// } else if(!result) {
+						// // Create new session
+						// tempCont.query("", [], function(err, result1) {
+							// if(err) {
+								// console.log(err);
+								// res.status(400).send();
+							// } else {
 								
-							}
-						});
-					} else {
-						//Join session
+							// }
+						// });
+					// } else {
+						// // Join session
 						
-						tempCont.query("", [], function(err, result1) {
-							if(err) {
-								console.log(err);
-								res.status(400).send();
-							} else {
+						// tempCont.query("", [], function(err, result1) {
+							// if(err) {
+								// console.log(err);
+								// res.status(400).send();
+							// } else {
 								
-							}
-						});
-					}
-				});
-			}
-			tempCont.release();
-		});
-	}
-});
+							// }
+						// });
+					// }
+				// });
+			// }
+			// tempCont.release();
+		// });
+	// }
+// });
 
 // Get URL for a profile pic
 // app.post('/getUserPicURL', function(req, res) {
@@ -827,17 +827,12 @@ var getUserIndex = function(username) {
 }
 
 var withinRange = function(latA, longA, latB, longB) {
-	radius = Math.sqrt(Math.Pow(latA-latB,2) + Math.Pow(longA-longB,2))
+	let radius = Math.sqrt(Math.Pow(latA-latB,2) + Math.Pow(longA-longB,2));
 
 	// Wiki:
 	// one latitudinal degree is 110.6 kilometres
 	// one longitudinal degree is 96.5 km
 
 	// 0.5 km radius ~= sqrt (2 x (0.05 degrees)^2) ~= 0.0707
-	if radius < 0.0707 {
-		return true;
-	} else {
-		return false;
-	}
-
+	return (radius < 0.0707);
 }
