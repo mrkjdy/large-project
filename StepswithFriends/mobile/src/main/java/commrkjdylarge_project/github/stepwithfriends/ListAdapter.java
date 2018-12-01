@@ -2,6 +2,7 @@ package commrkjdylarge_project.github.stepwithfriends;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -34,8 +35,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
     private static boolean showAdd;
 
     public static String toDelete = "";
+    public static boolean deleted = false;
 
-    // TODO add a field that determines if an user in the leaderboard is our friend
+    // DONE add a field that determines if an user in the leaderboard is our friend
     public ListAdapter(ArrayList<Boolean> mFriend, ArrayList<String> mUserName, ArrayList<String> mUSerScore, Context context) {
         this.mFriend = mFriend;
         this.mUserName = mUserName;
@@ -71,7 +73,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
         viewHolder.pos.setText(""+(i + 1));
 
         //Log.d(TAG, "onBindViewHolder: " + showAdd);
-        if (/*showAdd == true*/ true)
+        if (showAdd == true)
         {
             viewHolder.addFriend.setVisibility(View.VISIBLE);
             if (mFriend.get(i) == true)
@@ -81,12 +83,29 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
                     @Override
                     public void onClick(View v) {
                         Log.d(TAG, "onClick: clicked on: " + mUserName.get(i));
+                        deleted = false;
 
-                        //TODO: add functionality to delete a friend here
-                        //TODO: show a popup confirming to delete the friend
-                        Toast.makeText(context, mUserName.get(i), Toast.LENGTH_SHORT).show();
-                        viewHolder.addFriend.setImageResource(android.R.drawable.ic_input_add);
-                        mFriend.set(i, false);
+                        //DONE: add functionality to delete a friend here
+                        toDelete = viewHolder.usrName.getText().toString();
+                        //DONE: show a popup confirming to delete the friend
+                        context.startActivity(new Intent(context, ConfirmDeletePopup.class));
+//                        try {
+//                            wait();
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+
+//                        if (deleted)
+//                        {
+                            // Delete user from local data
+                            viewHolder.addFriend.setImageResource(android.R.drawable.ic_input_add);
+                            mFriend.set(i, false);
+                            mFriend.remove(i);
+                            mUserName.remove(i);
+                            mUserScore.remove(i);
+                            // End
+//                        }
+
                         notifyDataSetChanged();
                     }
                 });
@@ -99,10 +118,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
                     public void onClick(View v) {
                         Log.d(TAG, "onClick: clicked on: " + mUserName.get(i));
 
-                        //TODO: add functionality to add a friend here
+                        //DONE: add functionality to add a friend here
                         boolean result = ((SWFApp) context.getApplicationContext()).addFriend(viewHolder.usrName.getText().toString());
-                        Log.d(TAG, "onClick: Was added? " + result + "\n\n");
-                        Toast.makeText(context, mUserName.get(i), Toast.LENGTH_SHORT).show();
+                        //Log.d(TAG, "onClick: Was added? " + result + "\n\n");
+                        Toast.makeText(context, "Added: " + mUserName.get(i), Toast.LENGTH_SHORT).show();
                         viewHolder.addFriend.setImageResource(android.R.drawable.ic_delete);
                         mFriend.set(i, true);
                         notifyDataSetChanged();
@@ -121,7 +140,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
         return (MAX_ITEMS < mUserName.size()) ? MAX_ITEMS : mUserName.size();
     }
 
-    // TODO add a field that determines if an user in the leaderboard is our friend
+    // DONE add a field that determines if an user in the leaderboard is our friend
     public void setData(ArrayList<Boolean> mFriend, ArrayList<String> mUserName, ArrayList<String> mUSerScore, boolean showAdd, Context context)
     {
         this.mFriend = mFriend;

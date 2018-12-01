@@ -65,7 +65,7 @@ public class LeaderboardFragment extends Fragment {
         userImage = rootView.findViewById(R.id.usr_image2);
         userRank = rootView.findViewById(R.id.tv_lead_pos2);
 
-        // TODO: get user info and update the user layout
+        // DONE: get user info and update the user layout
         JSONObject usr = ((SWFApp) getActivity().getApplication()).getUserData("User");
 
         try
@@ -150,7 +150,7 @@ public class LeaderboardFragment extends Fragment {
         mUsrScores.clear();
         Log.d(TAG, "initImageBitMaps: preparing bitmaps");
 
-        // TODO: here we would get the info from the leaderboar and make it into the entries
+        // DONE: here we would get the info from the leaderboar and make it into the entries
         // and use the boolean on the method to determine if to get all users or just friends
 
         switch(mode)
@@ -179,7 +179,7 @@ public class LeaderboardFragment extends Fragment {
 
                 if (friend != null)
                 {
-                    for (int i = 0; i < friend.length(); i++)
+                    for (int i = friend.length() - 1; i >= 0; i--)
                     {
                         try {
                             JSONObject temp = (JSONObject) friend.get(i);
@@ -193,13 +193,32 @@ public class LeaderboardFragment extends Fragment {
 
                 break;
             case 2:
-                mFriend.add(false);
-                mUsrNames.add("Austrailia");
-                mUsrScores.add("999888");
+//                JSONArray search = ((SWFApp) getActivity().getApplication()).searchUser(searchString);
+//
+//                if (search != null)
+//                {
+//                    for (int i = 0; i < search.length(); i++)
+//                    {
+//                        try {
+//                            JSONObject temp = (JSONObject) search.get(i);
+//                            Log.d(TAG, "initImageBitMaps: " + temp.toString());
+//                            mUsrNames.add(temp.get("login").toString());
+//                            mUsrScores.add(temp.get("total_points").toString());
+//                            mFriend.add(temp.getBoolean("isFriend"));
+//                        } catch (Exception e) {}
+//                    }
+//                }
 
-                mFriend.add(false);
-                mUsrNames.add("Washington");
-                mUsrScores.add("999777");
+                JSONObject temp = ((SWFApp) getActivity().getApplication()).searchUser(searchString);
+                try {
+                    Log.d(TAG, "initImageBitMaps: " + temp.toString());
+                    mUsrNames.add(temp.get("login").toString());
+                    mUsrScores.add(temp.get("total_points").toString());
+                    mFriend.add(temp.getBoolean("isFriend"));
+                } catch (Exception e) {
+                    Log.d(TAG, "initImageBitMaps: SEARCH FAILED");
+                }
+
                 break;
             default:
                 break;
