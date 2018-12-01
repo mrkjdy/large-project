@@ -1,5 +1,6 @@
 package commrkjdylarge_project.github.stepwithfriends;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -28,6 +31,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
     private ArrayList<String> mUserScore;
     private static Integer userPos;
     private Context context;
+    private static boolean showAdd;
+
+    public static String toDelete = "";
 
     // TODO add a field that determines if an user in the leaderboard is our friend
     public ListAdapter(ArrayList<Boolean> mFriend, ArrayList<String> mUserName, ArrayList<String> mUSerScore, Context context) {
@@ -36,6 +42,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
         this.mUserScore = mUSerScore;
         userPos = 0;
         this.context = context;
+        this.showAdd = false;
     }
 
     @NonNull
@@ -63,38 +70,49 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
         viewHolder.score.setText(mUserScore.get(i));
         viewHolder.pos.setText(""+(i + 1));
 
-        if (mFriend.get(i) == true)
+        //Log.d(TAG, "onBindViewHolder: " + showAdd);
+        if (/*showAdd == true*/ true)
         {
-            viewHolder.addFriend.setImageResource(android.R.drawable.ic_delete);
-            viewHolder.addFriend.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG, "onClick: clicked on: " + mUserName.get(i));
+            viewHolder.addFriend.setVisibility(View.VISIBLE);
+            if (mFriend.get(i) == true)
+            {
+                viewHolder.addFriend.setImageResource(android.R.drawable.ic_delete);
+                viewHolder.addFriend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d(TAG, "onClick: clicked on: " + mUserName.get(i));
 
-                    //TODO: add functionality to delete a friend here
-                    //TODO: show a popup confirming to delete the friend
-                    Toast.makeText(context, mUserName.get(i), Toast.LENGTH_SHORT).show();
-                    viewHolder.addFriend.setImageResource(android.R.drawable.ic_input_add);
-                    mFriend.set(i, false);
-                    notifyDataSetChanged();
-                }
-            });
+                        //TODO: add functionality to delete a friend here
+                        //TODO: show a popup confirming to delete the friend
+                        Toast.makeText(context, mUserName.get(i), Toast.LENGTH_SHORT).show();
+                        viewHolder.addFriend.setImageResource(android.R.drawable.ic_input_add);
+                        mFriend.set(i, false);
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+            else
+            {
+                viewHolder.addFriend.setImageResource(android.R.drawable.ic_input_add);
+                viewHolder.addFriend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d(TAG, "onClick: clicked on: " + mUserName.get(i));
+
+                        //TODO: add functionality to add a friend here
+                        boolean result = ((SWFApp) context.getApplicationContext()).addFriend(viewHolder.usrName.getText().toString());
+                        Log.d(TAG, "onClick: Was added? " + result + "\n\n");
+                        Toast.makeText(context, mUserName.get(i), Toast.LENGTH_SHORT).show();
+                        viewHolder.addFriend.setImageResource(android.R.drawable.ic_delete);
+                        mFriend.set(i, true);
+                        notifyDataSetChanged();
+                    }
+                });
+            }
         }
         else
         {
-            viewHolder.addFriend.setImageResource(android.R.drawable.ic_input_add);
-            viewHolder.addFriend.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG, "onClick: clicked on: " + mUserName.get(i));
-
-                    //TODO: add functionality to add a friend here
-                    Toast.makeText(context, mUserName.get(i), Toast.LENGTH_SHORT).show();
-                    viewHolder.addFriend.setImageResource(android.R.drawable.ic_delete);
-                    mFriend.set(i, true);
-                    notifyDataSetChanged();
-                }
-            });
+            viewHolder.addFriend.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -104,12 +122,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
     }
 
     // TODO add a field that determines if an user in the leaderboard is our friend
-    public void setData(ArrayList<Boolean> mFriend, ArrayList<String> mUserName, ArrayList<String> mUSerScore, Context context)
+    public void setData(ArrayList<Boolean> mFriend, ArrayList<String> mUserName, ArrayList<String> mUSerScore, boolean showAdd, Context context)
     {
         this.mFriend = mFriend;
         this.mUserName = mUserName;
         this.mUserScore = mUSerScore;
         this.context = context;
+        this.showAdd = showAdd;
         notifyDataSetChanged(); // Notify that the dataset has changed, and updates the recyclerview
     }
 

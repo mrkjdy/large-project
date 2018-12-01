@@ -95,7 +95,7 @@ public class LeaderboardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 initImageBitMaps(0);
-                adapter.setData(mFriend, mUsrNames, mUsrScores, getActivity());
+                adapter.setData(mFriend, mUsrNames, mUsrScores, false, getActivity());
                 Toast.makeText(getActivity(), "Loaded World", Toast.LENGTH_SHORT).show();
             }
         });
@@ -105,7 +105,7 @@ public class LeaderboardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 initImageBitMaps(1);
-                adapter.setData(mFriend, mUsrNames, mUsrScores, getActivity());
+                adapter.setData(mFriend, mUsrNames, mUsrScores, true, getActivity());
                 Toast.makeText(getActivity(), "Loaded Friends", Toast.LENGTH_SHORT).show();
             }
         });
@@ -137,7 +137,7 @@ public class LeaderboardFragment extends Fragment {
                 Toast.makeText(getActivity(), "Searching", Toast.LENGTH_SHORT).show();
                 initImageBitMaps(2);
                 searchString = "";
-                adapter.setData(mFriend, mUsrNames, mUsrScores, getActivity());
+                adapter.setData(mFriend, mUsrNames, mUsrScores, true, getActivity());
             }
         });
     }
