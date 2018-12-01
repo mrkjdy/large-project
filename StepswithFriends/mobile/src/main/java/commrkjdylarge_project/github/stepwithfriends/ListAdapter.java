@@ -1,7 +1,9 @@
 package commrkjdylarge_project.github.stepwithfriends;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -35,7 +37,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
     private static boolean showAdd;
 
     public static String toDelete = "";
-    public static boolean deleted = false;
+    public static int deleted = 0;
 
     // DONE add a field that determines if an user in the leaderboard is our friend
     public ListAdapter(ArrayList<Boolean> mFriend, ArrayList<String> mUserName, ArrayList<String> mUSerScore, Context context) {
@@ -83,30 +85,37 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
                     @Override
                     public void onClick(View v) {
                         Log.d(TAG, "onClick: clicked on: " + mUserName.get(i));
-                        deleted = false;
+                        deleted = 0;
 
                         //DONE: add functionality to delete a friend here
                         toDelete = viewHolder.usrName.getText().toString();
                         //DONE: show a popup confirming to delete the friend
-                        context.startActivity(new Intent(context, ConfirmDeletePopup.class));
-//                        try {
-//                            wait();
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
 
-//                        if (deleted)
-//                        {
-                            // Delete user from local data
-                            viewHolder.addFriend.setImageResource(android.R.drawable.ic_input_add);
-                            mFriend.set(i, false);
-                            mFriend.remove(i);
-                            mUserName.remove(i);
-                            mUserScore.remove(i);
-                            // End
-//                        }
-
-                        notifyDataSetChanged();
+                        AlertDialog.Builder alt = new AlertDialog.Builder(context);
+                        alt.setMessage("Do you want to delete " + toDelete + "?")
+                                .setCancelable(false)
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // Delete user from local data
+                                        boolean result = ((SWFApp) context.getApplicationContext()).deleteFriend(toDelete);
+                                        mFriend.remove(i);
+                                        mUserName.remove(i);
+                                        mUserScore.remove(i);
+                                        notifyDataSetChanged();
+                                        // End
+                                        dialog.cancel();
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+                        AlertDialog alert = alt.create();
+                        alert.setTitle("Delete");
+                        alert.show();
                     }
                 });
             }
