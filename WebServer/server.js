@@ -488,7 +488,7 @@ app.post('/gettopusers', function(req, res) {
 					if(err) {
 						res.status(400).send();
 					} else {
-						tempCont.query("SELECT login, total_points FROM user WHERE EXISTS (SELECT * FROM friendship WHERE user_one_id = ? OR user_two_id = ?) ORDER BY total_points LIMIT 100;", [req.user.user_id, req.user.user_id], function(err, result) {
+						tempCont.query("SELECT login, total_points FROM User INNER JOIN Friendship ON (User.user_id = Friendship.user_one_id AND Friendship.user_two_id = ?) OR (Friendship.user_one_id = ? AND User.user_id = Friendship.user_two_id) ORDER BY total_points LIMIT 100;", [req.user.user_id, req.user.user_id], function(err, result) {
 							if(err || !result) {
 								res.status(400).send();
 							} else {
@@ -592,6 +592,48 @@ app.post('/searchuserinfo', function(req, res) {
 		} else {
 			res.status(400).send();
 		}
+	}
+});
+
+app.post('/joinsession', function(req, res) {
+	if(!req.user) {
+		res.status(401).send();
+	} else {
+		dbPool.getConnection(function(err, tempCont) {
+			if(err) {
+				console.log(err);
+				res.status(400).send();
+			} else {
+				tempCont.query("SELECT latitude, longitude, session_id FROM User INNER JOIN Friendship ON (User.user_id = Friendship.user_one_id AND Friendship.user_two_id = ?) OR (Friendship.user_one_id = ? AND User.user_id = Friendship.user_two_id);", [req.user.user_id, req.user.user_id], function(err, result) {
+					if(err) {
+						console.log(err);
+						res.status(400).send();
+					} else if(!result) {
+						//Create new session
+						tempCont.query("", [], function(err, result1) {
+							if(err) {
+								console.log(err);
+								res.status(400).send();
+							} else {
+								
+							}
+						});
+					} else {
+						//Join session
+						
+						tempCont.query("", [], function(err, result1) {
+							if(err) {
+								console.log(err);
+								res.status(400).send();
+							} else {
+								
+							}
+						});
+					}
+				});
+			}
+			tempCont.release();
+		});
 	}
 });
 
