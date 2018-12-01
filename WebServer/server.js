@@ -453,7 +453,6 @@ app.post('/updateuserdata', function(req, res) {
 					if(err) {
 						res.status(400).send();
 					} else {
-						console.log(updateValues);
 						tempCont.query("UPDATE ? SET ? WHERE user_id=?;", [table, updateValues.slice(0, -3), req.body.user_id], function(err, result) {
 							if(err || !result) {
 								res.status(400).send();
@@ -476,7 +475,6 @@ app.post('/gettopusers', function(req, res) {
 	} else {
 		if(req.body.group === "global") {
 			if(topRankedUsers) {
-				console.log(topRankedUsers);
 				res.status(200).send(topRankedUsers);
 			} else {
 				res.status(400).send();
@@ -489,7 +487,7 @@ app.post('/gettopusers', function(req, res) {
 					if(err) {
 						res.status(400).send();
 					} else {
-						tempCont.query("SELECT login, total_points FROM user WHERE EXISTS (SELECT * FROM friendship WHERE user_one_id = ? OR user_two_id = ?) ORDER BY total_points LIMIT 100;", [req.user.user_id, req.user.user_id], function(err, result) {
+						tempCont.query("SELECT login, total_points FROM User INNER JOIN Friendship ON (User.user_id = Friendship.user_one_id AND Friendship.user_two_id = ?) OR (Friendship.user_one_id = ? AND User.user_id = Friendship.user_two_id) ORDER BY total_points LIMIT 100;", [req.user.user_id, req.user.user_id], function(err, result) {
 							if(err || !result) {
 								res.status(400).send();
 							} else {
@@ -519,10 +517,10 @@ app.post('/addfriend', function(req, res) {
 					tempCont.query("SELECT * FROM Friendship WHERE (user_one_id = ? AND user_two_id = (SELECT user_id FROM User WHERE login = ?)) OR (user_one_id = (SELECT user_id FROM User WHERE login = ?) AND user_two_id = ?);", [req.user.user_id, req.body.username, req.body.username, req.user.user_id], function(err, result) {
 						if(err) {
 							res.status(400).send();
-						} else if(result) {
+						} else if(result[0]) {
 							res.status(200).send();
 						} else {
-							tempCont.query("INSERT INTO Friendship VALUES (?, (SELECT user_id FROM User WHERE login = ?), 0, 0);", [req.user.user_id, req.body.username], function(err, result1) {
+							tempCont.query("INSERT INTO Friendship (user_one_id, user_two_id) VALUES (?, (SELECT user_id FROM User WHERE login = ?));", [req.user.user_id, req.body.username], function(err, result1) {
 								if(err || !result) {
 									res.status(400).send();
 								} else {
@@ -596,54 +594,96 @@ app.post('/searchuserinfo', function(req, res) {
 	}
 });
 
-// Get URL for a profile pic
-app.post('/getUserPicURL', function(req, res) {
-	if(!req.user) {
-		res.status(401).send();
-	} else {
-		if(req.body.username) {
-			dbPool.getConnection(function(err, tempCont) {
-				if(err) {
-					console.log(err);
-					res.status(400).send();
-				} else {
-					tempCont.query("SELECT user_id, photo_type FROM User WHERE login = ?;", [req.body.username], function(err, result) {
-						if(err) {
-							console.log(err);
-							res.status(400).send();
-						} else if(!result[0]) {
-							res.status(400).send();
-						} else {
-							let url = cdnurl + result[0].user_id + "." + result[0].photo_type;
-							res.status(200).send(url);
-						}
-					});
-				}
-				tempCont.release();
-			});
-		} else {
-			res.status(400).send();
-		}
-	}
-});
+// app.post('/joinsession', function(req, res) {
+	// if(!req.user) {
+		// res.status(401).send();
+	// } else {
+		// dbPool.getConnection(function(err, tempCont) {
+			// if(err) {
+				// console.log(err);
+				// res.status(400).send();
+			// } else {
+				// tempCont.query("SELECT latitude, longitude, session_id FROM User INNER JOIN Friendship ON (User.user_id = Friendship.user_one_id AND Friendship.user_two_id = ?) OR (Friendship.user_one_id = ? AND User.user_id = Friendship.user_two_id);", [req.user.user_id, req.user.user_id], function(err, result) {
+					// if(err) {
+						// console.log(err);
+						// res.status(400).send();
+					// } else if(!result) {
+						// // Create new session
+						// tempCont.query("", [], function(err, result1) {
+							// if(err) {
+								// console.log(err);
+								// res.status(400).send();
+							// } else {
+								
+							// }
+						// });
+					// } else {
+						// // Join session
+						
+						// tempCont.query("", [], function(err, result1) {
+							// if(err) {
+								// console.log(err);
+								// res.status(400).send();
+							// } else {
+								
+							// }
+						// });
+					// }
+				// });
+			// }
+			// tempCont.release();
+		// });
+	// }
+// });
 
-// Upload a profile pic
-app.post('/addUserPic', function(req, res) {
-	if(!req.user) {
-		res.status(401).send();
-	} else if(!req.files.photo) {
-		res.status(400).send();
-	} else {
-		let photo = req.files.photo;
-		if(photo.mimetype.localeCompare('image/png') === 0 || photo.mimetype.localeCompare('image/jpeg') === 0) {
+// Get URL for a profile pic
+// app.post('/getUserPicURL', function(req, res) {
+	// if(!req.user) {
+		// res.status(401).send();
+	// } else {
+		// if(req.body.username) {
+			// dbPool.getConnection(function(err, tempCont) {
+				// if(err) {
+					// console.log(err);
+					// res.status(400).send();
+				// } else {
+					// tempCont.query("SELECT user_id, photo_type FROM User WHERE login = ?;", [req.body.username], function(err, result) {
+						// if(err) {
+							// console.log(err);
+							// res.status(400).send();
+						// } else if(!result[0]) {
+							// res.status(400).send();
+						// } else {
+							// let url = cdnurl + result[0].user_id + "." + result[0].photo_type;
+							// res.status(200).send(url);
+						// }
+					// });
+				// }
+				// tempCont.release();
+			// });
+		// } else {
+			// res.status(400).send();
+		// }
+	// }
+// });
+
+// // Upload a profile pic
+// app.post('/addUserPic', function(req, res) {
+	// if(!req.user) {
+		// res.status(401).send();
+	// } else if(!req.files.photo) {
+		// res.status(400).send();
+	// } else {
+		// let photo = req.files.photo;
+		// if(photo.mimetype.localeCompare('image/png') === 0 || photo.mimetype.localeCompare('image/jpeg') === 0) {
 			
-			//Do something
+			// //Do something
 			
-		} else {
-			res.status(400).send();
-		}
-	}
-});
+		// } else {
+			// res.status(400).send();
+		// }
+	// }
+// });
 
 // Display 404 for 
 // MUST BE AT BOTTOM OF THIS SECTION!
@@ -735,6 +775,7 @@ var updateTopUsers = schedule.scheduleJob('*/5 * * * *', function() {
 	getNewTopUsers();
 });
 
+//Needs to be updates to use join table
 var getUserPageData = function(username) {
 	dbPool.getConnection(function(err, tempCont) {
 		if(err) {
@@ -783,4 +824,15 @@ var getUserIndex = function(username) {
 		}
 		tempCont.release();
 	});
+}
+
+var withinRange = function(latA, longA, latB, longB) {
+	let radius = Math.sqrt(Math.Pow(latA-latB,2) + Math.Pow(longA-longB,2));
+
+	// Wiki:
+	// one latitudinal degree is 110.6 kilometres
+	// one longitudinal degree is 96.5 km
+
+	// 0.5 km radius ~= sqrt (2 x (0.05 degrees)^2) ~= 0.0707
+	return (radius < 0.0707);
 }

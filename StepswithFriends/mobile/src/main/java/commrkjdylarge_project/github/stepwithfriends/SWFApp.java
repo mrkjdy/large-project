@@ -12,7 +12,7 @@ import cz.msebera.android.httpclient.Header;
 public class SWFApp extends Application {
 
     //////////////////////////////////////
-    private boolean useLOCALHOST = true;
+    private boolean useLOCALHOST = false;
     //////////////////////////////////////
 
     private AsyncHttpClient asyncHttpClient = null;
@@ -21,8 +21,13 @@ public class SWFApp extends Application {
     private JSONObject userData_Workout = null;
     private volatile boolean syncStatus = false;
     private volatile JSONArray tempObject = null;
+    private volatile JSONObject otherTempObject = null;
     private volatile RequestParams tempParams = null;
     private String url = "https://large-project.herokuapp.com";
+
+    public String getURL() {
+        return this.url;
+    }
 
     public AsyncHttpClient getClient() {
         if(this.asyncHttpClient == null) {
@@ -204,6 +209,69 @@ public class SWFApp extends Application {
                 return false;
             }
         }
+    }
+
+    //Does what it says on the tin
+    public boolean addFriend(String username) {
+        this.syncStatus = false;
+        RequestParams params = new RequestParams();
+        params.put("username", username);
+        this.asyncHttpClient.post(this.url + "/addfriend", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // called when response HTTP status is "200 OK"
+                syncStatus = true;
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                syncStatus = false;
+            }
+        });
+        return this.syncStatus;
+    }
+
+    //Ditto
+    public boolean deleteFriend(String username) {
+        this.syncStatus = false;
+        RequestParams params = new RequestParams();
+        params.put("username", username);
+        this.asyncHttpClient.post(this.url + "/removefriend", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // called when response HTTP status is "200 OK"
+                syncStatus = true;
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                syncStatus = false;
+            }
+        });
+        return this.syncStatus;
+    }
+
+    //Search for a user, returns null if error or user doesn't exist
+    public JSONObject searchUser(String username) {
+        this.otherTempObject = null;
+        RequestParams params = new RequestParams();
+        params.put("username", username);
+        this.asyncHttpClient.post(this.url + "/searchuserinfo", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // called when response HTTP status is "200 OK"
+                otherTempObject = response;
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+            }
+        });
+
+        return this.otherTempObject;
     }
 
     private boolean syncUserData(Object[] fields, Object[] values, String table) {
