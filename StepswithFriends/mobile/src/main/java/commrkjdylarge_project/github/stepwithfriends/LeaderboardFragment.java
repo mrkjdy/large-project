@@ -130,6 +130,7 @@ public class LeaderboardFragment extends Fragment {
                 friendBtn.setVisibility(View.VISIBLE);
                 searchBtn.setVisibility(View.VISIBLE);
                 searchString = searchBox.getText().toString();
+                Log.d(TAG, "onClick: " + searchString);
                 searchBox.setVisibility(View.GONE);
                 searcherBtn.setVisibility(View.GONE);
 
@@ -193,30 +194,29 @@ public class LeaderboardFragment extends Fragment {
 
                 break;
             case 2:
-//                JSONArray search = ((SWFApp) getActivity().getApplication()).searchUser(searchString);
-//
-//                if (search != null)
-//                {
-//                    for (int i = 0; i < search.length(); i++)
-//                    {
-//                        try {
-//                            JSONObject temp = (JSONObject) search.get(i);
-//                            Log.d(TAG, "initImageBitMaps: " + temp.toString());
-//                            mUsrNames.add(temp.get("login").toString());
-//                            mUsrScores.add(temp.get("total_points").toString());
-//                            mFriend.add(temp.getBoolean("isFriend"));
-//                        } catch (Exception e) {}
-//                    }
-//                }
+                Log.d(TAG, "initImageBitMaps: " + searchString);
+                JSONArray search = ((SWFApp) getActivity().getApplication()).searchUser(searchString);
 
-                JSONObject temp = ((SWFApp) getActivity().getApplication()).searchUser(searchString);
-                try {
-                    Log.d(TAG, "initImageBitMaps: " + temp.toString());
-                    mUsrNames.add(temp.get("login").toString());
-                    mUsrScores.add(temp.get("total_points").toString());
-                    mFriend.add(temp.getBoolean("isFriend"));
-                } catch (Exception e) {
-                    Log.d(TAG, "initImageBitMaps: SEARCH FAILED");
+                if (search != null)
+                {
+                    for (int i = 0; i < search.length(); i++)
+                    {
+                        try {
+                            JSONObject temp = (JSONObject) search.get(i);
+                            Log.d(TAG, "initImageBitMaps: " + temp.toString());
+                            mUsrNames.add(temp.get("login").toString());
+                            mUsrScores.add(temp.get("total_points").toString());
+                            mFriend.add(temp.getBoolean("isFriend"));
+                            Log.d(TAG, "initImageBitMaps: GOT HERE");
+                        } catch (Exception e)
+                        {
+                            Log.d(TAG, "initImageBitMaps: SEARCH FAILED");
+                        }
+                    }
+                }
+                else
+                {
+                    Log.d(TAG, "initImageBitMaps: SEARCH WAS NULL");
                 }
 
                 break;
