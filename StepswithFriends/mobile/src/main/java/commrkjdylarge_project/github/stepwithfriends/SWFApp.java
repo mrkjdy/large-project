@@ -246,7 +246,7 @@ public class SWFApp extends Application {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                syncHttpClient.post(url + "/searchuser", tempParams, new JsonHttpResponseHandler() {
+                syncHttpClient.post(url + "/searchuserinfo", tempParams, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                         // called when response HTTP status is "200 OK"
