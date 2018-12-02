@@ -18,11 +18,11 @@ public class SWFApp extends Application {
     private AsyncHttpClient asyncHttpClient = null;
     private SyncHttpClient syncHttpClient = null;
     private JSONObject userData_User = null;
-    private JSONObject userData_Workout = null;
     private volatile boolean syncStatus = false;
     private volatile JSONArray tempObject = null;
     private volatile JSONObject otherTempObject = null;
     private volatile RequestParams tempParams = null;
+    private volatile int tempInt = -1;
     private String url = "https://large-project.herokuapp.com";
 
     public String getURL() {
@@ -56,10 +56,6 @@ public class SWFApp extends Application {
                 table_local = this.userData_User;
                 break;
 
-            case "Workout":
-                table_local = this.userData_Workout;
-                break;
-
             default:
                 return null;
         }
@@ -74,10 +70,6 @@ public class SWFApp extends Application {
                         switch(response.getString("table")) {
                             case "User":
                                 userData_User = response.getJSONObject("value");
-                                break;
-
-                            case "Workout":
-                                userData_Workout = response.getJSONObject("value");
                                 break;
                         }
                     } catch(Exception e) {}
@@ -96,7 +88,6 @@ public class SWFApp extends Application {
     public void resetUser() {
         this.asyncHttpClient = null;
         this.userData_User = null;
-        this.userData_Workout = null;
         this.syncStatus = false;
     }
 
@@ -155,10 +146,6 @@ public class SWFApp extends Application {
                     table_local = this.userData_User;
                     break;
 
-                case "Workout":
-                    table_local = this.userData_Workout;
-                    break;
-
                 default:
                     return false;
             }
@@ -186,10 +173,6 @@ public class SWFApp extends Application {
             switch(table) {
                 case "User":
                     table_local = this.userData_User;
-                    break;
-
-                case "Workout":
-                    table_local = this.userData_Workout;
                     break;
 
                 default:
@@ -272,6 +255,86 @@ public class SWFApp extends Application {
         });
 
         return this.otherTempObject;
+    }
+
+    //INSTRUCTIONS FOR USING THE SESSION API
+    //When joining a session, simply call joinSession(). It will return an int with a session ID if it is successful, otherwise it will return -1
+    //When leaving a session, call leaveSession(). It will return true if successful, false if not
+    //To get the number of users in the current user's session, call getSession(). It will return the number of users ( >= 1 ) if successful, other it will return -1
+
+    //Joins a session, returns with session ID on success and -1 if failure
+    public int joinSession() {
+        RequestParams params = new RequestParams();
+        this.asyncHttpClient.post(this.url + "/joinsession", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // called when response HTTP status is "200 OK"
+                int session_id;
+                try {
+                    session_id = response.getInt("session_id");
+                } catch(Exception e) {
+                    return;
+                }
+                try {
+                    userData_User.put("session_id", session_id);
+                } catch(Exception e) {
+                    return;
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+            }
+        });
+        int id = -1;
+        try {
+            id = userData_User.getInt("session_id");
+        } catch(Exception e) {}
+        return id;
+    }
+
+    //Returns true if left session, false if error
+    public boolean leaveSession() {
+        this.syncStatus = false;
+        RequestParams params = new RequestParams();
+        this.asyncHttpClient.post(this.url + "/leavesession", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // called when response HTTP status is "200 OK"
+                syncStatus = true;
+                try {
+                    userData_User.put("session_id", null);
+                } catch(Exception e) {}
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+            }
+        });
+        return this.syncStatus;
+    }
+
+    //Returns number of users in session, returns -1 if false
+    public int getSession() {
+        this.tempInt = -1;
+        RequestParams params = new RequestParams();
+        this.asyncHttpClient.post(this.url + "/getsession", params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // called when response HTTP status is "200 OK"
+                try {
+                    tempInt = response.getInt("value");
+                } catch(Exception e) {}
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+            }
+        });
+        return this.tempInt;
     }
 
     private boolean syncUserData(Object[] fields, Object[] values, String table) {

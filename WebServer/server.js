@@ -40,6 +40,9 @@ const saltRounds = 10;
 // Top 100 Users, periodically updated to save the database
 var topRankedUsers;
 
+// Used to track session IDs
+var sessionID;
+
 // App config
 // ----------------------------------------------------------------------
 
@@ -48,10 +51,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Starts listening on the port provided by heroku
 app.listen(PORT, function() {
-	console.log("Listening on " + PORT)
-	console.log("NODE_ENV is " + NODE_ENV)
-	console.log(process.env.DATABASE_HOST)
+	console.log("Listening on " + PORT);
+	console.log("NODE_ENV is " + NODE_ENV);
+	console.log(process.env.DATABASE_HOST);
 	getNewTopUsers();
+	getSessionID();
 });
 
 // Redirects to HTTPS
@@ -594,47 +598,116 @@ app.post('/searchuserinfo', function(req, res) {
 	}
 });
 
-// app.post('/joinsession', function(req, res) {
-	// if(!req.user) {
-		// res.status(401).send();
-	// } else {
-		// dbPool.getConnection(function(err, tempCont) {
-			// if(err) {
-				// console.log(err);
-				// res.status(400).send();
-			// } else {
-				// tempCont.query("SELECT latitude, longitude, session_id FROM User INNER JOIN Friendship ON (User.user_id = Friendship.user_one_id AND Friendship.user_two_id = ?) OR (Friendship.user_one_id = ? AND User.user_id = Friendship.user_two_id);", [req.user.user_id, req.user.user_id], function(err, result) {
-					// if(err) {
-						// console.log(err);
-						// res.status(400).send();
-					// } else if(!result) {
-						// // Create new session
-						// tempCont.query("", [], function(err, result1) {
-							// if(err) {
-								// console.log(err);
-								// res.status(400).send();
-							// } else {
-								
-							// }
-						// });
-					// } else {
-						// // Join session
-						
-						// tempCont.query("", [], function(err, result1) {
-							// if(err) {
-								// console.log(err);
-								// res.status(400).send();
-							// } else {
-								
-							// }
-						// });
-					// }
-				// });
-			// }
-			// tempCont.release();
-		// });
-	// }
-// });
+//User joins a nearby session of a friend, otherwise creates a new session
+app.post('/joinsession', function(req, res) {
+	if(!req.user) {
+		res.status(401).send();
+	} else {
+		dbPool.getConnection(function(err, tempCont) {
+			if(err) {
+				console.log(err);
+				res.status(400).send();
+			} else {
+				tempCont.query("SELECT latitude, longitude, session_id FROM User INNER JOIN Friendship ON (User.user_id = Friendship.user_one_id AND Friendship.user_two_id = ?) OR (Friendship.user_one_id = ? AND User.user_id = Friendship.user_two_id);", [req.user.user_id, req.user.user_id], function(err, result) {
+					if(err) {
+						console.log(err);
+						res.status(400).send();
+					} else if(!result) {
+						// Create new session
+						tempCont.query("UPDATE User SET session_id = ? WHERE user_id = ?;", [sessionID, req.user.user_id], function(err, result1) {
+							if(err) {
+								console.log(err);
+								res.status(400).send();
+							} else {
+								res.status(200).send(sessionID);
+								sessionID++;
+							}
+						});
+					} else {
+						// Join session
+						for(var i = 0; i < result.length; i++) {
+							if(withinRange(result[i].latitude, result[i].longitude, req.user.latitude, req.user.longitude)) {
+								tempCont.query("UPDATE User SET session_id = ? WHERE user_id = ?;", [result[i].session_id], function(err, result1) {
+									if(err) {
+										console.log(err);
+										res.status(400).send();
+										i = result.length;
+									} else {
+										res.status(200).send(result[i].session_id);
+										i = result.length;
+									}
+								});
+							}
+						}
+						if(!res.headersSent) {
+							// Create new session if no friends in range
+							tempCont.query("UPDATE User SET session_id = ? WHERE user_id = ?;", [sessionID, req.user.user_id], function(err, result1) {
+								if(err) {
+									console.log(err);
+									res.status(400).send();
+								} else {
+									res.status(200).send(sessionID);
+									sessionID++;
+								}
+							});
+						}
+					}
+				});
+			}
+			tempCont.release();
+		});
+	}
+});
+
+app.post('/leavesession', function(req, res) {
+	if(!req.user) {
+		res.status(401).send();
+	} else {
+		dbPool.getConnection(function(err, tempCont) {
+			if(err) {
+				console.log(err);
+				res.status(400).send();
+			} else {
+				tempCont.query("UPDATE User SET session_id = null WHERE user_id = ?;", [req.user.user_id], function(err, result) {
+					if(err) {
+						console.log(err);
+						res.status(400).send();
+					} else {
+						res.status(200).send();
+					}
+				});
+			}
+			tempCont.release();
+		});
+	}
+});
+
+app.post('/getsession', function(req, res) {
+	if(!req.user) {
+		res.status(400).send();
+	} else {
+		if(req.user.session_id === null) {
+			res.status(400).send();
+		} else {
+			dbPool.getConnection(function(err, tempCont) {
+				if(err) {
+					console.log(err);
+					res.status(400).send();
+				} else {
+					tempCont.query("SELECT COUNT(*) AS value FROM User WHERE session_id = ?;", [req.user.session_id], function(err, result) {
+						if(err) {
+							console.log(err);
+							res.status(400).send();
+						} else {
+							res.status(200).send();
+						}
+					});
+				}
+				tempCont.release();
+			});
+		}
+	}
+});
 
 // Get URL for a profile pic
 // app.post('/getUserPicURL', function(req, res) {
@@ -827,7 +900,7 @@ var getUserIndex = function(username) {
 }
 
 var withinRange = function(latA, longA, latB, longB) {
-	let radius = Math.sqrt(Math.Pow(latA-latB,2) + Math.Pow(longA-longB,2));
+	var radius = Math.sqrt(Math.Pow(latA-latB,2) + Math.Pow(longA-longB,2));
 
 	// Wiki:
 	// one latitudinal degree is 110.6 kilometres
@@ -835,4 +908,29 @@ var withinRange = function(latA, longA, latB, longB) {
 
 	// 0.5 km radius ~= sqrt (2 x (0.05 degrees)^2) ~= 0.0707
 	return (radius < 0.0707);
+}
+
+var getSessionID = function() {
+	dbPool.getConnection(function(err, tempCont) {
+		if(err) {
+			console.log(err);
+			sessionID = 10000;
+			console.log("SessionID index is " + sessionID);
+		} else {
+			tempCont.query("SELECT session_id FROM User ORDER BY session_id DESC LIMIT 1;", function(err, result) {
+				if(err) {
+					console.log(err);
+					sessionID = 10000;
+				} else {
+					if(result[0].session_id === null) {
+						sessionID = 0;
+					} else {
+						sessionID = result[0].session_id;
+					}
+				}
+				console.log("SessionID index is " + sessionID);
+			});
+		}
+		tempCont.release();
+	});
 }
