@@ -579,14 +579,14 @@ app.post('/searchuserinfo', function(req, res) {
 					console.log(err);
 					res.status(400).send();
 				} else {
-					tempCont.query("SELECT login, total_points, CASE WHEN EXISTS (SELECT * FROM Friendship WHERE (user_one_id = ? AND user_two_id = (SELECT user_id FROM User WHERE login = ?)) OR (user_one_id = (SELECT user_id FROM User WHERE login = ?) AND user_two_id = ?)) THEN 'TRUE' ELSE 'FALSE' END AS isFriend FROM User WHERE login = ? AND isPrivate = false;", [req.user.user_id, req.body.username, req.body.username, req.user.user_id, req.body.username], function(err, result) {
+					tempCont.query("SELECT DISTINCT login, total_points, CASE WHEN EXISTS (SELECT user_id FROM Friendship WHERE (user_one_id = ? AND user_two_id = User.user_id) OR (user_one_id = User.user_id AND user_two_id = ?)) THEN 'TRUE' ELSE 'FALSE' END AS isFriend FROM User INNER JOIN Friendship ON (User.user_id = Friendship.user_one_id AND Friendship.user_two_id = ?) OR (Friendship.user_one_id = ? AND User.user_id = Friendship.user_two_id) OR (User.isPrivate = false) WHERE login LIKE '%?%';", [req.user.user_id, req.user.user_id, req.user.user_id, res.user.user_id, req.body.username], function(err, result) {
 						if(err) {
 							console.log(err);
 							res.status(400).send();
-						} else if(!result[0]) {
+						} else if(!result) {
 							res.status(200).send(null);
 						} else {
-							res.status(200).send(result[0]);
+							res.status(200).send(result);
 						}
 					});
 				}

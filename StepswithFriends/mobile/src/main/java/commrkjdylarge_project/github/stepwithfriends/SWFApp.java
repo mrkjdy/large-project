@@ -20,7 +20,6 @@ public class SWFApp extends Application {
     private JSONObject userData_User = null;
     private volatile boolean syncStatus = false;
     private volatile JSONArray tempObject = null;
-    private volatile JSONObject otherTempObject = null;
     private volatile RequestParams tempParams = null;
     private volatile int tempInt = -1;
     private String url = "https://large-project.herokuapp.com";
@@ -237,24 +236,40 @@ public class SWFApp extends Application {
     }
 
     //Search for a user, returns null if error or user doesn't exist
-    public JSONObject searchUser(String username) {
-        this.otherTempObject = null;
+    public JSONArray searchUser(String username) {
         RequestParams params = new RequestParams();
         params.put("username", username);
-        this.asyncHttpClient.post(this.url + "/searchuserinfo", params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                // called when response HTTP status is "200 OK"
-                otherTempObject = response;
-            }
+        this.tempObject = null;
+        this.syncStatus = false;
+        this.tempParams = params;
 
+        new Thread(new Runnable() {
             @Override
-            public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-            }
-        });
+            public void run() {
+                syncHttpClient.post(url + "/searchuser", tempParams, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        // called when response HTTP status is "200 OK"
+                        tempObject = response;
+                        syncStatus = true;
+                    }
 
-        return this.otherTempObject;
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                        // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                        syncStatus = true;
+                    }
+                });
+            }
+        }).start();
+
+        while(!this.syncStatus) {
+            try {
+                Thread.sleep(100);
+            } catch(Exception e) {}
+        }
+
+        return this.tempObject;
     }
 
     //INSTRUCTIONS FOR USING THE SESSION API
