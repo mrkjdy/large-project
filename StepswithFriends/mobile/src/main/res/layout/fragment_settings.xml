@@ -98,7 +98,7 @@
                     android:layout_marginTop="12dp"
                     android:background="@drawable/settings_input"
                     android:gravity="start|center_vertical"
-                    android:text="  Discoverable by Public "
+                    android:text="Private Profile"
                     android:thumbTint="@color/colorSecondaryAccent"
                     app:layout_constraintEnd_toEndOf="@+id/scrollView2"
                     app:layout_constraintStart_toStartOf="@+id/scrollView2"

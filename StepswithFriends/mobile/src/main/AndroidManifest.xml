@@ -49,9 +49,6 @@
         <activity
             android:name=".InfoPopup"
             android:theme="@style/AppTheme.PopupTheme"></activity>
-        <activity
-            android:name=".ConfirmDeletePopup"
-            android:theme="@style/AppTheme.PopupTheme"></activity>
     </application>
 
 </manifest>
