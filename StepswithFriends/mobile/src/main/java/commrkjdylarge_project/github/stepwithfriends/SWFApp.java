@@ -19,6 +19,7 @@ public class SWFApp extends Application {
     private SyncHttpClient syncHttpClient = null;
     private JSONObject userData_User = null;
     private volatile boolean syncStatus = false;
+    private volatile boolean syncResult = false;
     private volatile JSONArray tempObject = null;
     private volatile RequestParams tempParams = null;
     private volatile int tempInt = -1;
@@ -150,7 +151,7 @@ public class SWFApp extends Application {
             }
             if(syncUserData(new String[] {field}, new Object[] {value}, table)) {
                 try {
-                    table_local.put(field, value);
+                    table_local.put(field, (value instanceof Boolean ? ((Boolean)value ? 1 : 0) : value));
                 } catch(JSONException e) {
                     // TODO: attempt to resync local data
                     return false;
@@ -180,7 +181,7 @@ public class SWFApp extends Application {
             if(syncUserData(fields, values, table)) {
                 try {
                     for(int i=0; i<fields.length; i++) {
-                        table_local.put(fields[i], values[i]);
+                        table_local.put(fields[i], (values[i] instanceof Boolean ? ((Boolean)values[i] ? 1 : 0) : values[i]));
                     }
                 } catch(JSONException e) {
                     // TODO: attempt to resync local data
@@ -353,24 +354,42 @@ public class SWFApp extends Application {
     }
 
     private boolean syncUserData(Object[] fields, Object[] values, String table) {
-        this.syncStatus = false;
         RequestParams params = new RequestParams();
         params.put("fields", fields);
         params.put("values", values);
         params.put("table", table);
-        this.asyncHttpClient.post(this.url + "/updateuserdata", params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                // called when response HTTP status is "200 OK"
-                syncStatus = true;
-            }
+        this.syncResult = false;
+        this.syncStatus = false;
+        this.tempParams = params;
 
+        new Thread(new Runnable() {
             @Override
-            public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                syncStatus = false;
+            public void run() {
+                syncHttpClient.post(url + "/updateuserdata", tempParams, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        // called when response HTTP status is "200 OK"
+                        syncResult = true;
+                        syncStatus = true;
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                        // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                        if(statusCode == 200) {
+                            syncResult = true;
+                        }
+                        syncStatus = true;
+                    }
+                });
             }
-        });
-        return this.syncStatus;
+        }).start();
+
+        while(!this.syncStatus) {
+            try {
+                Thread.sleep(10);
+            } catch(Exception e) {}
+        }
+        return this.syncResult;
     }
 }

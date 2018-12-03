@@ -387,67 +387,33 @@ app.post('/updateuserdata', function(req, res) {
 	if(!req.user) {
 		res.status(401).send();
 	} else {
-		if(!req.body.fields || !req.body.values || !req.body.table || req.body.fields.length != req.body.values.length || (req.body.table != "User" && req.body.table != "Workout" && req.body.table != "Friendship")) {
+		if(!req.body["fields[0]"] || !req.body["values[0]"] || req.body.table != "User") {
 			res.status(400).send();
 		} else {
-			var validRequest = false;
+			var i = 0;
+			while(req.body["fields[" + (i + 1) + "]"] != undefined) {
+				if(req.body["values[" + (i + 1) + "]"] == undefined) {
+					res.status(400).send();
+				} else {
+					i++;
+				}
+			}
 			var updateValues = "";
-			for(var i=0; i<req.body.fields.length; i++) {
-				// !!! Ensure that all editable and only editable fields are present, and have correct type specified for validation
-				switch(req.body.fields[i]) {
-					//    field name
-					case "firstName":
-						//                        field value          field type
-						validRequest = checkInput(req.body.values[i], "name");
-						break;
-					
-					case "lastName":
-						validRequest = checkInput(req.body.values[i], "");
-						break;
-					
-					case "height":
-						validRequest = checkInput(req.body.values[i], "");
-						break;
-						
-					case "weight":
-						validRequest = checkInput(req.body.values[i], "");
-						break;
-					
-					case "steps":
-						validRequest = checkInput(req.body.values[i], "");
-						break;
-					
-					case "calories":
-						validRequest = checkInput(req.body.values[i], "");
-						break;
-					
-					case "distance":
-						validRequest = checkInput(req.body.values[i], "");
-						break;
-					
-					case "points":
-						validRequest = checkInput(req.body.values[i], "");
-						break;
-					
-					case "numOfPeople":
-						validRequest = checkInput(req.body.values[i], "");
-						break;
-					
-					case "coordinates":
-						validRequest = checkInput(req.body.values[i], "");
-						break;
-						
+			var validRequest = false;
+			for(var j = 0; j <= i; j++) {
+				switch(req.body["fields[" + j + "]"]) {
 					case "isPrivate":
-						validRequest = checkInput(req.body.values[i], "boolean");
+						validRequest = checkInput(req.body["values[" + j + "]"], "boolean");
+						break;
 					
 					default:
 						validRequest = false;
 						break;
 				}
-				if(validRequest = false) {
-					i = req.body.fields.length;
+				if(!validRequest) {
+					j = i + 1;
 				} else {
-					updateValues += req.body.fields[i] + "='" + req.body.values[i] + "', '";
+					updateValues += req.body["fields[" + j + "]"] + "=" + req.body["values[" + j + "]"] + ", ";
 				}
 			}
 			if(!validRequest) {
@@ -457,8 +423,8 @@ app.post('/updateuserdata', function(req, res) {
 					if(err) {
 						res.status(400).send();
 					} else {
-						tempCont.query("UPDATE ? SET ? WHERE user_id=?;", [table, updateValues.slice(0, -3), req.body.user_id], function(err, result) {
-							if(err || !result) {
+						tempCont.query("UPDATE " + req.body.table + " SET " + updateValues.slice(0, -2) + " WHERE user_id=" + req.user.user_id + ";", function(err, result) {
+							if(err) {
 								res.status(400).send();
 							} else {
 								res.status(200).send();
@@ -789,13 +755,13 @@ var checkInput = function(input, type, callback) {
 			break;
 			
 		case "boolean":
-			returnVal = (input === true || input === false);
+			returnVal = input == "true" || input == "false";
+			break;
 		
 		default:
 			returnVal = null;
 			break;
 	}
-	
 	if(callback == undefined) {	
 		return returnVal;
 		
