@@ -4,7 +4,6 @@ package commrkjdylarge_project.github.stepwithfriends;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -53,7 +52,7 @@ public class WalkFragment extends Fragment implements OnMapReadyCallback, StartF
 
     private boolean init = false;
     private LocationRequest mLocationRequest;
-    private long UPDATE_INTERVAL = 1000;
+    private long UPDATE_INTERVAL = 3000; // 3 seconds
     private ArrayList<LatLng> routePoints;
     private Boolean track = false;
 
@@ -65,14 +64,14 @@ public class WalkFragment extends Fragment implements OnMapReadyCallback, StartF
     @Override
     public void stopClicked() {
         track = false;
-        //routePoints.clear();
-        //mMap.clear();
     }
 
     @Override
     public void endClicked() {
-        routePoints.clear();
-        mMap.clear();
+        if(mMap != null) {
+            routePoints.clear();
+            mMap.clear();
+        }
     }
 
     @Override
@@ -133,33 +132,46 @@ public class WalkFragment extends Fragment implements OnMapReadyCallback, StartF
         getFusedLocationProviderClient(getActivity()).requestLocationUpdates(mLocationRequest, new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
+                double lat = locationResult.getLastLocation().getLatitude();
+                double lng = locationResult.getLastLocation().getLongitude();
+
                 if(init == false){
-                    double lat = locationResult.getLastLocation().getLatitude();
-                    double lng = locationResult.getLastLocation().getLongitude();
                     moveCamera(new LatLng(lat, lng), DEFAULT_ZOOM);
                     init = true;
+                    firstPoint = new LatLng(lat, lng);
                 }
 
                 if(track == true){
-                    drawPath(locationResult.getLastLocation());
+                    drawPath(lat, lng);
                 }
+
+                String[] fields = {"latitude", "longitude"};
+                Object[] values = {lat, lng};
+
+                //Update user location
+                if(getActivity() != null) {
+                    ((SWFApp) getActivity().getApplication()).updateUserData(fields, values, "User");
+                }
+
             }
+
         } ,Looper.myLooper());
     }
 
-    private void drawPath(Location location){
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        routePoints.add(latLng);
+    private LatLng firstPoint = null;
+    private LatLng secondPoint = null;
+
+    private void drawPath(double lat, double lng) {
+        secondPoint = new LatLng(lat, lng);
 
         PolylineOptions pOptions = new PolylineOptions()
-                .width(5)
+                .width(7)
                 .color(Color.GREEN)
                 .geodesic(true);
 
-        for(int i = 0; i < routePoints.size(); i++){
-            LatLng point = routePoints.get(i);
-            pOptions.add(point);
-        }
+        pOptions.add(firstPoint);
+        pOptions.add(secondPoint);
+        firstPoint = secondPoint;
 
         mMap.addPolyline(pOptions);
     }
