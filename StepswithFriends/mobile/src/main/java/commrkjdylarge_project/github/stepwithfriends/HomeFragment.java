@@ -23,6 +23,9 @@ public class HomeFragment extends Fragment {
     private Handler handler = new Handler();
     TextView percent;
     TextView stepsTxtView;
+    TextView calorieTxtView;
+    TextView pointsTxtView;
+    TextView milesTxtView;
 
 
     public HomeFragment() {
@@ -56,6 +59,9 @@ public class HomeFragment extends Fragment {
 
         percent = getView().findViewById(R.id.tv);
         stepsTxtView = getView().findViewById(R.id.stepTextView);
+        calorieTxtView = getView().findViewById(R.id.calorieText);
+        pointsTxtView = getView().findViewById(R.id.scoreText);
+        calorieTxtView = getView().findViewById(R.id.milesText);
 
         new Thread(new Runnable() {
 
@@ -89,7 +95,14 @@ public class HomeFragment extends Fragment {
     }
 
     public void putArgument(Bundle args){
-        String step = args.getString("val1");
-        stepsTxtView.setText(step);
+        int step = args.getInt("steps");
+        double cal =  args.getDouble("calories");
+        double pts = args.getDouble("points");
+        double miles = step / 2;
+      
+        stepsTxtView.setText("" + step);
+        calorieTxtView.setText(String.format("%.2f",cal));
+        pointsTxtView.setText(String.format("%.2f",pts));
+        milesTxtView.setText(String.format("%.2f",miles));
     }
 }
