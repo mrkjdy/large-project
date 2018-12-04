@@ -17,7 +17,7 @@ import cz.msebera.android.httpclient.Header;
 public class SWFApp extends Application {
 
     //////////////////////////////////////
-    private boolean useLOCALHOST = true;
+    private boolean useLOCALHOST = false;
     //////////////////////////////////////
 
     private AsyncHttpClient asyncHttpClient = null;
