@@ -236,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         stepList.clear();
         stepList.addAll(users);
         getSteps();
+        getPercent();
         //adapter.notifyDataSetChanged();
     }
 
