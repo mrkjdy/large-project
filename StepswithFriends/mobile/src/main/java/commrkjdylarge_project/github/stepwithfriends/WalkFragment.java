@@ -4,7 +4,6 @@ package commrkjdylarge_project.github.stepwithfriends;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -133,19 +132,27 @@ public class WalkFragment extends Fragment implements OnMapReadyCallback, StartF
         getFusedLocationProviderClient(getActivity()).requestLocationUpdates(mLocationRequest, new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
+                double lat = locationResult.getLastLocation().getLatitude();
+                double lng = locationResult.getLastLocation().getLongitude();
+
                 if(init == false){
-                    double lat = locationResult.getLastLocation().getLatitude();
-                    double lng = locationResult.getLastLocation().getLongitude();
                     moveCamera(new LatLng(lat, lng), DEFAULT_ZOOM);
                     init = true;
                     firstPoint = new LatLng(lat, lng);
                 }
 
                 if(track == true){
-                    drawPath(locationResult.getLastLocation());
+                    drawPath(lat, lng);
                 }
 
-                //Save your location, check if different
+                String[] fields = {"latitude", "longitude"};
+                Object[] values = {lat, lng};
+
+                //Update user location
+                if(getActivity() != null) {
+                    ((SWFApp) getActivity().getApplication()).updateUserData(fields, values, "User");
+                }
+
             }
 
         } ,Looper.myLooper());
@@ -154,8 +161,8 @@ public class WalkFragment extends Fragment implements OnMapReadyCallback, StartF
     private LatLng firstPoint = null;
     private LatLng secondPoint = null;
 
-    private void drawPath(Location location) {
-        secondPoint = new LatLng(location.getLatitude(), location.getLongitude());
+    private void drawPath(double lat, double lng) {
+        secondPoint = new LatLng(lat, lng);
 
         PolylineOptions pOptions = new PolylineOptions()
                 .width(7)
