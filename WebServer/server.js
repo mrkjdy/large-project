@@ -866,6 +866,7 @@ var getUserIndex = function(username) {
 }
 
 var withinRange = function(latA, longA, latB, longB) {
+	if(latA === null || longA === null || latB === null || longB === null) return false;
 	var radius = Math.sqrt(Math.Pow(latA-latB,2) + Math.Pow(longA-longB,2));
 
 	// Wiki:

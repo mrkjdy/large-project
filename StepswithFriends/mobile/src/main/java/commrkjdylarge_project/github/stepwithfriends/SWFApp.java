@@ -7,6 +7,8 @@ import com.loopj.android.http.*;
 
 import org.json.*;
 
+import java.util.Date;
+
 import cz.msebera.android.httpclient.Header;
 
 public class SWFApp extends Application {
@@ -24,6 +26,7 @@ public class SWFApp extends Application {
     private volatile RequestParams tempParams = null;
     private volatile int tempInt = -1;
     private String url = "https://large-project.herokuapp.com";
+    private long lastUpdate = 0;
 
     public String getURL() {
         return this.url;
@@ -59,7 +62,8 @@ public class SWFApp extends Application {
             default:
                 return null;
         }
-        if(table_local == null) {
+        if(table_local == null || (System.currentTimeMillis() - this.lastUpdate > 300000)) {
+            this.lastUpdate = System.currentTimeMillis();
             RequestParams params = new RequestParams();
             params.put("table", table);
             this.asyncHttpClient.post(this.url + "/getuserdata", params, new JsonHttpResponseHandler() {
