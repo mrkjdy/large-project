@@ -388,11 +388,13 @@ app.post('/updateuserdata', function(req, res) {
 		res.status(401).send();
 	} else {
 		if(!req.body["fields[0]"] || !req.body["values[0]"] || req.body.table != "User") {
+			console.log("input error");
 			res.status(400).send();
 		} else {
 			var i = 0;
 			while(req.body["fields[" + (i + 1) + "]"] != undefined) {
 				if(req.body["values[" + (i + 1) + "]"] == undefined) {
+					console.log("fields and values not equal");
 					res.status(400).send();
 				} else {
 					i++;
@@ -402,6 +404,14 @@ app.post('/updateuserdata', function(req, res) {
 			var validRequest = false;
 			for(var j = 0; j <= i; j++) {
 				switch(req.body["fields[" + j + "]"]) {
+					case "latitude":
+						validRequest = checkInput(req.body["values[" + j + "]"], "number");
+						break;
+
+					case "longitude":
+						validRequest = checkInput(req.body["values[" + j + "]"], "number");
+						break;
+
 					case "isPrivate":
 						validRequest = checkInput(req.body["values[" + j + "]"], "boolean");
 						break;
@@ -417,6 +427,7 @@ app.post('/updateuserdata', function(req, res) {
 				}
 			}
 			if(!validRequest) {
+				console.log("field not validated");
 				res.status(400).send();
 			} else {
 				dbPool.getConnection(function(err, tempCont){

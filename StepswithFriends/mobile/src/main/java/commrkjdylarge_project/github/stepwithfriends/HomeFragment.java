@@ -6,12 +6,14 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.os.Handler;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import org.json.*;
 
 
 /**
@@ -19,10 +21,16 @@ import android.widget.TextView;
  */
 public class HomeFragment extends Fragment {
 
+    private static final String TAG = "Home";
     int pStatus = 0;
+    String dailyGoal;
     private Handler handler = new Handler();
     TextView percent;
     TextView stepsTxtView;
+    TextView calorieTxtView;
+    TextView pointsTxtView;
+    TextView milesTxtView;
+    final ProgressBar mProgress = getView().findViewById(R.id.circularProgressbar);
 
 
     public HomeFragment() {
@@ -46,7 +54,6 @@ public class HomeFragment extends Fragment {
         Resources res = getResources();
         Drawable drawable = res.getDrawable(R.drawable.circle);
 
-        final ProgressBar mProgress = getView().findViewById(R.id.circularProgressbar);
 
 
         mProgress.setProgress(0);   // Main Progress
@@ -56,6 +63,9 @@ public class HomeFragment extends Fragment {
 
         percent = getView().findViewById(R.id.tv);
         stepsTxtView = getView().findViewById(R.id.stepTextView);
+        calorieTxtView = getView().findViewById(R.id.calorieText);
+        pointsTxtView = getView().findViewById(R.id.scoreText);
+        calorieTxtView = getView().findViewById(R.id.milesText);
 
         new Thread(new Runnable() {
 
@@ -89,7 +99,15 @@ public class HomeFragment extends Fragment {
     }
 
     public void putArgument(Bundle args){
-        String step = args.getString("val1");
-        stepsTxtView.setText(step);
+        int step = args.getInt("steps");
+        double cal =  args.getDouble("calories");
+        double pts = args.getDouble("points");
+        double miles = step / 2;
+
+        //HAHAHAHAH
+        stepsTxtView.setText("" + step);
+        calorieTxtView.setText(String.format("%.2f",cal));
+        pointsTxtView.setText(String.format("%.2f",pts));
+        milesTxtView.setText(String.format("%.2f",miles));
     }
 }

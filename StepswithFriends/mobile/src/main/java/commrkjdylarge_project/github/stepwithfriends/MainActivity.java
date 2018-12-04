@@ -1,6 +1,7 @@
 package commrkjdylarge_project.github.stepwithfriends;
 
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -11,20 +12,21 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 import android.content.res.Configuration;
 import android.content.pm.ActivityInfo;
+import static java.lang.Math.*;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.json.*;
 
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -51,8 +53,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor mStepDetectorSensor;
     private CompositeDisposable compositeDisposable;
     private StepRepository stepRepository;
+    private String fragStr;
+    private Bundle fragComm = new Bundle();
 
     private static final int ERROR_DIALOG_REQUEST = 9001;
+
+    private FragmentTransaction ft;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +70,34 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         homeFrame = new HomeFragment();
         walkFrame = new WalkFragment();
         leaderboardFrame = new LeaderboardFragment();
+        ft = getSupportFragmentManager().beginTransaction();
+        //FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-        setFragment(homeFrame);
+        ft.add(R.id.main_frame, homeFrame);
+        ft.add(R.id.main_frame, settingsFrame);
+        ft.add(R.id.main_frame, walkFrame);
+        ft.add(R.id.main_frame, leaderboardFrame);
+
+        setFragment(homeFrame, ft);
+
+        // alex stuff
+        compositeDisposable = new CompositeDisposable();
+        StepDatabase stepDatabase = StepDatabase.getInstance(this);
+        stepRepository = StepRepository.getInstance(StepDataSouce.getInstance(stepDatabase.stepDao()));
+        new getAsyncTask(stepDatabase).execute();
+
+        // load all data
+        loadData();
+
+
+
+        mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
+        if(mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) != null)
+        {
+            mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+            mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -74,18 +106,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 switch(menuItem.getItemId())
                 {
                     case R.id.action_home:
-                        setFragment(homeFrame);
+                        setFragment(homeFrame,ft);
                         break;
                     case R.id.action_settings:
-                        setFragment(settingsFrame);
+                        setFragment(settingsFrame, ft);
                         break;
                     case R.id.action_walk:
                         if(isServicesOK()) {
-                            setFragment(walkFrame);
+                           setFragment(walkFrame, ft);
                         }
                         break;
                     case R.id.action_leaderboard:
-                        setFragment(leaderboardFrame);
+                        setFragment(leaderboardFrame, ft);
                         break;
                 }
                 return true ;
@@ -120,31 +152,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 break;
         }
 
-        // alex stuff
-        compositeDisposable = new CompositeDisposable();
-        StepDatabase stepDatabase = StepDatabase.getInstance(this);
-        stepRepository = StepRepository.getInstance(StepDataSouce.getInstance(stepDatabase.stepDao()));
-        new getAsyncTask(stepDatabase).execute();
-
-        // load all data
-        loadData();
-
-
-        mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
-        if(mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) != null)
-        {
-            mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
-            mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        }
-
     }
 
-    private void setFragment(android.support.v4.app.Fragment fragment){
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+    private void setFragment(android.support.v4.app.Fragment fragment, android.support.v4.app.FragmentTransaction tr){
+        //FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-        fragmentTransaction.replace(R.id.main_frame, fragment);
-        fragmentTransaction.commit();
+        tr.show(fragment);
+        tr.commit();
     }
+
 
     // Make sure google play services is available, need to verify this
     public boolean isServicesOK(){
@@ -234,16 +250,41 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         stepList.clear();
         stepList.addAll(users);
         getSteps();
+        getPercent();
         //adapter.notifyDataSetChanged();
     }
 
     public void getSteps(){
 
-        String steps = "" + cStep.getNumStep();
-        //String steps = "hellooo";
+//        String steps = "" + cStep.getNumStep();
+//        //String steps = "hellooo";
         Bundle args = new Bundle();
-        args.putString("val1",steps);
+        int steps = cStep.getNumStep();
+        double cal = cStep.getCalories();
+        double points = cStep.getPoint();
+
+        args.putInt("steps",steps);
+        args.putDouble("calories",cal);
+        args.putDouble("Points",points);
         homeFrame.putArgument(args);
+    }
+
+    public void getPercent(){
+        int percentage;
+        int dailyGoal = 0;
+        int steps =  cStep.getNumStep();
+        JSONObject usr = ((SWFApp) getApplication()).getUserData("User");
+
+        try
+        {
+            dailyGoal = Integer.parseInt(usr.get("dailyGoal").toString());
+        } catch (Exception e) {}
+
+        percentage = (int) round(((double) steps / (double) dailyGoal) * 100);
+
+        Bundle args = new Bundle();
+        args.putInt("percentage",percentage);
+        homeFrame.putPercent(args);
     }
 
     private void takeStep() {

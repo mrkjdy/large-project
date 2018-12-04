@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -74,6 +75,33 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
         viewHolder.score.setText(mUserScore.get(i));
         viewHolder.pos.setText(""+(i + 1));
 
+        // Random pics
+//        Random rand = new Random();
+//        int val = rand.nextInt(5);
+//
+//        switch (val)
+//        {
+//            case 0:
+//                viewHolder.usrImage.setImageResource(R.drawable.space_avitar_2);
+//                break;
+//            case 1:
+//                viewHolder.usrImage.setImageResource(R.drawable.space_avitar_4);
+//                break;
+//            case 2:
+//                viewHolder.usrImage.setImageResource(R.drawable.space_avitar_2);
+//                break;
+//            case 3:
+//                viewHolder.usrImage.setImageResource(R.drawable.space_avitar_4);
+//                break;
+//            case 4:
+//                viewHolder.usrImage.setImageResource(R.drawable.space_avitar_2);
+//                break;
+//            default:
+//                viewHolder.usrImage.setImageResource(R.drawable.space_avitar_4);
+//                break;
+//        }
+        // End
+
         //Log.d(TAG, "onBindViewHolder: " + showAdd);
         if (showAdd == true)
         {
@@ -114,7 +142,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
                                     }
                                 });
                         AlertDialog alert = alt.create();
-                        alert.setTitle("Delete");
                         alert.show();
                     }
                 });
