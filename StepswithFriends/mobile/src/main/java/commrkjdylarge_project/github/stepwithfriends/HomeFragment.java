@@ -6,12 +6,14 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.os.Handler;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import org.json.*;
 
 
 /**
@@ -19,10 +21,13 @@ import android.widget.TextView;
  */
 public class HomeFragment extends Fragment {
 
+    private static final String TAG = "Home";
     int pStatus = 0;
+    String dailyGoal;
     private Handler handler = new Handler();
     TextView percent;
     TextView stepsTxtView;
+    TextView calories;
 
 
     public HomeFragment() {
@@ -56,6 +61,18 @@ public class HomeFragment extends Fragment {
 
         percent = getView().findViewById(R.id.tv);
         stepsTxtView = getView().findViewById(R.id.stepTextView);
+        calories = getView().findViewById(R.id.calorieText);
+
+        // TODO: get user info and update the user layout
+        JSONObject usr = ((SWFApp) getActivity().getApplication()).getUserData("User");
+        System.out.println();
+
+        try
+        {
+            percent.setText(usr.get("dailyGoal").toString());
+        } catch (Exception e) {}
+
+
 
         new Thread(new Runnable() {
 
@@ -71,7 +88,6 @@ public class HomeFragment extends Fragment {
                         public void run() {
                             // TODO Auto-generated method stub
                             mProgress.setProgress(pStatus);
-                            percent.setText(pStatus + "%");
 
                         }
                     });
@@ -91,5 +107,6 @@ public class HomeFragment extends Fragment {
     public void putArgument(Bundle args){
         String step = args.getString("val1");
         stepsTxtView.setText(step);
+
     }
 }

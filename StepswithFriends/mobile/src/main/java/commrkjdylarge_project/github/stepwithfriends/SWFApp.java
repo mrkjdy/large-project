@@ -62,29 +62,48 @@ public class SWFApp extends Application {
             default:
                 return null;
         }
+        System.out.println("getting info");
         if(table_local == null || (System.currentTimeMillis() - this.lastUpdate > 300000)) {
+            System.out.println("making a call");
             this.lastUpdate = System.currentTimeMillis();
             RequestParams params = new RequestParams();
             params.put("table", table);
-            this.asyncHttpClient.post(this.url + "/getuserdata", params, new JsonHttpResponseHandler() {
+            this.tempParams = params;
+            this.syncStatus = false;
+            new Thread(new Runnable() {
                 @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    // called when response HTTP status is "200 OK"
-                    try {
-                        switch(response.getString("table")) {
-                            case "User":
-                                userData_User = response.getJSONObject("value");
-                                break;
+                public void run() {
+                    syncHttpClient.post(url + "/getuserdata", tempParams, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            // called when response HTTP status is "200 OK"
+                            System.out.println("Server responded: " + response);
+                            try {
+                                switch(response.getString("table")) {
+                                    case "User":
+                                        userData_User = response.getJSONObject("value");
+                                        break;
+                                }
+                            } catch(Exception e) {}
+                            syncStatus = true;
                         }
-                    } catch(Exception e) {}
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
-                    // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                            // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                            syncStatus = true;
+                        }
+                    });
                 }
-            });
+            }).start();
+
+            while(!this.syncStatus) {
+                try {
+                    Thread.sleep(100);
+                } catch(Exception e) {}
+            }
         }
+        System.out.println("Function output: " + table_local);
         return table_local;
     }
 
