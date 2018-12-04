@@ -104,6 +104,7 @@ public class HomeFragment extends Fragment {
         double pts = args.getDouble("points");
         double miles = step / 2;
 
+        //HAHAHAHAH
         stepsTxtView.setText("" + step);
         calorieTxtView.setText(String.format("%.2f",cal));
         pointsTxtView.setText(String.format("%.2f",pts));
