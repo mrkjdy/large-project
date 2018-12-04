@@ -623,7 +623,8 @@ app.post('/joinsession', function(req, res) {
 									console.log(err);
 									res.status(400).send();
 								} else {
-									res.status(200).send(sessionID);
+									//res.status(200).send(sessionID);
+									res.sendStatus(200);
 									sessionID++;
 								}
 							});
@@ -676,7 +677,8 @@ app.post('/getsession', function(req, res) {
 							console.log(err);
 							res.status(400).send();
 						} else {
-							res.status(200).send();
+							//res.status(200).send(result[0].value);
+							res.status(200).send(result[0].value.toString());
 						}
 					});
 				}
@@ -903,7 +905,7 @@ var getSessionID = function() {
 					if(result[0].session_id === null) {
 						sessionID = 0;
 					} else {
-						sessionID = result[0].session_id;
+						sessionID = result[0].session_id + 1;
 					}
 				}
 				console.log("SessionID index is " + sessionID);
