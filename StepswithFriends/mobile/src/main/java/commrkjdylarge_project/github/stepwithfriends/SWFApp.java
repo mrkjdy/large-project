@@ -1,20 +1,23 @@
 package commrkjdylarge_project.github.stepwithfriends;
 
 import android.app.Application;
-import android.provider.Settings;
 
-import com.loopj.android.http.*;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.PersistentCookieStore;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 
-import org.json.*;
-
-import java.util.Date;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
 
 public class SWFApp extends Application {
 
     //////////////////////////////////////
-    private boolean useLOCALHOST = false;
+    private boolean useLOCALHOST = true;
     //////////////////////////////////////
 
     private AsyncHttpClient asyncHttpClient = null;
@@ -24,7 +27,7 @@ public class SWFApp extends Application {
     private volatile boolean syncResult = false;
     private volatile JSONArray tempObject = null;
     private volatile RequestParams tempParams = null;
-    private volatile int tempInt = -1;
+    private volatile String tempString = "";
     private String url = "https://large-project.herokuapp.com";
     private long lastUpdate = 0;
 
@@ -283,7 +286,7 @@ public class SWFApp extends Application {
     //To get the number of users in the current user's session, call getSession(). It will return the number of users ( >= 1 ) if successful, other it will return -1
 
     //Joins a session, returns with session ID on success and -1 if failure
-    public int joinSession() {
+    public Boolean joinSession() {
         RequestParams params = new RequestParams();
         this.asyncHttpClient.post(this.url + "/joinsession", params, new JsonHttpResponseHandler() {
             @Override
@@ -311,7 +314,7 @@ public class SWFApp extends Application {
         try {
             id = userData_User.getInt("session_id");
         } catch(Exception e) {}
-        return id;
+        return !(id == -1);
     }
 
     //Returns true if left session, false if error
@@ -337,24 +340,53 @@ public class SWFApp extends Application {
     }
 
     //Returns number of users in session, returns -1 if false
-    public int getSession() {
-        this.tempInt = -1;
+    public String getSession() {
+        this.tempString = "";
+        this.syncStatus = false;
         RequestParams params = new RequestParams();
-        this.asyncHttpClient.post(this.url + "/getsession", params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                // called when response HTTP status is "200 OK"
-                try {
-                    tempInt = response.getInt("value");
-                } catch(Exception e) {}
-            }
+        this.tempParams = params;
 
+        System.out.println("Making new thread");
+
+        new Thread(new Runnable() {
             @Override
-            public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+            public void run() {
+                syncHttpClient.post(url + "/getsession", tempParams, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        // called when response HTTP status is "200 OK"
+                        System.out.println("success");
+                        try {
+                            System.out.println("trying to updates value");
+                            tempString = response.getString("value");
+                            System.out.println("value updated");
+                        } catch(Exception e) {
+                            System.out.println("You done fucked up son");
+                        }
+                        syncStatus = true;
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                        // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                        if(statusCode == 200) {
+                            try {
+                                tempString = errorResponse;
+                            } catch(Exception f) {}
+                        }
+                        syncStatus = true;
+                    }
+                });
             }
-        });
-        return this.tempInt;
+        }).start();
+
+        while(!this.syncStatus) {
+            try {
+                Thread.sleep(10);
+            } catch(Exception e) {}
+        }
+        System.out.println("returning value" + this.tempString);
+        return this.tempString;
     }
 
     private boolean syncUserData(Object[] fields, Object[] values, String table) {

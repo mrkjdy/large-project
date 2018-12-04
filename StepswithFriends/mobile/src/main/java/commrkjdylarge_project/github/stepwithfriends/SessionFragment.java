@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 
 /**
@@ -57,6 +58,11 @@ public class SessionFragment extends Fragment {
         chronometer.start();
 
         final Bundle args = new Bundle();
+
+        String value = ((SWFApp) getActivity().getApplication()).getSession();
+
+        TextView textView = (TextView) getView().findViewById(R.id.textView7);
+        textView.setText("" + value);
 
         ImageButton stop = (ImageButton) getView().findViewById(R.id.stopButton);
         stop.setOnClickListener(new View.OnClickListener() {
