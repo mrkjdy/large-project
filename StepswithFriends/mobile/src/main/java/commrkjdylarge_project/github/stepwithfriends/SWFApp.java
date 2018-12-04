@@ -40,10 +40,8 @@ public class SWFApp extends Application {
             this.asyncHttpClient.setCookieStore(cookieStore);
             this.syncHttpClient.setCookieStore(cookieStore);
             if(useLOCALHOST) {
-                System.out.println("using localhost");
                 this.url = "http://10.0.2.2:5000";
             } else {
-                System.out.println("using herokuapp");
             }
             return this.asyncHttpClient;
         } else {
@@ -103,7 +101,6 @@ public class SWFApp extends Application {
                 } catch(Exception e) {}
             }
         }
-        System.out.println("Function output: " + table_local);
         return table_local;
     }
 
