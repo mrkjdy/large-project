@@ -28,6 +28,7 @@ public class HomeFragment extends Fragment {
     TextView percent;
     TextView stepsTxtView;
     TextView calories;
+    final ProgressBar mProgress = getView().findViewById(R.id.circularProgressbar);
 
 
     public HomeFragment() {
@@ -51,7 +52,6 @@ public class HomeFragment extends Fragment {
         Resources res = getResources();
         Drawable drawable = res.getDrawable(R.drawable.circle);
 
-        final ProgressBar mProgress = getView().findViewById(R.id.circularProgressbar);
 
 
         mProgress.setProgress(0);   // Main Progress
@@ -74,39 +74,45 @@ public class HomeFragment extends Fragment {
 
 
 
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                // TODO Auto-generated method stub
-                while (pStatus < 100) {
-                    pStatus += 1;
-
-                    handler.post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            // TODO Auto-generated method stub
-                            mProgress.setProgress(pStatus);
-
-                        }
-                    });
-                    try {
-                        // Sleep for 200 milliseconds.
-                        // Just to display the progress slowly
-                        Thread.sleep(16); //thread will take approx 3 seconds to finish
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//                // TODO Auto-generated method stub
+//                while (pStatus < 100) {
+//                    pStatus += 1;
+//
+//                    handler.post(new Runnable() {
+//
+//                        @Override
+//                        public void run() {
+//                            // TODO Auto-generated method stub
+//                            mProgress.setProgress(pStatus);
+//
+//                        }
+//                    });
+//                    try {
+//                        // Sleep for 200 milliseconds.
+//                        // Just to display the progress slowly
+//                        Thread.sleep(16); //thread will take approx 3 seconds to finish
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }).start();
 
     }
 
     public void putArgument(Bundle args){
         String step = args.getString("val1");
         stepsTxtView.setText(step);
+
+    }
+
+    public void putPercent(Bundle args){
+        int percent = args.getInt("val1");
+        mProgress.setProgress(percent);
 
     }
 }
