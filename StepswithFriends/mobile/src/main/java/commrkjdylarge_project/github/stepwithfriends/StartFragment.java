@@ -1,7 +1,7 @@
 package commrkjdylarge_project.github.stepwithfriends;
 
-
 import android.content.Context;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,7 +10,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 
 /**
@@ -45,7 +47,7 @@ public class StartFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Button start = (Button) getView().findViewById(R.id.startButton);
+        ImageButton start = (ImageButton) getView().findViewById(R.id.startButton);
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

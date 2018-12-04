@@ -78,7 +78,7 @@ public class RegisterPopup extends AppCompatActivity {
                     params.put("password", password1.getText().toString());
                     params.put("weight", Integer.parseInt(weight.getText().toString()));
                     params.put("height", Integer.parseInt(height.getText().toString()));
-                    client.post("https://large-project.herokuapp.com/register", params, new JsonHttpResponseHandler() {
+                    client.post(((SWFApp) getApplication()).getURL() + "/register", params, new JsonHttpResponseHandler() {
                         @Override
                         public void onStart() {
                             // called before request is started

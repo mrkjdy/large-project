@@ -32,7 +32,7 @@ public class LogoutPopup extends AppCompatActivity {
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                client.post("https://large-project.herokuapp.com/logout", null, new JsonHttpResponseHandler() {
+                client.post(((SWFApp) getApplication()).getURL() + "/logout", null, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         // called when response HTTP status is "200 OK"

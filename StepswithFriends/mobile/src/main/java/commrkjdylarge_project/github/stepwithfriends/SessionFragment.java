@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.ImageButton;
 
 
 /**
@@ -50,13 +51,13 @@ public class SessionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         chronometer = getView().findViewById(R.id.chronometer);
-        chronometer.setFormat("Time: %s");
+        chronometer.setFormat("%s");
         chronometer.setBase(SystemClock.elapsedRealtime());;
         chronometer.start();
 
         final Bundle args = new Bundle();
 
-        Button stop = (Button) getView().findViewById(R.id.stopButton);
+        ImageButton stop = (ImageButton) getView().findViewById(R.id.stopButton);
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

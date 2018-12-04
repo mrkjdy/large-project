@@ -1,6 +1,5 @@
 package commrkjdylarge_project.github.stepwithfriends;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -58,22 +57,29 @@ public class SettingsFragment extends Fragment {
         });
 
         final Switch publicSwitch = getView().findViewById(R.id.public_switch);
-        publicSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        Boolean toggle = true;
+        try {
+            toggle = (((SWFApp) getActivity().getApplication()).getUserData("User").getInt("isPrivate") == 1);
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+        publicSwitch.setChecked(toggle);
+
+        publicSwitch.setOnClickListener (new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
-                    // Set public statuc on leaderboard
-                    if(!((SWFApp) getActivity().getApplication()).updateUserData("isPrivate", false,"User")) {
-                        publicSwitch.setChecked(false);
+            public void onClick(View v) {
+                try {
+                    if (publicSwitch.isChecked()) {
+                        publicSwitch.setChecked(((SWFApp) getActivity().getApplication()).updateUserData("isPrivate", true, "User"));
+                    } else {
+                        publicSwitch.setChecked(!((SWFApp) getActivity().getApplication()).updateUserData("isPrivate", false, "User"));
                     }
-                } else {
-                    // Set private status on leaderboard
-                    if(!((SWFApp) getActivity().getApplication()).updateUserData("isPrivate", true,"User")) {
-                        publicSwitch.setChecked(true);
-                    }
+                } catch(Exception e) {
+                    System.out.println(e);
                 }
             }
         });
+
 
         Switch locationSwitch = getView().findViewById(R.id.location_switch);
         locationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
