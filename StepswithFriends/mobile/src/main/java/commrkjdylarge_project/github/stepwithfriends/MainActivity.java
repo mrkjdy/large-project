@@ -19,12 +19,14 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.content.res.Configuration;
 import android.content.pm.ActivityInfo;
+import static java.lang.Math.*;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.json.*;
 
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -248,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         stepList.clear();
         stepList.addAll(users);
         getSteps();
+        getPercent();
         //adapter.notifyDataSetChanged();
     }
 
@@ -264,6 +267,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         args.putDouble("calories",cal);
         args.putDouble("Points",points);
         homeFrame.putArgument(args);
+    }
+
+    public void getPercent(){
+        int percentage;
+        int dailyGoal = 0;
+        int steps =  cStep.getNumStep();
+        JSONObject usr = ((SWFApp) getApplication()).getUserData("User");
+
+        try
+        {
+            dailyGoal = Integer.parseInt(usr.get("dailyGoal").toString());
+        } catch (Exception e) {}
+
+        percentage = (int) round(((double) steps / (double) dailyGoal) * 100);
+
+        Bundle args = new Bundle();
+        args.putInt("percentage",percentage);
+        homeFrame.putPercent(args);
     }
 
     private void takeStep() {

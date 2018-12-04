@@ -1,7 +1,8 @@
 package commrkjdylarge_project.github.stepwithfriends;
 
-
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,7 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 
 
 /**
@@ -45,14 +46,35 @@ public class StartFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Button start = (Button) getView().findViewById(R.id.startButton);
+        ImageButton start = (ImageButton) getView().findViewById(R.id.startButton);
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startToWalk.startClicked();
-                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.sessionFrame, new SessionFragment());
-                fragmentTransaction.commit();
+
+                AlertDialog.Builder alt = new AlertDialog.Builder(getContext());
+                alt.setMessage("Do you want to start a Session?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Join or create session
+                                ((SWFApp) getActivity().getApplication()).joinSession();
+
+                                startToWalk.startClicked();
+                                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                                fragmentTransaction.replace(R.id.sessionFrame, new SessionFragment());
+                                fragmentTransaction.commit();
+                                dialog.cancel();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert = alt.create();
+                alert.show();
             }
         });
 
