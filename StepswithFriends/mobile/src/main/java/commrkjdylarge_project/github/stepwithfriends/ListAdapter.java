@@ -114,7 +114,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>
                                     }
                                 });
                         AlertDialog alert = alt.create();
-                        alert.setTitle("Delete");
                         alert.show();
                     }
                 });
