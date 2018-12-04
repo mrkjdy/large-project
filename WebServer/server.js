@@ -616,7 +616,7 @@ app.post('/joinsession', function(req, res) {
 								});
 							}
 						}
-						if(!res.headersSent) {
+						if(!res.headerSent) {
 							// Create new session if no friends in range
 							tempCont.query("UPDATE User SET session_id = ? WHERE user_id = ?;", [sessionID, req.user.user_id], function(err, result1) {
 								if(err) {
