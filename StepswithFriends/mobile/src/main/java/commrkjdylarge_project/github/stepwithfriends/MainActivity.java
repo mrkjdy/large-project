@@ -70,15 +70,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         homeFrame = new HomeFragment();
         walkFrame = new WalkFragment();
         leaderboardFrame = new LeaderboardFragment();
-        ft = getSupportFragmentManager().beginTransaction();
+        //ft = getSupportFragmentManager().beginTransaction();
         //FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-        ft.add(R.id.main_frame, homeFrame);
-        ft.add(R.id.main_frame, settingsFrame);
-        ft.add(R.id.main_frame, walkFrame);
-        ft.add(R.id.main_frame, leaderboardFrame);
+//        ft.add(R.id.main_frame, homeFrame);
+//        ft.add(R.id.main_frame, settingsFrame);
+//        ft.add(R.id.main_frame, walkFrame);
+//        ft.add(R.id.main_frame, leaderboardFrame);
 
-        setFragment(homeFrame, ft);
+        setFragment(homeFrame);
 
         // alex stuff
         compositeDisposable = new CompositeDisposable();
@@ -106,18 +106,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 switch(menuItem.getItemId())
                 {
                     case R.id.action_home:
-                        setFragment(homeFrame,ft);
+                        setFragment(homeFrame);
                         break;
                     case R.id.action_settings:
-                        setFragment(settingsFrame, ft);
+                        setFragment(settingsFrame);
                         break;
                     case R.id.action_walk:
                         if(isServicesOK()) {
-                           setFragment(walkFrame, ft);
+                           setFragment(walkFrame);
                         }
                         break;
                     case R.id.action_leaderboard:
-                        setFragment(leaderboardFrame, ft);
+                        setFragment(leaderboardFrame);
                         break;
                 }
                 return true ;
@@ -154,11 +154,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
-    private void setFragment(android.support.v4.app.Fragment fragment, android.support.v4.app.FragmentTransaction tr){
-        //FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-
-        tr.show(fragment);
-        tr.commit();
+    private void setFragment(android.support.v4.app.Fragment fragment){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.main_frame, fragment);
+        fragmentTransaction.commit();
     }
 
 
@@ -250,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         stepList.clear();
         stepList.addAll(users);
         getSteps();
-        getPercent();
+        //getPercent();
         //adapter.notifyDataSetChanged();
     }
 
@@ -269,23 +268,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         homeFrame.putArgument(args);
     }
 
-    public void getPercent(){
-        int percentage;
-        int dailyGoal = 0;
-        int steps =  cStep.getNumStep();
-        JSONObject usr = ((SWFApp) getApplication()).getUserData("User");
-
-        try
-        {
-            dailyGoal = Integer.parseInt(usr.get("dailyGoal").toString());
-        } catch (Exception e) {}
-
-        percentage = (int) round(((double) steps / (double) dailyGoal) * 100);
-
-        Bundle args = new Bundle();
-        args.putInt("percentage",percentage);
-        homeFrame.putPercent(args);
-    }
+//    public void getPercent(){
+//        int percentage;
+//        int dailyGoal = 0;
+//        int steps =  cStep.getNumStep();
+//        JSONObject usr = ((SWFApp) getApplication()).getUserData("User");
+//
+//        try
+//        {
+//            dailyGoal = Integer.parseInt(usr.get("dailyGoal").toString());
+//        } catch (Exception e) {}
+//
+//        percentage = (int) round(((double) steps / (double) dailyGoal) * 100);
+//
+//        Bundle args = new Bundle();
+//        args.putInt("percentage",percentage);
+//        //homeFrame.putPercent(args);
+//    }
 
     private void takeStep() {
         if(created){

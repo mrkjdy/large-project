@@ -101,15 +101,15 @@ public class HomeFragment extends Fragment {
 
     public void putArgument(Bundle args){
         int step = args.getInt("steps");
-        double cal =  args.getDouble("calories");
-        double pts = args.getDouble("points");
-        double miles = step / 2;
+//        double cal =  args.getDouble("calories");
+//        double pts = args.getDouble("points");
+//        double miles = step / 2;
 
         //HAHAHAHAH
         stepsTxtView.setText("" + step);
-        calorieTxtView.setText(String.format("%.2f",cal));
-        pointsTxtView.setText(String.format("%.2f",pts));
-        milesTxtView.setText(String.format("%.2f",miles));
+//        calorieTxtView.setText(String.format("%.2f",cal));
+//        pointsTxtView.setText(String.format("%.2f",pts));
+//        milesTxtView.setText(String.format("%.2f",miles));
     }
 
 //    public void putPercent(Bundle args){
