@@ -657,6 +657,7 @@ app.post('/joinsession', function(req, res) {
 						// Join session
 						for(var i = 0; i < result.length; i++) {
 							if(withinRange(result[i].latitude, result[i].longitude, req.user.latitude, req.user.longitude)) {
+								console.log(result[i]);
 								tempCont.query("UPDATE User SET session_id = ? WHERE user_id = ?;", [result[i].session_id, req.user.user_id], function(err, result1) {
 									if(err) {
 										console.log(err);
