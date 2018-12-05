@@ -452,7 +452,7 @@ app.post('/updateuserdata', function(req, res) {
 				if(!validRequest) {
 					j = i + 1;
 				} else {
-					updateValues += req.body["fields[" + j + "]"] + "=" + req.body["values['" +  j + "']"] + ", ";
+					updateValues += req.body["fields[" + j + "]"] + "=" + req.body["values[" +  j + "]"] + ", ";
 				}
 			}
 			if(!validRequest) {

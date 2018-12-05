@@ -117,7 +117,7 @@ public class InfoPopup extends AppCompatActivity {
                 {
                     String temp = '"' + eFN.getText().toString() + '"';
                     Log.d(TAG, "onClick: " + temp);
-                    boolean res = ((SWFApp) getApplication()).updateUserData("firstName", eLN.getText().toString(),"User");
+                    boolean res = ((SWFApp) getApplication()).updateUserData("firstName", eFN.getText().toString(),"User");
                     fN.setText(eFN.getText().toString());
                 }
                 fN.setVisibility(View.VISIBLE);
