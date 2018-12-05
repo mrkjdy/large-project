@@ -330,6 +330,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         args.putDouble("Points",points);
         args.putDouble("test", test);
         args.putInt("bonus", bonus);
+        args.putInt("dailyGoal", dailyGoal);
         homeFrame.putArgument(args);
     }
 
