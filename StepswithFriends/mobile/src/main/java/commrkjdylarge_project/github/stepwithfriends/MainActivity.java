@@ -292,18 +292,36 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         double points = cStep.getPoint();
         double test = round(((double) steps / (double) dailyGoal) * 100);
         int bonus = 0;
+        int bonusFlag1 = 0;
+        int bonusFlag2 = 0;
+        int bonusFlag3 = 0;
+
 
         if(steps >= dailyGoal){
             bonus += bonus1;
-            Toast.makeText(this, "Hit first bonus goal! Added 1000 points!", Toast.LENGTH_SHORT).show();
+
+            if(bonusFlag1 == 0){
+                bonusFlag1 = 1;
+                Toast.makeText(this, "Hit first bonus goal! Added 1000 points!", Toast.LENGTH_SHORT).show();
+            }
         }
 
         if(steps >= (dailyGoal + 25)){
             bonus += bonus2;
+
+            if(bonusFlag2 == 0){
+                bonusFlag2 = 1;
+                Toast.makeText(this, "Hit Second bonus goal! Added 500 points!", Toast.LENGTH_SHORT).show();
+            }
         }
 
         if(steps >= (dailyGoal + 50)){
             bonus += bonus3;
+
+            if(bonusFlag3 == 0){
+                bonusFlag3 = 1;
+                Toast.makeText(this, "Hit third bonus goal! Added 1,500 points!", Toast.LENGTH_SHORT).show();
+            }
         }
 
 
