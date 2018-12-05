@@ -3,6 +3,7 @@ package commrkjdylarge_project.github.stepwithfriends;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +18,8 @@ import org.json.JSONArray;
 import cz.msebera.android.httpclient.Header;
 
 public class Login extends AppCompatActivity {
+
+    private static final String TAG = "Login";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +51,10 @@ public class Login extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                        public void onFailure(int statusCode, Header[] headers, Throwable e, JSONArray response) {
                             // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                             // 401 Unauthorized
+                            Log.d(TAG, "onFailure: " + statusCode);
                             if (statusCode == 401) {
                                 error.setText(getResources().getString(R.string.login_invalid_field));
                                 // Other Error
