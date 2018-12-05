@@ -108,7 +108,7 @@ public class HomeFragment extends Fragment {
         stepsTxtView.setText("" + step);
         calorieTxtView.setText(""+(int)cal);
         pointsTxtView.setText("" +(int) pts);
-        //milesTxtView.setText(String.format("%.2f",miles));
+        milesTxtView.setText(String.format( "%.2f", miles ));
     }
 
 //    public void putPercent(Bundle args){
