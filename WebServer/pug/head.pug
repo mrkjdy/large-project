@@ -14,9 +14,7 @@ head
 				input(type='submit' value='Search')
 		#userBox.centerVertical
 			if user
-				a.spaced(onclick='showPendingRequests(); return false') Requests
-				a.spaced(href='/myprofile')
-					img(title='My Profile' alt='My Profile')
+				a.spaced(href='/myprofile') #{user.firstName} #{user.lastName}
 				a.spaced(href='/settings') Settings
 				a.spaced(onclick='logout(); return false') Log out
 			else

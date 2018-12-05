@@ -206,7 +206,6 @@ app.get('/user/:username', function (req, res) {
 
 	var userinfo = null, own = false, globalrank = 0, friendrank = 0, friendtable = topRankedUsers;
 
-	console.log("test");
 	if (req.user && req.user.login === req.params.username) {
 		userinfo = req.user;
 		own = true;
@@ -256,58 +255,60 @@ app.get('/search/:searchstring', function (req, res) {
 
 // Register function
 app.post('/register', function(req, res) {
-	
-	// Check if correct format
-	if(checkInput(req.body.firstname, "name") && checkInput(req.body.lastname, "name") && checkInput(req.body.username, "username") && checkInput(req.body.weight, "number") && checkInput(req.body.height, "number")) {
-		
+	// Check if input is correct
+	if(!checkInput(req.body.firstname, "name")) {
+		res.status(400).send(JSON.stringify({errorMessage: "Invalid firstname"}));
+	}
+	else if(!checkInput(req.body.lastname, "name")) {
+		res.status(400).send(JSON.stringify({errorMessage: "Invalid lastname"}));
+	}
+	else if(!checkInput(req.body.username, "username")) {
+		res.status(400).send(JSON.stringify({errorMessage: "Invalid username"}));
+	}
+	else if(!checkInput(req.body.weight, "number")) {
+		res.status(400).send(JSON.stringify({errorMessage: "Invalid weight"}));
+	}
+	else if(!checkInput(req.body.height, "number")) {
+		res.status(400).send(JSON.stringify({errorMessage: "Invalid height"}));
+	}
+	else {
 		// Create connection to database
 		dbPool.getConnection(function(err, tempCont){
-			
-			// Error if connection is not established
+			// Check if connection is created successfully
 			if(err) {
-				res.status(400).send();
-				
-			} else {
-				
-				// Check if username exists
+				res.status(500).send(JSON.stringify({errorMessage: err.message}));
+			} 
+			else {
+				// Query if user already exists
 				tempCont.query("SELECT * FROM User WHERE login = ?", [req.body.username], function(err, result){
-					
-					// Check if query works
+					// Check if query was successful
 					if(err) {
-						res.status(400).send();
-					} else {
-						
-						// Return if username exists
-						if(result != ""){
-							res.status(470).send();
-					
-						} else {
-							bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
-								// Add user to database
-								const sqlAddUser = "INSERT INTO User (dateCreated, dateLastLoggedIn, login, password, firstName, lastName, height, weight) VALUES (";
-								tempCont.query(sqlAddUser + "NOW(), NOW(), '" + req.body.username + "', '" + hash + "', '" + req.body.firstname + "', '" + req.body.lastname + "', '" + req.body.height + "', '" + req.body.weight + "')", function(err, result) {
-								
-									// Check if query works
-									if(err) {
-										console.log(err);
-										res.status(400).send();
-									} else {
-										res.status(200).send();	
-									}
-								
-									// End connection
-									tempCont.release();
-								
-								});
+						res.status(500).send(JSON.stringify({errorMessage: err.message}));
+					} 
+					// If username not found then create new user
+					else if (result == "") {
+						bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+							// Add user to database
+							const sqlAddUser = "INSERT INTO User (dateCreated, dateLastLoggedIn, login, password, firstName, lastName, height, weight) VALUES (";
+							tempCont.query(sqlAddUser + "NOW(), NOW(), '" + req.body.username + "', '" + hash + "', '" + req.body.firstname + "', '" + req.body.lastname + "', '" + req.body.height + "', '" + req.body.weight + "')", function(err, result) {
+								// Check if query was successful
+								if(err) {
+									res.status(500).send(JSON.stringify({errorMessage: err.message}));
+								} 
+								else {
+									res.status(200).send(JSON.stringify({errorMessage: ""}));	
+								}						
 							});
-						}
-					} 	
-				});	
+						});
+					}
+					else {
+						res.status(400).send(JSON.stringify({errorMessage: "Username taken"}));
+					}
+				});
 			}
+			// End connection
+			tempCont.release();
 		});
-	
-	} else {
-		res.status(401).send();
 	}
 });
 
@@ -316,17 +317,17 @@ app.post('/login', function(req, res) {
 	passport.authenticate('local', function(err, user, info) {
 		// Database error
 		if(err) {
-			return res.status(500).send(JSON.stringify({errorMessage: err.message, loginSuccess: false}));
+			return res.status(500).send(JSON.stringify({errorMessage: err.message}));
 		}
 		// Credentials invalid
 		if(!user) {
-			return res.status(401).send(JSON.stringify({errorMessage: "Username/Password incorrect", loginSuccess: false}));
+			return res.status(401).send(JSON.stringify({errorMessage: "Username/Password incorrect"}));
 		}
 		req.logIn(user, function(err) {
 			if(err) {
-				return res.status(500).send(JSON.stringify({errorMessage: err.message, loginSuccess: false}));
+				return res.status(500).send(JSON.stringify({errorMessage: err.message}));
       		}
-      		return res.status(200).send(JSON.stringify({redirect: "/", loginSuccess: true}));
+      		return res.status(200).send(JSON.stringify({redirect: "/"}));
       	});
 	})(req, res);
 });

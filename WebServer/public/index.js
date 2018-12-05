@@ -1,9 +1,9 @@
 // Login
 function login() {
-	var submitMessage = document.getElementById("submitMessage");
-	var username = document.getElementById("uName").value;
-	var password = document.getElementById("pWord").value;
-	var submitButton = document.getElementById("submitLogin");
+	var submitMessage = document.getElementById("submitmessage");
+	var username = document.getElementById("username").value;
+	var password = document.getElementById("password").value;
+	var submitButton = document.getElementById("submitlogin");
 
 	// Clear submit message and disable submit
 	submitMessage.innerHTML = "";
@@ -13,6 +13,7 @@ function login() {
 	if (username === "" || password === "") {
 		submitMessage.innerHTML = "Missing username/password";
 		submitButton.disabled = false;
+		return false;
 	}
 
 	// The actual POST
@@ -22,15 +23,12 @@ function login() {
 	xhr.onload = function(e) {
 		// Server should send an error message or a redirect url
 		var serverResponse = JSON.parse(this.responseText);
-		if (this.status == 401 || this.status == 500) {
-			if (serverResponse.errorMessage != null) {
-				submitMessage.innerHTML = serverResponse.errorMessage;
-			}
+		if (serverResponse.errorMessage != null) {
+			submitMessage.innerHTML = serverResponse.errorMessage;
+			return false;
 		}
-		if (this.status == 200) {
-			if (serverResponse.redirect != null) {
-				window.location.href = serverResponse.redirect;
-			}
+		if (serverResponse.redirect != null) {
+			window.location.href = serverResponse.redirect;
 		}
 	}
 	xhr.onerror = function(e) {
@@ -53,65 +51,108 @@ function logout() {
 	xhr.onload = function(e) {
 		// Server should send an error message or a redirect url
 		var serverResponse = JSON.parse(this.responseText);
-		if (this.status == 400) {
-			if (serverResponse.errorMessage != null) {
-				console.log(serverResponse.errorMessage);
-			}
+		if (serverResponse.errorMessage != null) {
+			console.log(serverResponse.errorMessage);
+			return false;
 		}
-		if (this.status == 200) {
-			if (serverResponse.redirect != null) {
-				window.location.href = serverResponse.redirect;
-			}
+		if (serverResponse.redirect != null) {
+			window.location.href = serverResponse.redirect;
 		}
 	}
 	xhr.onerror = function(e) {
 		console.log(e.message);
 	}
 	xhr.send();
-
-	return false;
 }
 
 // Create account
 function createAccount() {
-	var xhr = new XMLHttpRequest();
-	xhr.open("POST", "/register", true);
+	var submitMessage = document.getElementById("submitmessage");
+	var username = document.getElementById("newusername").value;
+	var password1 = document.getElementById("password1").value;
+	var password2 = document.getElementById("password2").value;
+	var firstname = document.getElementById("newfirstname").value;
+	var lastname = document.getElementById("newlastname").value;
+	var weight = document.getElementById("weight").value;
+	var height = document.getElementById("height").value;
+	var submitButton = document.getElementById("submitregister");
 
+	// Clear submit message and disable submit
+	submitMessage.innerHTML = "";
+	submitButton.disabled = true;
+
+	// Check if user has entered data
+	if (username === "" || password1 === "" || password2 === "" || firstname === "" || lastname === "") {
+		submitMessage.innerHTML = "Missing info";
+		submitButton.disabled = false;
+		return false;
+	}
+
+	// Check if user has entered valid data
+	if (!/^[a-z|\d]{1,20}$/i.test(username)) {
+		submitMessage.innerHTML = "Invalid username";
+		submitButton.disabled = false;
+		return false;
+	}
+	if (password1 != password2) {
+		submitMessage.innerHTML = "Passwords don't match";
+		submitButton.disabled = false;
+		return false;
+	}
+	if (/^[a-z]\d{1,45}$/i.test(password1)) {
+		submitMessage.innerHTML = "Invalid password";
+		submitButton.disabled = false;
+		return false;
+	}
+
+	// The actual POST
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "/register");
+	xhr.setRequestHeader("Content-Type", "application/json");
 	xhr.onload = function(e) {
-		if (this.readyState == 4 && this.status == 200) {
-			// Display server response if registering is invalid
-			if (this.responseText.registerMessage != null) {
-				submitMessage = this.responseText.registerMessage;
+		// Server should send an error message or a redirect url
+		var serverResponse = JSON.parse(this.responseText);
+		if (serverResponse.errorMessage != null) {
+			// Account creation was successful
+			if (serverResponse.errorMessage == "") {
+				document.getElementById("username").value = username;
+				document.getElementById("password").value = password1;
+				login();
+			}
+			// There was an error
+			else {
+				submitMessage.innerHTML = serverResponse.errorMessage;
 				return false;
 			}
 		}
 	}
 	xhr.onerror = function(e) {
-		submitMessage = e.message;
+		submitMessage.innerHTML = e.message;
 	}
-	xhr.send({
-		username: document.getElementById("newUName").value,
-		password1: document.getElementById("newPWord1").value,
-		password2: document.getElementById("newPWord2").value,
-		firstname: document.getElementById("newFName").value,
-		lastname: document.getElementById("newLName").value
-	});
+	xhr.send(JSON.stringify({
+		firstname: firstname,
+		lastname: lastname,
+		weight: weight,
+		height: height,
+		username: username,
+		password: password1
+	}));
 
-	return false;
+	submitButton.disabled = false;
 }
 
 // Shows create account form on login page
 function showCreateAccount() {
 	document.getElementById("loginForm").style.display = "none";
 	document.getElementById("createAccountForm").style.display = "block";
-	document.getElementById("newFName").focus();
-	document.getElementById("submitMessage").innerHTML = "";
+	document.getElementById("newfirstname").focus();
+	document.getElementById("submitmessage").innerHTML = "";
 }
 
 // Shows login form on login page
 function showLogin() {
 	document.getElementById("loginForm").style.display = "block";
 	document.getElementById("createAccountForm").style.display = "none";
-	document.getElementById("uName").focus();
-	document.getElementById("submitMessage").innerHTML = "";
+	document.getElementById("username").focus();
+	document.getElementById("submitmessage").innerHTML = "";
 }

@@ -12,28 +12,32 @@ html(lang='en')
 				- var createAccountFormStyle = ""
 			#loginForm(style= loginFormStyle)
 				form(onsubmit='login(); return false')
-					input#uName(type='text' placeholder='Username' autofocus)
+					input#username(type='text' placeholder='Username' autofocus)
 					br
-					input#pWord(type='password' placeholder='Password')
+					input#password(type='password' placeholder='Password')
 					br
-					input#submitLogin(type='submit' value='Login')
+					input#submitlogin(type='submit' value='Login')
 					br
 				p Not registered? 
 					a#showCreateAccount(onclick='showCreateAccount(); return false') Create an account
 			#createAccountForm(style= createAccountFormStyle)
 				form(onsubmit='createAccount(); return false')
-					input#newFName(type='text' placeholder='First Name' autofocus)
+					input#newfirstname(type='text' placeholder='First Name' autofocus)
 					br
-					input#newLName(type='text' placeholder='Last Name')
+					input#newlastname(type='text' placeholder='Last Name')
 					br
-					input#newUName(type='text' placeholder='New Username')
+					input#newusername(type='text' placeholder='New Username')
 					br
-					input#newPWord1(type='password' placeholder='Password')
+					input#weight(type='number' placeholder='Weight in pounds')
 					br
-					input#newPWord2(type='password' placeholder='Confirm Password')
+					input#height(type='number' placeholder='Height in inches')
 					br
-					input#submitRegister(type='submit' value='Create Account')
+					input#password1(type='password' placeholder='Password')
+					br
+					input#password2(type='password' placeholder='Confirm Password')
+					br
+					input#submitregister(type='submit' value='Create Account')
 					br
 				p Already have an account? 
 					a#showLogin(onclick="showLogin(); return false") Login
-			#submitMessage
+			#submitmessage
