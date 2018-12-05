@@ -21,6 +21,7 @@ import android.widget.Toast;
 import android.content.res.Configuration;
 import android.content.pm.ActivityInfo;
 import static java.lang.Math.*;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -294,13 +295,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         if(steps >= dailyGoal){
             bonus += bonus1;
+            Toast.makeText(this, "Hit first bonus goal! Added 1000 points!", Toast.LENGTH_SHORT).show();
         }
 
-        if(steps >= (dailyGoal + 50)){
+        if(steps >= (dailyGoal + 25)){
             bonus += bonus2;
         }
 
-        if(steps >= (dailyGoal + 100)){
+        if(steps >= (dailyGoal + 50)){
             bonus += bonus3;
         }
 
