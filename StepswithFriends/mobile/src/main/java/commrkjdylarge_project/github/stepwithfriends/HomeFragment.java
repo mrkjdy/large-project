@@ -106,7 +106,7 @@ public class HomeFragment extends Fragment {
         double cal =  args.getDouble("calories");
         double pts = args.getDouble("points");
         double test = args.getDouble("test");
-        double miles = step / 2000;
+        double miles = ((double) step / (double )2000);
         int bonus = args.getInt("bonus");
 
 

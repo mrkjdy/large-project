@@ -296,6 +296,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             bonus += bonus1;
         }
 
+        if(steps >= (dailyGoal + 50)){
+            bonus += bonus2;
+        }
+
+        if(steps >= (dailyGoal + 100)){
+            bonus += bonus3;
+        }
+
+
         args.putInt("steps",steps);
         args.putDouble("calories",cal);
         args.putDouble("Points",points);
