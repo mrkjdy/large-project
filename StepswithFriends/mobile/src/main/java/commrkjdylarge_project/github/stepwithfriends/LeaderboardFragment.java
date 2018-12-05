@@ -114,7 +114,7 @@ public class LeaderboardFragment extends Fragment {
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Search Button", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Search Button", Toast.LENGTH_SHORT).show();
                 worldBtn.setVisibility(View.GONE);
                 friendBtn.setVisibility(View.GONE);
                 searchBtn.setVisibility(View.GONE);
