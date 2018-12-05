@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     int bonusFlag1 = 0;
     int bonusFlag2 = 0;
     int bonusFlag3 = 0;
+    int dailyGoal = 0;
 
     private BottomNavigationView bottomNavigationView;
 
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private WalkFragment walkFrame;
     private LeaderboardFragment leaderboardFrame;
 
+
     // alex stuff
     List<Step> stepList = new ArrayList<>();
     static Step cStep;
@@ -75,12 +77,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor mStepDetectorSensor;
     private CompositeDisposable compositeDisposable;
     private StepRepository stepRepository;
-    private String fragStr;
-    private Bundle fragComm = new Bundle();
 
     private static final int ERROR_DIALOG_REQUEST = 9001;
-
-    private FragmentTransaction ft;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,15 +91,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         walkFrame = new WalkFragment();
         leaderboardFrame = new LeaderboardFragment();
 
-        //ft = getSupportFragmentManager().beginTransaction();
-        //FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-//        ft.add(R.id.main_frame, homeFrame);
-//        ft.add(R.id.main_frame, settingsFrame);
-//        ft.add(R.id.main_frame, walkFrame);
-//        ft.add(R.id.main_frame, leaderboardFrame);
-
-        setFragment(homeFrame);
+        setFragment(1);
 
         // alex stuff
         compositeDisposable = new CompositeDisposable();
@@ -129,18 +119,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 switch(menuItem.getItemId())
                 {
                     case R.id.action_home:
-                        setFragment(homeFrame);
+                        setFragment(1);
                         break;
                     case R.id.action_settings:
-                        setFragment(settingsFrame);
+                        setFragment(4);
                         break;
                     case R.id.action_walk:
                         if(isServicesOK()) {
-                           setFragment(walkFrame);
+                           setFragment(2);
                         }
                         break;
                     case R.id.action_leaderboard:
-                        setFragment(leaderboardFrame);
+                        setFragment(3);
                         break;
                 }
                 return true ;
@@ -175,12 +165,115 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 break;
         }
 
+        JSONObject usr = ((SWFApp) getApplication()).getUserData("User");
+
+        try
+        {
+            dailyGoal = Integer.parseInt(usr.get("dailyGoal").toString());
+        } catch (Exception e) {}
+
     }
 
-    private void setFragment(android.support.v4.app.Fragment fragment){
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_frame, fragment);
-        fragmentTransaction.commit();
+//    private void setFragment(android.support.v4.app.Fragment fragment){
+//        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//        fragmentTransaction.replace(R.id.main_frame, fragment);
+//        fragmentTransaction.commit();
+//    }
+
+    private void setFragment(int position){
+        android.support.v4.app.FragmentManager fragmentManager;
+        fragmentManager = getSupportFragmentManager();
+
+
+        switch(position) {
+            case 1:
+                if(fragmentManager.findFragmentByTag("one") != null) {
+                    //if the fragment exists, show it.
+                    fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("one")).commit();
+                } else {
+                    //if the fragment does not exist, add it to fragment manager.
+                    fragmentManager.beginTransaction().add(R.id.main_frame, homeFrame, "one").commit();
+                }
+                if(fragmentManager.findFragmentByTag("two") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("two")).commit();
+                }
+                if(fragmentManager.findFragmentByTag("three") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("three")).commit();
+                }
+                if(fragmentManager.findFragmentByTag("four") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("four")).commit();
+                }
+                break;
+            case 2:
+                if(fragmentManager.findFragmentByTag("two") != null) {
+                    //if the fragment exists, show it.
+                    fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("two")).commit();
+                } else {
+                    //if the fragment does not exist, add it to fragment manager.
+                    fragmentManager.beginTransaction().add(R.id.main_frame, walkFrame, "two").commit();
+                }
+                if(fragmentManager.findFragmentByTag("one") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("one")).commit();
+                }
+                if(fragmentManager.findFragmentByTag("three") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("three")).commit();
+                }
+                if(fragmentManager.findFragmentByTag("four") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("four")).commit();
+                }
+                break;
+            case 3:
+                if(fragmentManager.findFragmentByTag("three") != null) {
+                    //if the fragment exists, show it.
+                    fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("three")).commit();
+                } else {
+                    //if the fragment does not exist, add it to fragment manager.
+                    fragmentManager.beginTransaction().add(R.id.main_frame, leaderboardFrame, "three").commit();
+                }
+                if(fragmentManager.findFragmentByTag("one") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("one")).commit();
+                }
+                if(fragmentManager.findFragmentByTag("two") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("two")).commit();
+                }
+                if(fragmentManager.findFragmentByTag("four") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("four")).commit();
+                }
+                break;
+            case 4:
+                if(fragmentManager.findFragmentByTag("four") != null) {
+                    //if the fragment exists, show it.
+                    fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("four")).commit();
+                } else {
+                    //if the fragment does not exist, add it to fragment manager.
+                    fragmentManager.beginTransaction().add(R.id.main_frame, settingsFrame, "four").commit();
+                }
+                if(fragmentManager.findFragmentByTag("one") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("one")).commit();
+                }
+                if(fragmentManager.findFragmentByTag("two") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("two")).commit();
+                }
+                if(fragmentManager.findFragmentByTag("three") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("three")).commit();
+                }
+                break;
+        }
+
+
+
     }
 
 
@@ -280,14 +373,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 //        String steps = "" + cStep.getNumStep();
 //        //String steps = "hellooo";
-        int dailyGoal = 0;
-
-        JSONObject usr = ((SWFApp) getApplication()).getUserData("User");
-
-        try
-        {
-            dailyGoal = Integer.parseInt(usr.get("dailyGoal").toString());
-        } catch (Exception e) {}
+//        int dailyGoal = 0;
+//
+//        JSONObject usr = ((SWFApp) getApplication()).getUserData("User");
+//
+//        try
+//        {
+//            dailyGoal = Integer.parseInt(usr.get("dailyGoal").toString());
+//        } catch (Exception e) {}
 
         Bundle args = new Bundle();
         int steps = cStep.getNumStep();
