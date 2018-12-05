@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         stepList.clear();
         stepList.addAll(users);
         getSteps();
-        //getPercent();
+        getPercent();
         //adapter.notifyDataSetChanged();
     }
 
@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         Bundle args = new Bundle();
         args.putInt("percentage",percentage);
-        //homeFrame.putPercent(args);
+        homeFrame.putPercent(args);
     }
 
     private void takeStep() {

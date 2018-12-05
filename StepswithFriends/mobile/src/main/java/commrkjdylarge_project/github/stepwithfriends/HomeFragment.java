@@ -31,6 +31,7 @@ public class HomeFragment extends Fragment {
     TextView pointsTxtView;
     TextView milesTxtView;
     int globalPercent;
+    ProgressBar mProgress;
 
 
 
@@ -55,7 +56,7 @@ public class HomeFragment extends Fragment {
         Resources res = getResources();
         Drawable drawable = res.getDrawable(R.drawable.circle);
 
-        final ProgressBar mProgress = getView().findViewById(R.id.circularProgressbar);
+        mProgress = getView().findViewById(R.id.circularProgressbar);
 
         mProgress.setProgress(0);   // Main Progress
         mProgress.setSecondaryProgress(100); // Secondary Progress
@@ -81,7 +82,7 @@ public class HomeFragment extends Fragment {
                         @Override
                         public void run() {
                             // TODO Auto-generated method stub
-                            mProgress.setProgress(pStatus);
+                            //mProgress.setProgress(pStatus);
                             percent.setText(pStatus + "%");
 
                         }
@@ -111,7 +112,7 @@ public class HomeFragment extends Fragment {
         milesTxtView.setText(String.format( "%.2f", miles ));
     }
 
-//    public void putPercent(Bundle args){
-//        globalPercent = args.getInt("percent");
-//    }
+    public void putPercent(Bundle args){
+        mProgress.setProgress(args.getInt("percent"));
+    }
 }
