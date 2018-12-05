@@ -83,7 +83,6 @@ public class HomeFragment extends Fragment {
                         public void run() {
                             // TODO Auto-generated method stub
                             //mProgress.setProgress(pStatus);
-                            percent.setText(pStatus + "%");
 
                         }
                     });
@@ -104,15 +103,18 @@ public class HomeFragment extends Fragment {
         int step = args.getInt("steps");
         double cal =  args.getDouble("calories");
         double pts = args.getDouble("points");
-        double miles = step / 2;
+        double test = args.getDouble("test");
+        double miles = step / 2000;
 
         stepsTxtView.setText("" + step);
         calorieTxtView.setText(""+(int)cal);
         pointsTxtView.setText("" +(int) pts);
         milesTxtView.setText(String.format( "%.2f", miles ));
+        mProgress.setProgress((int) test);
     }
 
-    public void putPercent(Bundle args){
-        mProgress.setProgress(args.getInt("percent"));
-    }
+
+//    public void putPercent(Bundle args){
+//        mProgress.setProgress(args.getInt("percent"));
+//    }
 }
