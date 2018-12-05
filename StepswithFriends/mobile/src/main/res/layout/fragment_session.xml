@@ -28,10 +28,9 @@
             android:src="@drawable/button_stop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.936" />
+            app:layout_constraintVertical_bias="0.964" />
 
         <Chronometer
             android:id="@+id/chronometer"
@@ -39,11 +38,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="12dp"
             android:textSize="65sp"
             app:layout_constraintBottom_toTopOf="@+id/stopButton"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintHorizontal_bias="0.503"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
@@ -51,7 +50,7 @@
             android:layout_width="104dp"
             android:layout_height="34dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="12dp"
             android:gravity="start|center_vertical"
             android:text="STEPS"
             android:textSize="30dp"
@@ -63,7 +62,7 @@
             android:layout_width="104dp"
             android:layout_height="16dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="48dp"
+            android:layout_marginBottom="36dp"
             android:gravity="start|center_vertical"
             android:text="Distance (mi.)"
             android:textSize="10dp"
@@ -75,7 +74,7 @@
             android:layout_width="104dp"
             android:layout_height="34dp"
             android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="12dp"
             android:gravity="end|center_vertical"
             android:text="SCORE"
             android:textSize="30dp"
@@ -87,7 +86,7 @@
             android:layout_width="104dp"
             android:layout_height="16dp"
             android:layout_marginStart="8dp"
-            android:layout_marginBottom="48dp"
+            android:layout_marginBottom="36dp"
             android:gravity="end|center_vertical"
             android:text="Multiplier"
             android:textSize="10dp"

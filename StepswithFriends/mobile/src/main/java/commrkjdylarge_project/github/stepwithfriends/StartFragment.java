@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.view.MenuItem;
 
 
 /**
@@ -20,8 +21,13 @@ import android.widget.ImageButton;
 public class StartFragment extends Fragment {
 
     private StartToWalk startToWalk;
+    private StartToActivity startToActivity;
 
     public interface StartToWalk {
+        void startClicked();
+    }
+
+    public interface StartToActivity {
         void startClicked();
     }
 
@@ -29,6 +35,7 @@ public class StartFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         startToWalk = (StartToWalk) getParentFragment();
+        startToActivity = (StartToActivity) getActivity();
     }
 
     public StartFragment() {
@@ -61,6 +68,8 @@ public class StartFragment extends Fragment {
                                 ((SWFApp) getActivity().getApplication()).joinSession();
 
                                 startToWalk.startClicked();
+                                startToActivity.startClicked();
+
                                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                                 fragmentTransaction.replace(R.id.sessionFrame, new SessionFragment());
                                 fragmentTransaction.commit();

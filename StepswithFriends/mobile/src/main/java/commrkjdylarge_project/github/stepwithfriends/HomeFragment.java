@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void run() {
-                // TODO Auto-generated method stub
+                // TODO Auto-generated method stubf
                 while (pStatus < 100) {
                     pStatus += 1;
 

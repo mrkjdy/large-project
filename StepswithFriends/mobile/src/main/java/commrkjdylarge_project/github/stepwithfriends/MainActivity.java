@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.content.res.Configuration;
@@ -37,7 +38,21 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity implements SensorEventListener, SessionFragment.SessionToActivity, StartFragment.StartToActivity {
+
+    int backAllow = 1;
+
+    private BottomNavigationView bottomNavigationView;
+
+    public void startClicked() {
+        backAllow = 0;
+        bottomNavigationView.setVisibility(View.GONE);
+    }
+
+    public void stopClicked() {
+        backAllow =1;
+        bottomNavigationView.setVisibility(View.VISIBLE);
+    }
 
     private FrameLayout mainFrame;
     private SettingsFragment settingsFrame;
@@ -70,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         homeFrame = new HomeFragment();
         walkFrame = new WalkFragment();
         leaderboardFrame = new LeaderboardFragment();
+
         //ft = getSupportFragmentManager().beginTransaction();
         //FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
@@ -99,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -335,5 +351,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 );
 
         compositeDisposable.add(disposable);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(backAllow == 1) {
+            super.onBackPressed();
+        } else {
+
+        }
     }
 }

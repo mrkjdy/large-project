@@ -25,8 +25,13 @@ public class SessionFragment extends Fragment {
 
     private Chronometer chronometer;
     private SessionToWalk sessionToWalk;
+    private SessionToActivity sessionToActivity;
 
     public interface SessionToWalk {
+        void stopClicked();
+    }
+
+    public interface SessionToActivity {
         void stopClicked();
     }
 
@@ -34,6 +39,7 @@ public class SessionFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         sessionToWalk = (SessionToWalk) getParentFragment();
+        sessionToActivity = (SessionToActivity) getActivity();
     }
 
     public SessionFragment() {
@@ -81,6 +87,7 @@ public class SessionFragment extends Fragment {
 
                                 chronometer.stop();
                                 sessionToWalk.stopClicked();
+                                sessionToActivity.stopClicked();
 
                                 args.putString("Time", chronometer.getText().toString());
                                 ResultFragment resultFragment = new ResultFragment();
