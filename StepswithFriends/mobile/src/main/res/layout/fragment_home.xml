@@ -155,7 +155,7 @@
                     android:src="@drawable/bonus" />
 
                 <TextView
-                    android:id="@+id/bounsText"
+                    android:id="@+id/bonusText"
                     android:layout_width="42dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

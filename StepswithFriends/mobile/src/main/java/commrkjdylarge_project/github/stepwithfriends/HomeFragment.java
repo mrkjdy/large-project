@@ -30,6 +30,7 @@ public class HomeFragment extends Fragment {
     TextView calorieTxtView;
     TextView pointsTxtView;
     TextView milesTxtView;
+    TextView bonusTxtView;
     int globalPercent;
     ProgressBar mProgress;
 
@@ -68,6 +69,7 @@ public class HomeFragment extends Fragment {
         calorieTxtView = getView().findViewById(R.id.calorieText);
         pointsTxtView = getView().findViewById(R.id.scoreText);
         milesTxtView = getView().findViewById(R.id.milesText);
+        bonusTxtView = getView().findViewById(R.id.bonusText);
 
         new Thread(new Runnable() {
 
@@ -105,11 +107,14 @@ public class HomeFragment extends Fragment {
         double pts = args.getDouble("points");
         double test = args.getDouble("test");
         double miles = step / 2000;
+        int bonus = args.getInt("bonus");
+
 
         stepsTxtView.setText("" + step);
         calorieTxtView.setText(""+(int)cal);
         pointsTxtView.setText("" +(int) pts);
         milesTxtView.setText(String.format( "%.2f", miles ));
+        bonusTxtView.setText("" + bonus);
         mProgress.setProgress((int) test);
     }
 

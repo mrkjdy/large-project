@@ -41,6 +41,9 @@ import io.reactivex.schedulers.Schedulers;
 public class MainActivity extends AppCompatActivity implements SensorEventListener, SessionFragment.SessionToActivity, StartFragment.StartToActivity {
 
     int backAllow = 1;
+    int bonus1 = 1000;
+    int bonus2 = 500;
+    int bonus3 = 1500;
 
     private BottomNavigationView bottomNavigationView;
 
@@ -281,36 +284,27 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         {
             dailyGoal = Integer.parseInt(usr.get("dailyGoal").toString());
         } catch (Exception e) {}
+
         Bundle args = new Bundle();
         int steps = cStep.getNumStep();
         double cal = cStep.getCalories();
         double points = cStep.getPoint();
         double test = round(((double) steps / (double) dailyGoal) * 100);
+        int bonus = 0;
+
+        if(steps >= dailyGoal){
+            bonus += bonus1;
+        }
 
         args.putInt("steps",steps);
         args.putDouble("calories",cal);
         args.putDouble("Points",points);
         args.putDouble("test", test);
+        args.putInt("bonus", bonus);
         homeFrame.putArgument(args);
     }
 
-//    public void getPercent(){
-//        int percentage;
-//        int dailyGoal = 0;
-//        int steps =  cStep.getNumStep();
-//        JSONObject usr = ((SWFApp) getApplication()).getUserData("User");
-//
-//        try
-//        {
-//            dailyGoal = Integer.parseInt(usr.get("dailyGoal").toString());
-//        } catch (Exception e) {}
-//
-//        percentage = (int) round(((double) steps / (double) dailyGoal) * 100);
-//
-//        Bundle args = new Bundle();
-//        args.putInt("percentage",percentage);
-//        homeFrame.putPercent(args);
-//    }
+
 
     private void takeStep() {
         if(created){
