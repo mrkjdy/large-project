@@ -66,7 +66,7 @@ public class HomeFragment extends Fragment {
         stepsTxtView = getView().findViewById(R.id.stepTextView);
         calorieTxtView = getView().findViewById(R.id.calorieText);
         pointsTxtView = getView().findViewById(R.id.scoreText);
-        calorieTxtView = getView().findViewById(R.id.milesText);
+        milesTxtView = getView().findViewById(R.id.milesText);
 
         new Thread(new Runnable() {
 
@@ -107,7 +107,7 @@ public class HomeFragment extends Fragment {
 
         stepsTxtView.setText("" + step);
         calorieTxtView.setText(""+(int)cal);
-        pointsTxtView.setText("" + pts);
+        pointsTxtView.setText("" +(int) pts);
         //milesTxtView.setText(String.format("%.2f",miles));
     }
 
