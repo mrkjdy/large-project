@@ -268,23 +268,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         homeFrame.putArgument(args);
     }
 
-//    public void getPercent(){
-//        int percentage;
-//        int dailyGoal = 0;
-//        int steps =  cStep.getNumStep();
-//        JSONObject usr = ((SWFApp) getApplication()).getUserData("User");
-//
-//        try
-//        {
-//            dailyGoal = Integer.parseInt(usr.get("dailyGoal").toString());
-//        } catch (Exception e) {}
-//
-//        percentage = (int) round(((double) steps / (double) dailyGoal) * 100);
-//
-//        Bundle args = new Bundle();
-//        args.putInt("percentage",percentage);
-//        //homeFrame.putPercent(args);
-//    }
+    public void getPercent(){
+        int percentage;
+        int dailyGoal = 0;
+        int steps =  cStep.getNumStep();
+        JSONObject usr = ((SWFApp) getApplication()).getUserData("User");
+
+        try
+        {
+            dailyGoal = Integer.parseInt(usr.get("dailyGoal").toString());
+        } catch (Exception e) {}
+
+        percentage = (int) round(((double) steps / (double) dailyGoal) * 100);
+
+        Bundle args = new Bundle();
+        args.putInt("percentage",percentage);
+        //homeFrame.putPercent(args);
+    }
 
     private void takeStep() {
         if(created){
