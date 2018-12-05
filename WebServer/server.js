@@ -316,17 +316,17 @@ app.post('/login', function(req, res) {
 	passport.authenticate('local', function(err, user, info) {
 		// Database error
 		if(err) {
-			return res.status(500).send(JSON.stringify({errorMessage: err.message}));
+			return res.status(500).send(JSON.stringify({errorMessage: err.message, loginSuccess: false}));
 		}
 		// Credentials invalid
 		if(!user) {
-			return res.status(401).send(JSON.stringify({errorMessage: "Username/Password incorrect"}));
+			return res.status(401).send(JSON.stringify({errorMessage: "Username/Password incorrect", loginSuccess: false}));
 		}
 		req.logIn(user, function(err) {
 			if(err) {
-				return res.status(500).send(JSON.stringify({errorMessage: err.message}));
+				return res.status(500).send(JSON.stringify({errorMessage: err.message, loginSuccess: false}));
       		}
-      		return res.status(200).send(JSON.stringify({redirect: "/"}));
+      		return res.status(200).send(JSON.stringify({redirect: "/", loginSuccess: true}));
       	});
 	})(req, res);
 });
