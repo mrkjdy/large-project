@@ -1,5 +1,6 @@
+////////////////////////////////////
 // Requires
-// ----------------------------------------------------------------------
+////////////////////////////////////
 
 const express = require('express');
 const session = require('express-session');
@@ -14,8 +15,10 @@ const bcrypt = require('bcrypt');
 const schedule = require('node-schedule');
 
 
+
+////////////////////////////////////
 // Global vars
-// ----------------------------------------------------------------------
+////////////////////////////////////
 
 // These are grabbed here because they are used multiple times
 const PORT = process.env.PORT || 5000;
@@ -40,8 +43,11 @@ const saltRounds = 10;
 // Top 100 Users, periodically updated to save the database
 var topRankedUsers;
 
+
+
+////////////////////////////////////
 // App config
-// ----------------------------------------------------------------------
+////////////////////////////////////
 
 // Sets public as the public folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -71,7 +77,7 @@ app.set('views', path.join(__dirname, 'pug'));
 // Body-parser initialization
 app.set('trust proxy', 1);
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false}));
 app.use(session({
 	secret: process.env.SESSION_SECRET,
 	resave: false,
@@ -89,7 +95,6 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // Passport initialization
 passport.use(new LocalStrategy(function(username, password, done) {
-	
 	if(checkInput(username, 'username') === true && password) {
 		dbPool.getConnection(function(err, tempCont) {
 			if(err) {
@@ -151,8 +156,11 @@ passport.deserializeUser(function(id, done) {
 	});
 });
 
-// Post and get functions
-// ----------------------------------------------------------------------
+
+
+////////////////////////////////////
+// API functions
+////////////////////////////////////
 
 // Passwords need to be hashed before they are stored in the database!
 // To hash a password:
@@ -172,7 +180,6 @@ passport.deserializeUser(function(id, done) {
 // });
 
 app.get('/', function (req, res) {
-	// topRankedUsers may be null if server was just started
 	res.render('index', {
         user: req.user,
         top: topRankedUsers
@@ -181,13 +188,15 @@ app.get('/', function (req, res) {
 
 app.get('/login', function (req, res) {
 	res.render('login', {
-        user: req.user
+        user: req.user,
+        showLogin: true
     });
 });
 
 app.get('/create-account', function (req, res) {
-	res.render('create-account', {
-        user: req.user
+	res.render('login', {
+        user: req.user,
+        showLogin: false
     });
 });
 
@@ -196,12 +205,12 @@ app.get('/user/:username', function (req, res) {
 	var userinfo = null, own = false, globalrank = 0, friendrank = 0, friendtable = topRankedUsers;
 
 
-	if (req.user.login === req.params.username) {
+	if (req.user && req.user.login === req.params.username) {
 		userinfo = req.user;
 		own = true;
 	}
 	else
-		userinfo = getUserPageData(req.params.username);
+		userinfo = getUserPageData(req.params.username, req.user);
 
 	// if not found display 404
 	if (userinfo != null) {
@@ -303,22 +312,20 @@ app.post('/register', function(req, res) {
 // Login function
 app.post('/login', function(req, res) {
 	passport.authenticate('local', function(err, user, info) {
+		// Database error
 		if(err) {
-			return res.status(400).send('Database Error');
+			return res.status(500).send(JSON.stringify({errorMessage: err.message}));
 		}
+		// Credentials invalid
 		if(!user) {
-			return res.send(JSON.stringify([{ "loginSuccess": false }]));
+			return res.status(401).send(JSON.stringify({errorMessage: "Username/Password incorrect"}));
 		}
-		
 		req.logIn(user, function(err) {
-			
 			if(err) {
-				console.log(err);
-				return res.status(400).send('Login Error');
-			}
-			
-			return res.send(JSON.stringify([{ "loginSuccess": true }]));
-		});
+				return res.status(500).send(JSON.stringify({errorMessage: err.message}));
+      		}
+      		return res.status(200).send(JSON.stringify({redirect: "/"}));
+      	});
 	})(req, res);
 });
 
@@ -327,10 +334,9 @@ app.post('/logout', function(req, res) {
 	req.logout();
 	req.session.destroy(function(err) {
 		if(err)	{
-			console.log(err);
-			res.status(400).send();
+			res.status(400).send(JSON.stringify({errorMessage: err.message}));
 		} else {
-			res.status(200).send();
+			res.status(200).send(JSON.stringify({redirect: "/"}));
 		}
 	});
 });
@@ -566,27 +572,17 @@ app.post('/removefriend', function(req, res) {
 	}
 });
 
-// Search for user page info
-//app.post('/getuserinfo', function(req, res) {
-	
-//});
-
-app.post('', function(req, res) {
-	
-});
-
-app.post('', function(req, res) {
-	
-});
-
 // Display 404 for 
 // MUST BE AT BOTTOM OF THIS SECTION!
 app.use(function(req, res, next) {
 	res.status(404).redirect('/404');
 });
 
+
+
+////////////////////////////////////
 // Helper functions
-// ----------------------------------------------------------------------
+////////////////////////////////////
 
 // Checks if input provided by user is formatted correctly for storage in database
 var checkInput = function(input, type, callback) {
@@ -669,28 +665,40 @@ var updateTopUsers = schedule.scheduleJob('*/5 * * * *', function() {
 	getNewTopUsers();
 });
 
-var getUserPageData = function(username) {
-	dbPool.getConnection(function(err, tempCont) {
-		if(err) {
-			console.log(err);
-			return null;
-		} else {
-			tempCont.query("SELECT * FROM User WHERE login = " + username + " AND (isPrivate = false OR EXISTS (SELECT * FROM friendship WHERE user_one_id = ? AND user_two_id = ?);", function(err, result) {
-				if(err) {
-					console.log(err);
-					return null;
-				} else {
-					if(result[0]) {
-						return result[0];
-					} else {
-						return null;
-					}
-				}
-			});
-		}
-		tempCont.release();
-	});
-}
+//Needs to be updates to use join table
+// var getUserPageData = function(username, requestUser) {
+// 	dbPool.getConnection(function(err, tempCont) {
+// 		if(err) {
+// 			console.log(err);
+// 			return null;
+// 		} else {
+// 			// Check if user making request is logged in
+// 			if requestUser != null {
+// 				// Join friendship table with user table
+// 				requestUser.user_id;
+// 				// Get usernames data
+
+// 			}
+// 			// Anonymous request
+// 			else {
+// 				// If username is private return null
+// 				tempCont.query("SELECT * FROM User WHERE login = ? AND isPrivate = false;", [username], function(err, result) {
+// 					if(err) {
+// 						console.log(err);
+// 						return null;
+// 					} else {
+// 						if(result[0]) {
+// 							return result[0];
+// 						} else {
+// 							return null;
+// 						}
+// 					}
+// 				});
+// 			}
+// 		}
+// 		tempCont.release();
+// 	});
+// }
 
 var search = function(searchString) {
 	return "123";
