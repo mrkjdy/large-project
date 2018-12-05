@@ -71,7 +71,7 @@ public class Step {
     public void takeStep() {
         numStep++;
         calories = (numStep * 0.05);
-        point += mult;
+        point += (1 * mult);
     }
 
     public double getPoint() {
