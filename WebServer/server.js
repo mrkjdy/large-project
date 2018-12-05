@@ -206,7 +206,7 @@ app.get('/user/:username', function (req, res) {
 
 	var userinfo = null, own = false, globalrank = 0, friendrank = 0, friendtable = topRankedUsers;
 
-
+	console.log("test");
 	if (req.user && req.user.login === req.params.username) {
 		userinfo = req.user;
 		own = true;
