@@ -3,6 +3,7 @@ package commrkjdylarge_project.github.stepwithfriends;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +13,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class InfoPopup extends AppCompatActivity {
+
+    private static final String TAG = "infoPopup";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +115,9 @@ public class InfoPopup extends AppCompatActivity {
                 }
                 else
                 {
-                    boolean res = ((SWFApp) getApplication()).updateUserData("firstName", eFN.getText().toString(),"User");
+                    String temp = '"' + eFN.getText().toString() + '"';
+                    Log.d(TAG, "onClick: " + temp);
+                    boolean res = ((SWFApp) getApplication()).updateUserData("firstName", eLN.getText().toString(),"User");
                     fN.setText(eFN.getText().toString());
                 }
                 fN.setVisibility(View.VISIBLE);
@@ -132,6 +137,8 @@ public class InfoPopup extends AppCompatActivity {
                 }
                 else
                 {
+                    String temp = '"' + eLN.getText().toString() + '"';
+                    Log.d(TAG, "onClick: " + temp);
                     boolean res = ((SWFApp) getApplication()).updateUserData("lastName", eLN.getText().toString(),"User");
                     lN.setText(eLN.getText().toString());
                 }
