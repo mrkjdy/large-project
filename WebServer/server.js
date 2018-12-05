@@ -416,6 +416,13 @@ app.post('/updateuserdata', function(req, res) {
 						validRequest = checkInput(req.body["values[" + j + "]"], "boolean");
 						break;
 					
+					case "isPrivate":
+						validRequest = checkInput(req.body["values[" + j + "]"], "boolean");
+						break;
+					
+					
+					
+					
 					default:
 						validRequest = false;
 						break;
@@ -828,24 +835,41 @@ var updateTopUsers = schedule.scheduleJob('*/5 * * * *', function() {
 });
 
 //Needs to be updates to use join table
-var getUserPageData = function(username) {
+var getUserPageData = function(usernameToSearch, user) {
 	dbPool.getConnection(function(err, tempCont) {
 		if(err) {
 			console.log(err);
 			return null;
 		} else {
-			tempCont.query("SELECT * FROM User WHERE login = ? AND (isPrivate = false OR EXISTS (SELECT * FROM friendship WHERE user_one_id = ? AND user_two_id = ?);", [username], function(err, result) {
-				if(err) {
-					console.log(err);
-					return null;
-				} else {
-					if(result[0]) {
-						return result[0];
-					} else {
+			if(!user) {
+				tempCont.query("SELECT * FROM User WHERE login = ? AND isPrivate = false;", [usernameToSearch], function(err, result) {
+					if(err) {
+						console.log(err);
 						return null;
+					} else {
+						if(result[0]) {
+							return result[0];
+						} else {
+							return null;
+						}
 					}
-				}
-			});
+				});
+			} else {
+				tempCont.query("SELECT DISTINCT * FROM User INNER JOIN Friendship ON (Friendship.user_one_id = (SELECT user_id FROM User WHERE login = ?) AND Friendship.user_two_id = ?) OR (Friendship.user_one_id = ? AND Friendship.user_two_id = (SELECT user_id FROM User WHERE login = ?)) OR (User.isPrivate = false) WHERE login = ?;", [usernameToSearch, user.user_id, user.user_id, usernameToSearch, usernameToSearch], function(err, result) {
+					if(err) {
+						console.log(err);
+						return null;
+					} else {
+						if(result[0]) {
+							return result[0];
+						} else {
+							return null;
+						}
+					}
+				});
+			}
+			
+			
 		}
 		tempCont.release();
 	});
