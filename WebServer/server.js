@@ -1,5 +1,6 @@
+////////////////////////////////////
 // Requires
-// ----------------------------------------------------------------------
+////////////////////////////////////
 
 const express = require('express');
 const session = require('express-session');
@@ -14,8 +15,10 @@ const bcrypt = require('bcrypt');
 const schedule = require('node-schedule');
 const cdnurl = "";
 
+
+////////////////////////////////////
 // Global vars
-// ----------------------------------------------------------------------
+////////////////////////////////////
 
 // These are grabbed here because they are used multiple times
 const PORT = process.env.PORT || 5000;
@@ -39,12 +42,13 @@ const saltRounds = 10;
 
 // Top 100 Users, periodically updated to save the database
 var topRankedUsers;
-
-// Used to track session IDs
 var sessionID;
 
+
+
+////////////////////////////////////
 // App config
-// ----------------------------------------------------------------------
+////////////////////////////////////
 
 // Sets public as the public folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -75,7 +79,7 @@ app.set('views', path.join(__dirname, 'pug'));
 // Body-parser initialization
 app.set('trust proxy', 1);
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false}));
 app.use(session({
 	secret: process.env.SESSION_SECRET,
 	resave: false,
@@ -93,7 +97,6 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 
 // Passport initialization
 passport.use(new LocalStrategy(function(username, password, done) {
-	
 	if(checkInput(username, 'username') === true && password) {
 		dbPool.getConnection(function(err, tempCont) {
 			if(err) {
@@ -155,8 +158,11 @@ passport.deserializeUser(function(id, done) {
 	});
 });
 
-// Post and get functions
-// ----------------------------------------------------------------------
+
+
+////////////////////////////////////
+// API functions
+////////////////////////////////////
 
 // Passwords need to be hashed before they are stored in the database!
 // To hash a password:
@@ -176,7 +182,6 @@ passport.deserializeUser(function(id, done) {
 // });
 
 app.get('/', function (req, res) {
-	// topRankedUsers may be null if server was just started
 	res.render('index', {
         user: req.user,
         top: topRankedUsers
@@ -185,13 +190,15 @@ app.get('/', function (req, res) {
 
 app.get('/login', function (req, res) {
 	res.render('login', {
-        user: req.user
+        user: req.user,
+        showLogin: true
     });
 });
 
 app.get('/create-account', function (req, res) {
-	res.render('create-account', {
-        user: req.user
+	res.render('login', {
+        user: req.user,
+        showLogin: false
     });
 });
 
@@ -199,13 +206,13 @@ app.get('/user/:username', function (req, res) {
 
 	var userinfo = null, own = false, globalrank = 0, friendrank = 0, friendtable = topRankedUsers;
 
-
-	if (req.user.login === req.params.username) {
+	console.log("test");
+	if (req.user && req.user.login === req.params.username) {
 		userinfo = req.user;
 		own = true;
 	}
 	else
-		userinfo = getUserPageData(req.params.username);
+		userinfo = getUserPageData(req.params.username, req.user);
 
 	// if not found display 404
 	if (userinfo != null) {
@@ -305,25 +312,45 @@ app.post('/register', function(req, res) {
 });
 
 // Login function
+// app.post('/login', function(req, res) {
+// 	passport.authenticate('local', function(err, user, info) {
+// 		// Database error
+// 		if(err) {
+// 			return res.status(400).send('Database Error');
+// 		}
+// 		// Credentials invalid
+// 		if(!user) {
+// 			return res.status(401).send(JSON.stringify([{ "loginSuccess": false }]));
+// 		}
+// 		req.logIn(user, function(err) {
+// 			if(err) {
+// 				console.log(err);
+// 				return res.status(400).send('Login Error');
+// 			}
+			
+// 			return res.send(JSON.stringify([{ "loginSuccess": true }]));
+// 		});
+// 	})(req, res);
+// });
+
+// Login function
 app.post('/login', function(req, res) {
-	passport.authenticate('local', function(err, user, info) {
-		if(err) {
-			return res.status(400).send('Database Error');
-		}
-		if(!user) {
-			return res.send(JSON.stringify([{ "loginSuccess": false }]));
-		}
-		
-		req.logIn(user, function(err) {
-			
-			if(err) {
-				console.log(err);
-				return res.status(400).send('Login Error');
-			}
-			
-			return res.send(JSON.stringify([{ "loginSuccess": true }]));
-		});
-	})(req, res);
+    passport.authenticate('local', function(err, user, info) {
+        // Database error
+        if(err) {
+            return res.status(500).send(JSON.stringify({errorMessage: err.message, loginSuccess: false}));
+        }
+        // Credentials invalid
+        if(!user) {
+            return res.status(401).send(JSON.stringify({errorMessage: "Username/Password incorrect", loginSuccess: false}));
+        }
+        req.logIn(user, function(err) {
+            if(err) {
+                return res.status(500).send(JSON.stringify({errorMessage: err.message, loginSuccess: false}));
+              }
+              return res.status(200).send(JSON.stringify({redirect: "/", loginSuccess: true}));
+          });
+    })(req, res);
 });
 
 // Logout function
@@ -331,10 +358,9 @@ app.post('/logout', function(req, res) {
 	req.logout();
 	req.session.destroy(function(err) {
 		if(err)	{
-			console.log(err);
-			res.status(400).send();
+			res.status(400).send(JSON.stringify({errorMessage: err.message}));
 		} else {
-			res.status(200).send();
+			res.status(200).send(JSON.stringify({redirect: "/"}));
 		}
 	});
 });
@@ -416,6 +442,29 @@ app.post('/updateuserdata', function(req, res) {
 						validRequest = checkInput(req.body["values[" + j + "]"], "boolean");
 						break;
 					
+					case "firstName":
+						validRequest = checkInput(req.body["values[" + j + "]"], "username");
+						break;
+					
+					case "lastName":
+						validRequest = checkInput(req.body["values[" + j + "]"], "username");
+						break;
+					
+					case "height":
+						validRequest = checkInput(req.body["values[" + j + "]"], "number");
+						break;
+					
+					case "weight":
+						validRequest = checkInput(req.body["values[" + j + "]"], "number");
+						break;
+					
+					case "total_points":
+						validRequest = checkInput(req.body["values[" + j + "]"], "number");
+						break;
+					
+					
+					
+					
 					default:
 						validRequest = false;
 						break;
@@ -423,7 +472,7 @@ app.post('/updateuserdata', function(req, res) {
 				if(!validRequest) {
 					j = i + 1;
 				} else {
-					updateValues += req.body["fields[" + j + "]"] + "=" + req.body["values[" + j + "]"] + ", ";
+					updateValues += req.body["fields[" + j + "]"] + "=" + req.body["values[" +  j + "]"] + ", ";
 				}
 			}
 			if(!validRequest) {
@@ -436,6 +485,10 @@ app.post('/updateuserdata', function(req, res) {
 					} else {
 						tempCont.query("UPDATE " + req.body.table + " SET " + updateValues.slice(0, -2) + " WHERE user_id=" + req.user.user_id + ";", function(err, result) {
 							if(err) {
+								console.log(req.body.table);
+								console.log(updateValues.slice(0, -2));
+								console.log(req.user.user_id);
+								console.log("Query failed");
 								res.status(400).send();
 							} else {
 								res.status(200).send();
@@ -604,13 +657,14 @@ app.post('/joinsession', function(req, res) {
 						// Join session
 						for(var i = 0; i < result.length; i++) {
 							if(withinRange(result[i].latitude, result[i].longitude, req.user.latitude, req.user.longitude)) {
-								tempCont.query("UPDATE User SET session_id = ? WHERE user_id = ?;", [result[i].session_id], function(err, result1) {
+								console.log(result[i]);
+								tempCont.query("UPDATE User SET session_id = ? WHERE user_id = ?;", [result[i].session_id, req.user.user_id], function(err, result1) {
 									if(err) {
 										console.log(err);
 										res.status(400).send();
 										i = result.length;
 									} else {
-										res.status(200).send(result[i].session_id);
+										res.status(200).send();
 										i = result.length;
 									}
 								});
@@ -743,8 +797,11 @@ app.use(function(req, res, next) {
 	res.status(404).redirect('/404');
 });
 
+
+
+////////////////////////////////////
 // Helper functions
-// ----------------------------------------------------------------------
+////////////////////////////////////
 
 // Checks if input provided by user is formatted correctly for storage in database
 var checkInput = function(input, type, callback) {
@@ -827,25 +884,41 @@ var updateTopUsers = schedule.scheduleJob('*/5 * * * *', function() {
 	getNewTopUsers();
 });
 
-//Needs to be updates to use join table
-var getUserPageData = function(username) {
+var getUserPageData = function(usernameToSearch, user) {
 	dbPool.getConnection(function(err, tempCont) {
 		if(err) {
 			console.log(err);
 			return null;
 		} else {
-			tempCont.query("SELECT * FROM User WHERE login = ? AND (isPrivate = false OR EXISTS (SELECT * FROM friendship WHERE user_one_id = ? AND user_two_id = ?);", [username], function(err, result) {
-				if(err) {
-					console.log(err);
-					return null;
-				} else {
-					if(result[0]) {
-						return result[0];
-					} else {
+			if(!user) {
+				tempCont.query("SELECT * FROM User WHERE login = ? AND isPrivate = false;", [usernameToSearch], function(err, result) {
+					if(err) {
+						console.log(err);
 						return null;
+					} else {
+						if(result[0]) {
+							return result[0];
+						} else {
+							return null;
+						}
 					}
-				}
-			});
+				});
+			} else {
+				tempCont.query("SELECT DISTINCT * FROM User INNER JOIN Friendship ON (Friendship.user_one_id = (SELECT user_id FROM User WHERE login = ?) AND Friendship.user_two_id = ?) OR (Friendship.user_one_id = ? AND Friendship.user_two_id = (SELECT user_id FROM User WHERE login = ?)) OR (User.isPrivate = false) WHERE login = ?;", [usernameToSearch, user.user_id, user.user_id, usernameToSearch, usernameToSearch], function(err, result) {
+					if(err) {
+						console.log(err);
+						return null;
+					} else {
+						if(result[0]) {
+							return result[0];
+						} else {
+							return null;
+						}
+					}
+				});
+			}
+			
+			
 		}
 		tempCont.release();
 	});
@@ -880,7 +953,7 @@ var getUserIndex = function(username) {
 
 var withinRange = function(latA, longA, latB, longB) {
 	if(latA === null || longA === null || latB === null || longB === null) return false;
-	var radius = Math.sqrt(Math.Pow(latA-latB,2) + Math.Pow(longA-longB,2));
+	var radius = Math.sqrt(Math.pow(latA-latB,2) + Math.pow(longA-longB,2));
 
 	// Wiki:
 	// one latitudinal degree is 110.6 kilometres
