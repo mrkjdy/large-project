@@ -336,7 +336,6 @@ app.post('/register', function(req, res) {
 
 // Login function
 app.post('/login', function(req, res) {
-<<<<<<< HEAD
 	passport.authenticate('local', function(err, user, info) {
 		// Database error
 		if(err) {
@@ -353,24 +352,6 @@ app.post('/login', function(req, res) {
       		return res.status(200).send(JSON.stringify({redirect: "/"}));
       	});
 	})(req, res);
-=======
-    passport.authenticate('local', function(err, user, info) {
-        // Database error
-        if(err) {
-            return res.status(500).send(JSON.stringify({errorMessage: err.message, loginSuccess: false}));
-        }
-        // Credentials invalid
-        if(!user) {
-            return res.status(401).send(JSON.stringify({errorMessage: "Username/Password incorrect", loginSuccess: false}));
-        }
-        req.logIn(user, function(err) {
-            if(err) {
-                return res.status(500).send(JSON.stringify({errorMessage: err.message, loginSuccess: false}));
-              }
-              return res.status(200).send(JSON.stringify({redirect: "/", loginSuccess: true}));
-          });
-    })(req, res);
->>>>>>> cb7472f049b8bf9390e1f9bfae955b53d71b505b
 });
 
 // Logout function
