@@ -45,6 +45,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     int bonus1 = 1000;
     int bonus2 = 500;
     int bonus3 = 1500;
+    int bonusFlag1 = 0;
+    int bonusFlag2 = 0;
+    int bonusFlag3 = 0;
 
     private BottomNavigationView bottomNavigationView;
 
@@ -292,9 +295,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         double points = cStep.getPoint();
         double test = round(((double) steps / (double) dailyGoal) * 100);
         int bonus = 0;
-        int bonusFlag1 = 0;
-        int bonusFlag2 = 0;
-        int bonusFlag3 = 0;
 
 
         if(steps >= dailyGoal){
