@@ -24,7 +24,7 @@ public class HomeFragment extends Fragment {
     private static final String TAG = "Home";
     int pStatus = 0;
     private Handler handler = new Handler();
-    TextView percent;
+    TextView percentTxtView;
     TextView stepsTxtView;
     TextView calorieTxtView;
     TextView pointsTxtView;
@@ -56,15 +56,13 @@ public class HomeFragment extends Fragment {
         Drawable drawable = res.getDrawable(R.drawable.circle);
 
         mProgress = getView().findViewById(R.id.circularProgressbar);
-
         mProgress.setProgress(0);   // Main Progress
         mProgress.setSecondaryProgress(100); // Secondary Progress
         mProgress.setMax(100); // Maximum Progress
         mProgress.setProgressDrawable(drawable);
 
 
-
-        percent = getView().findViewById(R.id.tv);
+        percentTxtView = getView().findViewById(R.id.tv);
         stepsTxtView = getView().findViewById(R.id.stepTextView);
         calorieTxtView = getView().findViewById(R.id.calorieText);
         pointsTxtView = getView().findViewById(R.id.scoreText);
@@ -104,24 +102,20 @@ public class HomeFragment extends Fragment {
     public void putArgument(Bundle args){
         int step = args.getInt("steps");
         double cal =  args.getDouble("calories");
-        double pts = args.getDouble("points");
-        double test = args.getDouble("test");
+        double pts = args.getDouble("Points");
+        double percent = args.getDouble("percent");
         double miles = ((double) step / (double )2000);
         int dailyGoal = args.getInt("dailyGoal");
         int bonus = args.getInt("bonus");
 
 
         stepsTxtView.setText("" + step);
+        percentTxtView.setText("/" + dailyGoal);
         calorieTxtView.setText(""+(int)cal);
-        pointsTxtView.setText("" +(int) pts);
         milesTxtView.setText(String.format( "%.2f", miles ));
+        pointsTxtView.setText("" +(int) pts);
         bonusTxtView.setText("" + bonus);
-        percent.setText("/" + dailyGoal);
-        mProgress.setProgress((int) test);
+        mProgress.setProgress((int) percent);
     }
 
-
-//    public void putPercent(Bundle args){
-//        mProgress.setProgress(args.getInt("percent"));
-//    }
 }
