@@ -320,7 +320,7 @@ app.post('/login', function(req, res) {
 		}
 		// Credentials invalid
 		if(!user) {
-			return res.status(400).send(JSON.stringify([{ "loginSuccess": false }]));
+			return res.status(401).send(JSON.stringify([{ "loginSuccess": false }]));
 		}
 		req.logIn(user, function(err) {
 			if(err) {
