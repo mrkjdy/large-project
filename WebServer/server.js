@@ -420,8 +420,24 @@ app.post('/updateuserdata', function(req, res) {
 						validRequest = checkInput(req.body["values[" + j + "]"], "boolean");
 						break;
 					
-					case "isPrivate":
-						validRequest = checkInput(req.body["values[" + j + "]"], "boolean");
+					case "firstName":
+						validRequest = checkInput(req.body["values[" + j + "]"], "text");
+						break;
+					
+					case "lastName":
+						validRequest = checkInput(req.body["values[" + j + "]"], "text");
+						break;
+					
+					case "height":
+						validRequest = checkInput(req.body["values[" + j + "]"], "number");
+						break;
+					
+					case "weight":
+						validRequest = checkInput(req.body["values[" + j + "]"], "number");
+						break;
+					
+					case "total_points":
+						validRequest = checkInput(req.body["values[" + j + "]"], "number");
 						break;
 					
 					
