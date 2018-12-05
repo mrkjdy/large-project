@@ -50,9 +50,19 @@ public class ResultFragment extends Fragment {
 
         Bundle b = getArguments();
         String time = b.getString("Time");
+        String step = b.getString("Step");
+        String mile = b.getString("Mile");
+        String score = b.getString("Score");
 
-        TextView timeView = (TextView) getView().findViewById(R.id.timeView);
+        TextView timeView = (TextView) getView().findViewById(R.id.timeResult);
+        TextView stepView = (TextView) getView().findViewById(R.id.stepResult);
+        TextView mileView = (TextView) getView().findViewById(R.id.milesResult);
+        TextView scoreView = (TextView) getView().findViewById(R.id.scoreResult);
+
         timeView.setText(time);
+        stepView.setText(step);
+        mileView.setText(mile);
+        scoreView.setText(score);
 
         Button end = (Button) getView().findViewById(R.id.endButton);
         end.setOnClickListener(new View.OnClickListener() {

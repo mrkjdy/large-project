@@ -16,6 +16,32 @@ import cz.msebera.android.httpclient.Header;
 
 public class SWFApp extends Application {
 
+    //This is mine -Wen
+    private volatile int steps = 0;
+    private volatile double points = 0;
+    private volatile int multiplier = 1;
+
+    public void setValues(int steps, double points) {
+        this.steps = steps;
+        this.points = points;
+    }
+
+    public void setMultiplier(int multiplier) {
+        this.multiplier = multiplier;
+    }
+
+    public int getSteps() {
+        return this.steps;
+    }
+
+    public double getPoints() {
+        return this.points;
+    }
+
+    public int getMultiplier() {
+        return this.multiplier;
+    }
+
     //////////////////////////////////////
     private boolean useLOCALHOST = false;
     //////////////////////////////////////

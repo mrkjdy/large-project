@@ -1,8 +1,9 @@
 package commrkjdylarge_project.github.stepwithfriends;
 
 import android.app.Dialog;
-import android.app.FragmentManager;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -11,24 +12,19 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.FragmentTransaction;
-import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-import android.content.res.Configuration;
-import android.content.pm.ActivityInfo;
-import static java.lang.Math.*;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.json.*;
 
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -38,6 +34,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+
+import static java.lang.Math.round;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener, SessionFragment.SessionToActivity, StartFragment.StartToActivity {
 
@@ -425,6 +423,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         args.putInt("bonus", bonus);
         args.putInt("dailyGoal", dailyGoal);
         homeFrame.putArgument(args);
+        ((SWFApp) getApplication()).setValues(steps, points);
     }
 
 

@@ -28,19 +28,20 @@
             app:layout_constraintVertical_bias="0.931" />
 
         <TextView
-            android:id="@+id/timeView"
+            android:id="@+id/timeResult"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
+            android:text="TIME"
             android:textSize="65sp"
             app:layout_constraintBottom_toTopOf="@+id/endButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/stepResult"
             android:layout_width="104dp"
             android:layout_height="34dp"
             android:layout_marginEnd="8dp"
@@ -48,11 +49,11 @@
             android:gravity="left|center_vertical"
             android:text="STEPS"
             android:textSize="30dp"
-            app:layout_constraintBottom_toTopOf="@+id/textView5"
+            app:layout_constraintBottom_toTopOf="@+id/milesResult"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/milesResult"
             android:layout_width="104dp"
             android:layout_height="16dp"
             android:layout_marginEnd="8dp"
@@ -64,7 +65,7 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/scoreResult"
             android:layout_width="104dp"
             android:layout_height="34dp"
             android:layout_marginStart="8dp"
@@ -72,11 +73,11 @@
             android:gravity="right|center_vertical"
             android:text="SCORE"
             android:textSize="30dp"
-            app:layout_constraintBottom_toTopOf="@+id/textView7"
+            app:layout_constraintBottom_toTopOf="@+id/multiplierView"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/textView7"
+            android:id="@+id/multiplierView"
             android:layout_width="104dp"
             android:layout_height="16dp"
             android:layout_marginStart="8dp"

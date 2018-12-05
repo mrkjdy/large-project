@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -64,25 +63,6 @@ public class WalkFragment extends Fragment implements OnMapReadyCallback, StartF
 
     @Override
     public void stopClicked() {
-
-        MenuItem action_home = getView().findViewById(R.id.action_home);
-        MenuItem action_settings = getView().findViewById(R.id.action_settings);
-        MenuItem action_walk = getView().findViewById(R.id.action_walk);
-        MenuItem action_leaderboard = getView().findViewById(R.id.action_leaderboard);
-
-        if(action_home != null) {
-            action_walk.setVisible(false);
-        }
-        if(action_home != null){
-            action_settings.setVisible(false);
-        }
-        if(action_home != null){
-            action_leaderboard.setVisible(false);
-        }
-        if(action_home != null){
-            action_home.setVisible(false);
-        }
-
         track = false;
     }
 
@@ -173,6 +153,9 @@ public class WalkFragment extends Fragment implements OnMapReadyCallback, StartF
                     ((SWFApp) getActivity().getApplication()).updateUserData(fields, values, "User");
                 }
 
+                //String string = ((SWFApp) getActivity().getApplication()).getSession();
+                //int count = Integer.parseInt(string);
+                //((SWFApp) getActivity().getApplication()).setMultiplier(count);
             }
 
         } ,Looper.myLooper());
