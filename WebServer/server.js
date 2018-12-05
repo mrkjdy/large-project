@@ -663,7 +663,7 @@ app.post('/joinsession', function(req, res) {
 										res.status(400).send();
 										i = result.length;
 									} else {
-										res.status(200).send(result[i].session_id);
+										res.status(200).send();
 										i = result.length;
 									}
 								});
