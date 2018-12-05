@@ -4,7 +4,13 @@ html(lang='en')
 	body
 		#loginBox.shadedBox
 			h2 STEPS WITH FRIENDS
-			#loginForm
+			if showLogin == true
+				- var loginFormStyle = ""
+				- var createAccountFormStyle = "display: none;"
+			else
+				- var loginFormStyle = "display: none;"
+				- var createAccountFormStyle = ""
+			#loginForm(style= loginFormStyle)
 				form(onsubmit='login(); return false')
 					input#uName(type='text' placeholder='Username' autofocus)
 					br
@@ -14,7 +20,7 @@ html(lang='en')
 					br
 				p Not registered? 
 					a#showCreateAccount(onclick='showCreateAccount(); return false') Create an account
-			#createAccountForm(style="display:none")
+			#createAccountForm(style= createAccountFormStyle)
 				form(onsubmit='createAccount(); return false')
 					input#newFName(type='text' placeholder='First Name' autofocus)
 					br
@@ -26,7 +32,7 @@ html(lang='en')
 					br
 					input#newPWord2(type='password' placeholder='Confirm Password')
 					br
-					input#submitCreateAccount(type='submit' value='Create Account')
+					input#submitRegister(type='submit' value='Create Account')
 					br
 				p Already have an account? 
 					a#showLogin(onclick="showLogin(); return false") Login

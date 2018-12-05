@@ -73,6 +73,26 @@ a:hover {
   align-items: center;
 }
 
+.inline {
+  display: inline;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  border: none;
+}
+
+.link-button:hover {
+  color: #fff;
+}
+
+
 
 /*////////////////////////////////////*/
 /* Header styles */
@@ -163,7 +183,6 @@ tr:nth-child(even) {
 }
 
 #submitMessage {
-  display: none;
   padding: 10px;
   color: #F00;
 }
