@@ -31,6 +31,7 @@ public class HomeFragment extends Fragment {
     TextView pointsTxtView;
     TextView milesTxtView;
     int globalPercent;
+    ProgressBar mProgress;
 
 
 
@@ -55,7 +56,7 @@ public class HomeFragment extends Fragment {
         Resources res = getResources();
         Drawable drawable = res.getDrawable(R.drawable.circle);
 
-        final ProgressBar mProgress = getView().findViewById(R.id.circularProgressbar);
+        mProgress = getView().findViewById(R.id.circularProgressbar);
 
         mProgress.setProgress(0);   // Main Progress
         mProgress.setSecondaryProgress(100); // Secondary Progress
@@ -66,7 +67,7 @@ public class HomeFragment extends Fragment {
         stepsTxtView = getView().findViewById(R.id.stepTextView);
         calorieTxtView = getView().findViewById(R.id.calorieText);
         pointsTxtView = getView().findViewById(R.id.scoreText);
-        calorieTxtView = getView().findViewById(R.id.milesText);
+        milesTxtView = getView().findViewById(R.id.milesText);
 
         new Thread(new Runnable() {
 
@@ -81,8 +82,7 @@ public class HomeFragment extends Fragment {
                         @Override
                         public void run() {
                             // TODO Auto-generated method stub
-                            mProgress.setProgress(pStatus);
-                            percent.setText(pStatus + "%");
+                            //mProgress.setProgress(pStatus);
 
                         }
                     });
@@ -101,18 +101,20 @@ public class HomeFragment extends Fragment {
 
     public void putArgument(Bundle args){
         int step = args.getInt("steps");
-//        double cal =  args.getDouble("calories");
-//        double pts = args.getDouble("points");
-//        double miles = step / 2;
+        double cal =  args.getDouble("calories");
+        double pts = args.getDouble("points");
+        double test = args.getDouble("test");
+        double miles = step / 2000;
 
-        //HAHAHAHAH
         stepsTxtView.setText("" + step);
-//        calorieTxtView.setText(String.format("%.2f",cal));
-//        pointsTxtView.setText(String.format("%.2f",pts));
-//        milesTxtView.setText(String.format("%.2f",miles));
+        calorieTxtView.setText(""+(int)cal);
+        pointsTxtView.setText("" +(int) pts);
+        milesTxtView.setText(String.format( "%.2f", miles ));
+        mProgress.setProgress((int) test);
     }
 
+
 //    public void putPercent(Bundle args){
-//        globalPercent = args.getInt("percent");
+//        mProgress.setProgress(args.getInt("percent"));
 //    }
 }

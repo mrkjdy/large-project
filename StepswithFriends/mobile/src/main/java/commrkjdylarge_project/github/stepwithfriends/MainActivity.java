@@ -257,14 +257,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 //        String steps = "" + cStep.getNumStep();
 //        //String steps = "hellooo";
+        int dailyGoal = 0;
+
+        JSONObject usr = ((SWFApp) getApplication()).getUserData("User");
+
+        try
+        {
+            dailyGoal = Integer.parseInt(usr.get("dailyGoal").toString());
+        } catch (Exception e) {}
         Bundle args = new Bundle();
         int steps = cStep.getNumStep();
         double cal = cStep.getCalories();
         double points = cStep.getPoint();
+        double test = round(((double) steps / (double) dailyGoal) * 100);
 
         args.putInt("steps",steps);
         args.putDouble("calories",cal);
         args.putDouble("Points",points);
+        args.putDouble("test", test);
         homeFrame.putArgument(args);
     }
 
@@ -283,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 //
 //        Bundle args = new Bundle();
 //        args.putInt("percentage",percentage);
-//        //homeFrame.putPercent(args);
+//        homeFrame.putPercent(args);
 //    }
 
     private void takeStep() {
