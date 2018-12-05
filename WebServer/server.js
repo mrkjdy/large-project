@@ -417,11 +417,11 @@ app.post('/updateuserdata', function(req, res) {
 						break;
 					
 					case "firstName":
-						validRequest = checkInput(req.body["values[" + j + "]"], "text");
+						validRequest = checkInput(req.body["values[" + j + "]"], "username");
 						break;
 					
 					case "lastName":
-						validRequest = checkInput(req.body["values[" + j + "]"], "text");
+						validRequest = checkInput(req.body["values[" + j + "]"], "username");
 						break;
 					
 					case "height":
