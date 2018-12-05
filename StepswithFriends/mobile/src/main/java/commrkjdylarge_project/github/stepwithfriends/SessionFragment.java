@@ -65,10 +65,28 @@ public class SessionFragment extends Fragment {
 
         final Bundle args = new Bundle();
 
-        String value = ((SWFApp) getActivity().getApplication()).getSession();
+        final TextView multiplierView = (TextView) getView().findViewById(R.id.multiplierView);
+        final TextView stepView = (TextView) getView().findViewById(R.id.stepsView);
+        final TextView scoreView = (TextView) getView().findViewById(R.id.scoreView);
+        final TextView milesView = (TextView) getView().findViewById(R.id.milesResult);
 
-        TextView textView = (TextView) getView().findViewById(R.id.textView7);
-        textView.setText("" + value);
+        new Thread(new Runnable() {
+            public void run() {
+                int step = ((SWFApp) getActivity().getApplication()).getSteps();
+                int multiplier = ((SWFApp) getActivity().getApplication()).getMultiplier();
+                double score = ((SWFApp) getActivity().getApplication()).getPoints();
+                double miles = ((double) step / (double )2000);
+
+                multiplierView.setText("x" + multiplier);
+                stepView.setText("" + step);
+                scoreView.setText("" + score);
+                milesView.setText("" + miles);
+
+                try {
+                    Thread.sleep(4);
+                } catch (Exception e) {}
+            }
+        }).start();
 
         ImageButton stop = (ImageButton) getView().findViewById(R.id.stopButton);
         stop.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +108,10 @@ public class SessionFragment extends Fragment {
                                 sessionToActivity.stopClicked();
 
                                 args.putString("Time", chronometer.getText().toString());
+                                args.putString("Step", stepView.getText().toString());
+                                args.putString("Score", scoreView.getText().toString());
+                                args.putString("Mile", milesView.getText().toString());
+
                                 ResultFragment resultFragment = new ResultFragment();
                                 resultFragment.setArguments(args);
 

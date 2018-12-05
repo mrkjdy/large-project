@@ -3,6 +3,7 @@ package commrkjdylarge_project.github.stepwithfriends;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,10 +14,14 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
 
 public class Login extends AppCompatActivity {
+
+    private static final String TAG = "Login";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,21 +46,21 @@ public class Login extends AppCompatActivity {
                     client.post(((SWFApp) getApplication()).getURL() + "/login", params, new JsonHttpResponseHandler() {
                         // TODO: Fix bug where login fails when heroku is idle
                         @Override
-                        public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             // called when response HTTP status is "200 OK"
                             ((SWFApp) getApplication()).getUserData("User");
                             startActivity(new Intent(Login.this, MainActivity.class));
                         }
 
                         @Override
-                        public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                        public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response) {
                             // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                             // 401 Unauthorized
-                            if (statusCode == 401) {
-                                error.setText(getResources().getString(R.string.login_invalid_field));
-                                // Other Error
-                            } else {
-                                error.setText(getResources().getString(R.string.login_error_other));
+                            Log.d(TAG, "onFailure: " + statusCode);
+                            try {
+                                error.setText(response.get("errorMessage").toString());
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
                             }
                         }
                     });

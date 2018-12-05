@@ -1,8 +1,9 @@
 package commrkjdylarge_project.github.stepwithfriends;
 
 import android.app.Dialog;
-import android.app.FragmentManager;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -11,24 +12,19 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.FragmentTransaction;
-import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-import android.content.res.Configuration;
-import android.content.pm.ActivityInfo;
-import static java.lang.Math.*;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.json.*;
 
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -39,71 +35,63 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
+import static java.lang.Math.round;
+
 public class MainActivity extends AppCompatActivity implements SensorEventListener, SessionFragment.SessionToActivity, StartFragment.StartToActivity {
 
-    int backAllow = 1;
-    int bonus1 = 1000;
-    int bonus2 = 500;
-    int bonus3 = 1500;
-    int bonusFlag1 = 0;
-    int bonusFlag2 = 0;
-    int bonusFlag3 = 0;
-    int dailyGoal = 0;
+    // bonuses  and back allow Vars
+    private int backAllow = 1;
+    private int bonus1 = 1000;
+    private int bonus2 = 500;
+    private int bonus3 = 1500;
+    private int bonusFlag1 = 0;
+    private int bonusFlag2 = 0;
+    private int bonusFlag3 = 0;
+    private int dailyGoal = 0;
+    private int totalPoints = 0;
 
-    private BottomNavigationView bottomNavigationView;
-
-    public void startClicked() {
-        backAllow = 0;
-        bottomNavigationView.setVisibility(View.GONE);
-    }
-
-    public void stopClicked() {
-        backAllow =1;
-        bottomNavigationView.setVisibility(View.VISIBLE);
-    }
-
+    // layout vars
     private FrameLayout mainFrame;
     private SettingsFragment settingsFrame;
     private HomeFragment homeFrame;
     private WalkFragment walkFrame;
     private LeaderboardFragment leaderboardFrame;
+    private BottomNavigationView bottomNavigationView;
 
-
-    // alex stuff
+    // Step Detector Vars
     List<Step> stepList = new ArrayList<>();
-    static Step cStep;
-    boolean created = false;
+    static Step mStep;
+    boolean databaseCreated = false;
     private SensorManager mSensorManager;
     private Sensor mStepDetectorSensor;
     private CompositeDisposable compositeDisposable;
     private StepRepository stepRepository;
-
+    // error code
     private static final int ERROR_DIALOG_REQUEST = 9001;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Used Fragments
         mainFrame = findViewById(R.id.main_frame);
         settingsFrame = new SettingsFragment();
         homeFrame = new HomeFragment();
         walkFrame = new WalkFragment();
         leaderboardFrame = new LeaderboardFragment();
-
         setFragment(1);
 
-        // alex stuff
+        // Local Database Vars
         compositeDisposable = new CompositeDisposable();
         StepDatabase stepDatabase = StepDatabase.getInstance(this);
         stepRepository = StepRepository.getInstance(StepDataSouce.getInstance(stepDatabase.stepDao()));
         new getAsyncTask(stepDatabase).execute();
-
         // load all data
         loadData();
 
-
-
+        // Step Detector Sensor Var
         mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         if(mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) != null)
         {
@@ -111,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
-
+        // bottom navigation bar
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -165,25 +153,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 break;
         }
 
+        // retrieves User data from remote database
         JSONObject usr = ((SWFApp) getApplication()).getUserData("User");
-
         try
         {
             dailyGoal = Integer.parseInt(usr.get("dailyGoal").toString());
+            totalPoints = Integer.parseInt(usr.get("total_points").toString());
         } catch (Exception e) {}
+
+        Toast.makeText(this, "" + totalPoints, Toast.LENGTH_SHORT).show();
 
     }
 
-//    private void setFragment(android.support.v4.app.Fragment fragment){
-//        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//        fragmentTransaction.replace(R.id.main_frame, fragment);
-//        fragmentTransaction.commit();
-//    }
 
     private void setFragment(int position){
         android.support.v4.app.FragmentManager fragmentManager;
         fragmentManager = getSupportFragmentManager();
-
 
         switch(position) {
             case 1:
@@ -272,10 +257,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 break;
         }
 
-
-
     }
-
 
     // Make sure google play services is available, need to verify this
     public boolean isServicesOK(){
@@ -306,8 +288,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         System.loadLibrary("native-lib");
     }
 
-    // Step counter stuff dont touch
 
+    // Sensor Detection Functions
     @Override
     public void onSensorChanged(SensorEvent event) {
         takeStep();
@@ -318,6 +300,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
+    // Accesses Local Database without locking UI thread
     private static class getAsyncTask extends AsyncTask<Void, Void, Step> {
 
         private StepDatabase db;
@@ -330,25 +313,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         protected Step doInBackground(Void... params) {
             try{
                 StepDao dao = db.stepDao();
-                cStep = dao.getStepById(0);
+                mStep = dao.getStepById(0);
             }
             catch (Exception e){
                 System.out.println(e);
             }
 
-            return cStep;
+            return mStep;
         }
-
     }
 
+    // loads step data to be displayed
     private void loadData() {
         Disposable disposable = stepRepository.getAllSteps()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Consumer<List<Step>>() {
                     @Override
-                    public void accept(List<Step> users) throws Exception {
-                        onGetAllUserSuccess(users);
+                    public void accept(List<Step> steps) throws Exception {
+                        onGotStepSuccessfully(steps);
                     }
 
                 }, new Consumer<Throwable>() {
@@ -361,32 +344,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         compositeDisposable.add(disposable);
     }
 
-    private void onGetAllUserSuccess(List<Step> users) {
+    // support method after verifying step retrieval
+    private void onGotStepSuccessfully(List<Step> steps) {
         stepList.clear();
-        stepList.addAll(users);
+        stepList.addAll(steps);
         getSteps();
-        //getPercent();
-        //adapter.notifyDataSetChanged();
     }
 
+
     public void getSteps(){
-
-//        String steps = "" + cStep.getNumStep();
-//        //String steps = "hellooo";
-//        int dailyGoal = 0;
-//
-//        JSONObject usr = ((SWFApp) getApplication()).getUserData("User");
-//
-//        try
-//        {
-//            dailyGoal = Integer.parseInt(usr.get("dailyGoal").toString());
-//        } catch (Exception e) {}
-
         Bundle args = new Bundle();
-        int steps = cStep.getNumStep();
-        double cal = cStep.getCalories();
-        double points = cStep.getPoint();
-        double test = round(((double) steps / (double) dailyGoal) * 100);
+        int steps = mStep.getNumStep();
+        double cal = mStep.getCalories();
+        double points = mStep.getPoint();
+        double percent = round(((double) steps / (double) dailyGoal) * 100);
         int bonus = 0;
 
 
@@ -421,20 +392,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         args.putInt("steps",steps);
         args.putDouble("calories",cal);
         args.putDouble("Points",points);
-        args.putDouble("test", test);
+        args.putDouble("percent", percent);
         args.putInt("bonus", bonus);
         args.putInt("dailyGoal", dailyGoal);
         homeFrame.putArgument(args);
+        ((SWFApp) getApplication()).setValues(steps, points);
     }
 
 
 
     private void takeStep() {
-        if(created){
-            cStep.takeStep();
-            updateStep(cStep);
+        if(databaseCreated){
+            mStep.takeStep();
+            updateStep(mStep);
         }
-        created = true;
+        databaseCreated = true;
     }
 
     private void updateStep(final Step step) {
@@ -477,5 +449,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         } else {
 
         }
+    }
+
+    public void startClicked() {
+        backAllow = 0;
+        bottomNavigationView.setVisibility(View.GONE);
+    }
+
+    public void stopClicked() {
+        backAllow =1;
+        bottomNavigationView.setVisibility(View.VISIBLE);
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+
+        mStep.stepReset();
+
     }
 }

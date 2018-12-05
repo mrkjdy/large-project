@@ -313,7 +313,30 @@ app.post('/register', function(req, res) {
 });
 
 // Login function
+// app.post('/login', function(req, res) {
+// 	passport.authenticate('local', function(err, user, info) {
+// 		// Database error
+// 		if(err) {
+// 			return res.status(400).send('Database Error');
+// 		}
+// 		// Credentials invalid
+// 		if(!user) {
+// 			return res.status(401).send(JSON.stringify([{ "loginSuccess": false }]));
+// 		}
+// 		req.logIn(user, function(err) {
+// 			if(err) {
+// 				console.log(err);
+// 				return res.status(400).send('Login Error');
+// 			}
+			
+// 			return res.send(JSON.stringify([{ "loginSuccess": true }]));
+// 		});
+// 	})(req, res);
+// });
+
+// Login function
 app.post('/login', function(req, res) {
+<<<<<<< HEAD
 	passport.authenticate('local', function(err, user, info) {
 		// Database error
 		if(err) {
@@ -330,6 +353,24 @@ app.post('/login', function(req, res) {
       		return res.status(200).send(JSON.stringify({redirect: "/"}));
       	});
 	})(req, res);
+=======
+    passport.authenticate('local', function(err, user, info) {
+        // Database error
+        if(err) {
+            return res.status(500).send(JSON.stringify({errorMessage: err.message, loginSuccess: false}));
+        }
+        // Credentials invalid
+        if(!user) {
+            return res.status(401).send(JSON.stringify({errorMessage: "Username/Password incorrect", loginSuccess: false}));
+        }
+        req.logIn(user, function(err) {
+            if(err) {
+                return res.status(500).send(JSON.stringify({errorMessage: err.message, loginSuccess: false}));
+              }
+              return res.status(200).send(JSON.stringify({redirect: "/", loginSuccess: true}));
+          });
+    })(req, res);
+>>>>>>> cb7472f049b8bf9390e1f9bfae955b53d71b505b
 });
 
 // Logout function
@@ -451,7 +492,7 @@ app.post('/updateuserdata', function(req, res) {
 				if(!validRequest) {
 					j = i + 1;
 				} else {
-					updateValues += req.body["fields[" + j + "]"] + "=" + req.body["values[" + j + "]"] + ", ";
+					updateValues += req.body["fields[" + j + "]"] + "=" + req.body["values[" +  j + "]"] + ", ";
 				}
 			}
 			if(!validRequest) {
@@ -464,6 +505,9 @@ app.post('/updateuserdata', function(req, res) {
 					} else {
 						tempCont.query("UPDATE " + req.body.table + " SET " + updateValues.slice(0, -2) + " WHERE user_id=" + req.user.user_id + ";", function(err, result) {
 							if(err) {
+								console.log(req.body.table);
+								console.log(updateValues.slice(0, -2));
+								console.log(req.user.user_id);
 								console.log("Query failed");
 								res.status(400).send();
 							} else {
@@ -633,13 +677,14 @@ app.post('/joinsession', function(req, res) {
 						// Join session
 						for(var i = 0; i < result.length; i++) {
 							if(withinRange(result[i].latitude, result[i].longitude, req.user.latitude, req.user.longitude)) {
-								tempCont.query("UPDATE User SET session_id = ? WHERE user_id = ?;", [result[i].session_id], function(err, result1) {
+								console.log(result[i]);
+								tempCont.query("UPDATE User SET session_id = ? WHERE user_id = ?;", [result[i].session_id, req.user.user_id], function(err, result1) {
 									if(err) {
 										console.log(err);
 										res.status(400).send();
 										i = result.length;
 									} else {
-										res.status(200).send(result[i].session_id);
+										res.status(200).send();
 										i = result.length;
 									}
 								});
@@ -819,7 +864,7 @@ var checkInput = function(input, type, callback) {
 var dailyUpdateUserStats = schedule.scheduleJob('00 00 00 * * 0-6', function() {
 	
 	// !!! Query that adds points, distance, steps from Daily Stats to total_points, total_distance, total_steps in User
-	var updateQuery = "";
+	var updateQuery = "UPDATE User SET total_score = total_score + daily_score AND total_steps = total_steps + daily_steps AND daily_score = 0 AND daily_steps = 0;";
 	dbPool.getConnection(function(err, tempCont) {
 		if(err) {
 			console.log(err);
@@ -928,7 +973,7 @@ var getUserIndex = function(username) {
 
 var withinRange = function(latA, longA, latB, longB) {
 	if(latA === null || longA === null || latB === null || longB === null) return false;
-	var radius = Math.sqrt(Math.Pow(latA-latB,2) + Math.Pow(longA-longB,2));
+	var radius = Math.sqrt(Math.pow(latA-latB,2) + Math.pow(longA-longB,2));
 
 	// Wiki:
 	// one latitudinal degree is 110.6 kilometres
