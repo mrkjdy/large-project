@@ -20,6 +20,8 @@ import org.json.*;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,12 +32,17 @@ public class LeaderboardFragment extends Fragment {
 
     //vars
     private ArrayList<String> mUsrNames = new ArrayList<>();
-    private ArrayList<String> mImages = new ArrayList<>();
+    private ArrayList<Boolean> mFriend = new ArrayList<>();
     private ArrayList<String> mUsrScores = new ArrayList<>();
 
     private View rootView;
     private RecyclerView recyclerView;
     private ListAdapter adapter;
+
+    private TextView userName;
+    private TextView userScore;
+    private TextView userRank;
+    private CircleImageView userImage;
 
     public String searchString = "";
 
@@ -53,9 +60,23 @@ public class LeaderboardFragment extends Fragment {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_lead);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        userName = rootView.findViewById(R.id.tv_usr_name2);
+        userScore = rootView.findViewById(R.id.tv_usr_score2);
+        userImage = rootView.findViewById(R.id.usr_image2);
+        userRank = rootView.findViewById(R.id.tv_lead_pos2);
+
+        // DONE: get user info and update the user layout
+        JSONObject usr = ((SWFApp) getActivity().getApplication()).getUserData("User");
+
+        try
+        {
+            userName.setText(usr.get("login").toString());
+            userScore.setText(usr.get("total_points").toString());
+        } catch (Exception e) {}
+
         initImageBitMaps(0);
 
-        adapter = new ListAdapter(mImages, mUsrNames, mUsrScores, getActivity());
+        adapter = new ListAdapter(mFriend, mUsrNames, mUsrScores, getActivity());
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         return rootView;
@@ -74,7 +95,7 @@ public class LeaderboardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 initImageBitMaps(0);
-                adapter.setData(mImages, mUsrNames, mUsrScores, getActivity());
+                adapter.setData(mFriend, mUsrNames, mUsrScores, false, getActivity());
                 Toast.makeText(getActivity(), "Loaded World", Toast.LENGTH_SHORT).show();
             }
         });
@@ -84,7 +105,7 @@ public class LeaderboardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 initImageBitMaps(1);
-                adapter.setData(mImages, mUsrNames, mUsrScores, getActivity());
+                adapter.setData(mFriend, mUsrNames, mUsrScores, true, getActivity());
                 Toast.makeText(getActivity(), "Loaded Friends", Toast.LENGTH_SHORT).show();
             }
         });
@@ -93,7 +114,7 @@ public class LeaderboardFragment extends Fragment {
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Search Button", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Search Button", Toast.LENGTH_SHORT).show();
                 worldBtn.setVisibility(View.GONE);
                 friendBtn.setVisibility(View.GONE);
                 searchBtn.setVisibility(View.GONE);
@@ -109,6 +130,7 @@ public class LeaderboardFragment extends Fragment {
                 friendBtn.setVisibility(View.VISIBLE);
                 searchBtn.setVisibility(View.VISIBLE);
                 searchString = searchBox.getText().toString();
+                Log.d(TAG, "onClick: " + searchString);
                 searchBox.setVisibility(View.GONE);
                 searcherBtn.setVisibility(View.GONE);
 
@@ -116,7 +138,7 @@ public class LeaderboardFragment extends Fragment {
                 Toast.makeText(getActivity(), "Searching", Toast.LENGTH_SHORT).show();
                 initImageBitMaps(2);
                 searchString = "";
-                adapter.setData(mImages, mUsrNames, mUsrScores, getActivity());
+                adapter.setData(mFriend, mUsrNames, mUsrScores, true, getActivity());
             }
         });
     }
@@ -124,54 +146,82 @@ public class LeaderboardFragment extends Fragment {
     private void initImageBitMaps(int mode) // mode 0: world; mode 1: friends; mode 3: search;
     {
 
-        mImages.clear();
+        mFriend.clear();
         mUsrNames.clear();
         mUsrScores.clear();
         Log.d(TAG, "initImageBitMaps: preparing bitmaps");
 
-        // TODO: here we would get the info from the leaderboar and make it into the entries
+        // DONE: here we would get the info from the leaderboar and make it into the entries
         // and use the boolean on the method to determine if to get all users or just friends
-        JSONArray object = ((SWFApp) getActivity().getApplication()).getTop100("global");
-        //if(object != null) {
-        //    Log.d(TAG, object.toString());
-        //}
 
-        // TODO: delete untill the End comment after the database has been incorporated -this section is just for testing-
-        mImages.add("https://c1.staticflickr.com/5/4636/25316407448_de5fbf183d_o.jpg");
-        mUsrNames.add("Havasu Falls");
-        mUsrScores.add("999999");
+        switch(mode)
+        {
+            case 0:
+                JSONArray object = ((SWFApp) getActivity().getApplication()).getTop100("global");
 
-        mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
-        mUsrNames.add("Trondheim");
-        mUsrScores.add("999967");
+                if (object != null)
+                {
+                    for (int i = 0; i < object.length(); i++)
+                    {
+                        try {
+                            JSONObject temp = (JSONObject) object.get(i);
+                            Log.d(TAG, "initImageBitMaps: " + temp.toString());
+                            mUsrNames.add(temp.get("login").toString());
+                            mUsrScores.add(temp.get("total_points").toString());
+                            //mFriend.add(temp.getBoolean("isFriend"));
+                            mFriend.add(false);
+                        } catch (Exception e) {}
+                    }
+                }
 
-        mImages.add("https://i.redd.it/qn7f9oqu7o501.jpg");
-        mUsrNames.add("Portugal");
-        mUsrScores.add("999944");
+                break;
+            case 1:
+                JSONArray friend = ((SWFApp) getActivity().getApplication()).getTop100("friends");
 
-        mImages.add("https://i.redd.it/j6myfqglup501.jpg");
-        mUsrNames.add("Rocky Mountain");
-        mUsrScores.add("999933");
+                if (friend != null)
+                {
+                    for (int i = friend.length() - 1; i >= 0; i--)
+                    {
+                        try {
+                            JSONObject temp = (JSONObject) friend.get(i);
+                            Log.d(TAG, "initImageBitMaps: " + temp.toString());
+                            mUsrNames.add(temp.get("login").toString());
+                            mUsrScores.add(temp.get("total_points").toString());
+                            mFriend.add(true);
+                        } catch (Exception e) {}
+                    }
+                }
 
-        mImages.add("https://i.redd.it/0h2gm1ix6p501.jpg");
-        mUsrNames.add("Mahahual");
-        mUsrScores.add("999922");
+                break;
+            case 2:
+                Log.d(TAG, "initImageBitMaps: " + searchString);
+                JSONArray search = ((SWFApp) getActivity().getApplication()).searchUser(searchString);
 
-        mImages.add("https://i.redd.it/k98uzl68eh501.jpg");
-        mUsrNames.add("Frozen Lake");
-        mUsrScores.add("999911");
+                if (search != null)
+                {
+                    for (int i = 0; i < search.length(); i++)
+                    {
+                        try {
+                            JSONObject temp = (JSONObject) search.get(i);
+                            Log.d(TAG, "initImageBitMaps: " + temp.toString());
+                            mUsrNames.add(temp.get("login").toString());
+                            mUsrScores.add(temp.get("total_points").toString());
+                            mFriend.add(temp.getBoolean("isFriend"));
+                            Log.d(TAG, "initImageBitMaps: GOT HERE");
+                        } catch (Exception e)
+                        {
+                            Log.d(TAG, "initImageBitMaps: SEARCH FAILED");
+                        }
+                    }
+                }
+                else
+                {
+                    Log.d(TAG, "initImageBitMaps: SEARCH WAS NULL");
+                }
 
-        mImages.add("https://i.redd.it/glin0nwndo501.jpg");
-        mUsrNames.add("White Sands Desert");
-        mUsrScores.add("999900");
-
-        mImages.add("https://i.redd.it/obx4zydshg601.jpg");
-        mUsrNames.add("Austrailia");
-        mUsrScores.add("999888");
-
-        mImages.add("https://i.imgur.com/ZcLLrkY.jpg");
-        mUsrNames.add("Washington");
-        mUsrScores.add("999777");
-        // End
+                break;
+            default:
+                break;
+        }
     }
 }

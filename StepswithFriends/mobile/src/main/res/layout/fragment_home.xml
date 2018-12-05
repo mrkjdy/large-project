@@ -49,11 +49,11 @@
             app:layout_constraintBottom_toBottomOf="@+id/circularProgressbar"
             app:layout_constraintEnd_toEndOf="@+id/circularProgressbar"
             app:layout_constraintStart_toStartOf="@+id/circularProgressbar"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/stepTextView"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/stepTextView"
             android:layout_width="wrap_content"
             android:layout_height="105dp"
             android:text="Steps"
@@ -148,15 +148,15 @@
 
                 <ImageView
                     android:id="@+id/bonusImage"
-                    android:layout_width="47dp"
-                    android:layout_height="47dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:src="@drawable/bonus" />
 
                 <TextView
-                    android:id="@+id/bounsText"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/bonusText"
+                    android:layout_width="42dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"

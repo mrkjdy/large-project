@@ -1,6 +1,7 @@
 package commrkjdylarge_project.github.stepwithfriends;
 
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -11,20 +12,23 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
+import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 import android.content.res.Configuration;
 import android.content.pm.ActivityInfo;
+import static java.lang.Math.*;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.json.*;
 
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -35,13 +39,35 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity implements SensorEventListener, SessionFragment.SessionToActivity, StartFragment.StartToActivity {
+
+    int backAllow = 1;
+    int bonus1 = 1000;
+    int bonus2 = 500;
+    int bonus3 = 1500;
+    int bonusFlag1 = 0;
+    int bonusFlag2 = 0;
+    int bonusFlag3 = 0;
+    int dailyGoal = 0;
+
+    private BottomNavigationView bottomNavigationView;
+
+    public void startClicked() {
+        backAllow = 0;
+        bottomNavigationView.setVisibility(View.GONE);
+    }
+
+    public void stopClicked() {
+        backAllow =1;
+        bottomNavigationView.setVisibility(View.VISIBLE);
+    }
 
     private FrameLayout mainFrame;
     private SettingsFragment settingsFrame;
     private HomeFragment homeFrame;
     private WalkFragment walkFrame;
     private LeaderboardFragment leaderboardFrame;
+
 
     // alex stuff
     List<Step> stepList = new ArrayList<>();
@@ -65,27 +91,46 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         walkFrame = new WalkFragment();
         leaderboardFrame = new LeaderboardFragment();
 
-        setFragment(homeFrame);
+        setFragment(1);
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // alex stuff
+        compositeDisposable = new CompositeDisposable();
+        StepDatabase stepDatabase = StepDatabase.getInstance(this);
+        stepRepository = StepRepository.getInstance(StepDataSouce.getInstance(stepDatabase.stepDao()));
+        new getAsyncTask(stepDatabase).execute();
+
+        // load all data
+        loadData();
+
+
+
+        mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
+        if(mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) != null)
+        {
+            mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+            mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch(menuItem.getItemId())
                 {
                     case R.id.action_home:
-                        setFragment(homeFrame);
+                        setFragment(1);
                         break;
                     case R.id.action_settings:
-                        setFragment(settingsFrame);
+                        setFragment(4);
                         break;
                     case R.id.action_walk:
                         if(isServicesOK()) {
-                            setFragment(walkFrame);
+                           setFragment(2);
                         }
                         break;
                     case R.id.action_leaderboard:
-                        setFragment(leaderboardFrame);
+                        setFragment(3);
                         break;
                 }
                 return true ;
@@ -120,31 +165,117 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 break;
         }
 
-        // alex stuff
-        compositeDisposable = new CompositeDisposable();
-        StepDatabase stepDatabase = StepDatabase.getInstance(this);
-        stepRepository = StepRepository.getInstance(StepDataSouce.getInstance(stepDatabase.stepDao()));
-        new getAsyncTask(stepDatabase).execute();
+        JSONObject usr = ((SWFApp) getApplication()).getUserData("User");
 
-        // load all data
-        loadData();
-
-        mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
-        if(mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) != null)
+        try
         {
-            mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
-            mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            dailyGoal = Integer.parseInt(usr.get("dailyGoal").toString());
+        } catch (Exception e) {}
+
+    }
+
+//    private void setFragment(android.support.v4.app.Fragment fragment){
+//        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//        fragmentTransaction.replace(R.id.main_frame, fragment);
+//        fragmentTransaction.commit();
+//    }
+
+    private void setFragment(int position){
+        android.support.v4.app.FragmentManager fragmentManager;
+        fragmentManager = getSupportFragmentManager();
+
+
+        switch(position) {
+            case 1:
+                if(fragmentManager.findFragmentByTag("one") != null) {
+                    //if the fragment exists, show it.
+                    fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("one")).commit();
+                } else {
+                    //if the fragment does not exist, add it to fragment manager.
+                    fragmentManager.beginTransaction().add(R.id.main_frame, homeFrame, "one").commit();
+                }
+                if(fragmentManager.findFragmentByTag("two") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("two")).commit();
+                }
+                if(fragmentManager.findFragmentByTag("three") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("three")).commit();
+                }
+                if(fragmentManager.findFragmentByTag("four") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("four")).commit();
+                }
+                break;
+            case 2:
+                if(fragmentManager.findFragmentByTag("two") != null) {
+                    //if the fragment exists, show it.
+                    fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("two")).commit();
+                } else {
+                    //if the fragment does not exist, add it to fragment manager.
+                    fragmentManager.beginTransaction().add(R.id.main_frame, walkFrame, "two").commit();
+                }
+                if(fragmentManager.findFragmentByTag("one") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("one")).commit();
+                }
+                if(fragmentManager.findFragmentByTag("three") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("three")).commit();
+                }
+                if(fragmentManager.findFragmentByTag("four") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("four")).commit();
+                }
+                break;
+            case 3:
+                if(fragmentManager.findFragmentByTag("three") != null) {
+                    //if the fragment exists, show it.
+                    fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("three")).commit();
+                } else {
+                    //if the fragment does not exist, add it to fragment manager.
+                    fragmentManager.beginTransaction().add(R.id.main_frame, leaderboardFrame, "three").commit();
+                }
+                if(fragmentManager.findFragmentByTag("one") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("one")).commit();
+                }
+                if(fragmentManager.findFragmentByTag("two") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("two")).commit();
+                }
+                if(fragmentManager.findFragmentByTag("four") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("four")).commit();
+                }
+                break;
+            case 4:
+                if(fragmentManager.findFragmentByTag("four") != null) {
+                    //if the fragment exists, show it.
+                    fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("four")).commit();
+                } else {
+                    //if the fragment does not exist, add it to fragment manager.
+                    fragmentManager.beginTransaction().add(R.id.main_frame, settingsFrame, "four").commit();
+                }
+                if(fragmentManager.findFragmentByTag("one") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("one")).commit();
+                }
+                if(fragmentManager.findFragmentByTag("two") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("two")).commit();
+                }
+                if(fragmentManager.findFragmentByTag("three") != null){
+                    //if the other fragment is visible, hide it.
+                    fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("three")).commit();
+                }
+                break;
         }
 
 
+
     }
 
-    private void setFragment(android.support.v4.app.Fragment fragment){
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-
-        fragmentTransaction.replace(R.id.main_frame, fragment);
-        fragmentTransaction.commit();
-    }
 
     // Make sure google play services is available, need to verify this
     public boolean isServicesOK(){
@@ -179,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-
+        takeStep();
     }
 
     @Override
@@ -234,23 +365,69 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         stepList.clear();
         stepList.addAll(users);
         getSteps();
+        //getPercent();
         //adapter.notifyDataSetChanged();
     }
 
     public void getSteps(){
 
-        for(int i = 0; i < 15; i++)
-        {
-            String steps = "" + i;
-            Bundle args = new Bundle();
-            args.putString("steps",steps);
-            homeFrame.putArgument(args);
+//        String steps = "" + cStep.getNumStep();
+//        //String steps = "hellooo";
+//        int dailyGoal = 0;
+//
+//        JSONObject usr = ((SWFApp) getApplication()).getUserData("User");
+//
+//        try
+//        {
+//            dailyGoal = Integer.parseInt(usr.get("dailyGoal").toString());
+//        } catch (Exception e) {}
+
+        Bundle args = new Bundle();
+        int steps = cStep.getNumStep();
+        double cal = cStep.getCalories();
+        double points = cStep.getPoint();
+        double test = round(((double) steps / (double) dailyGoal) * 100);
+        int bonus = 0;
+
+
+        if(steps >= dailyGoal){
+            bonus += bonus1;
+
+            if(bonusFlag1 == 0){
+                bonusFlag1 = 1;
+                Toast.makeText(this, "Hit first bonus goal! Added 1000 points!", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        if(steps >= (dailyGoal + 25)){
+            bonus += bonus2;
+
+            if(bonusFlag2 == 0){
+                bonusFlag2 = 1;
+                Toast.makeText(this, "Hit Second bonus goal! Added 500 points!", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        if(steps >= (dailyGoal + 50)){
+            bonus += bonus3;
+
+            if(bonusFlag3 == 0){
+                bonusFlag3 = 1;
+                Toast.makeText(this, "Hit third bonus goal! Added 1,500 points!", Toast.LENGTH_SHORT).show();
+            }
         }
 
 
-
-
+        args.putInt("steps",steps);
+        args.putDouble("calories",cal);
+        args.putDouble("Points",points);
+        args.putDouble("test", test);
+        args.putInt("bonus", bonus);
+        args.putInt("dailyGoal", dailyGoal);
+        homeFrame.putArgument(args);
     }
+
+
 
     private void takeStep() {
         if(created){
@@ -293,8 +470,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         compositeDisposable.add(disposable);
     }
 
+    @Override
+    public void onBackPressed() {
+        if(backAllow == 1) {
+            super.onBackPressed();
+        } else {
 
-
-
-
+        }
+    }
 }

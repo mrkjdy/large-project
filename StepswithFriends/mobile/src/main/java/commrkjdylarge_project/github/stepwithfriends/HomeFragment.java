@@ -6,15 +6,14 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.os.Handler;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.loopj.android.http.AsyncHttpClient;
+import org.json.*;
 
 
 /**
@@ -22,10 +21,17 @@ import com.loopj.android.http.AsyncHttpClient;
  */
 public class HomeFragment extends Fragment {
 
+    private static final String TAG = "Home";
     int pStatus = 0;
     private Handler handler = new Handler();
     TextView percent;
     TextView stepsTxtView;
+    TextView calorieTxtView;
+    TextView pointsTxtView;
+    TextView milesTxtView;
+    TextView bonusTxtView;
+    ProgressBar mProgress;
+
 
 
     public HomeFragment() {
@@ -49,22 +55,27 @@ public class HomeFragment extends Fragment {
         Resources res = getResources();
         Drawable drawable = res.getDrawable(R.drawable.circle);
 
-        final ProgressBar mProgress = getView().findViewById(R.id.circularProgressbar);
-
+        mProgress = getView().findViewById(R.id.circularProgressbar);
 
         mProgress.setProgress(0);   // Main Progress
         mProgress.setSecondaryProgress(100); // Secondary Progress
         mProgress.setMax(100); // Maximum Progress
         mProgress.setProgressDrawable(drawable);
 
+
+
         percent = getView().findViewById(R.id.tv);
-        percent = getView().findViewById(R.id.textView);
+        stepsTxtView = getView().findViewById(R.id.stepTextView);
+        calorieTxtView = getView().findViewById(R.id.calorieText);
+        pointsTxtView = getView().findViewById(R.id.scoreText);
+        milesTxtView = getView().findViewById(R.id.milesText);
+        bonusTxtView = getView().findViewById(R.id.bonusText);
 
         new Thread(new Runnable() {
 
             @Override
             public void run() {
-                // TODO Auto-generated method stub
+                // TODO Auto-generated method stubf
                 while (pStatus < 100) {
                     pStatus += 1;
 
@@ -73,8 +84,7 @@ public class HomeFragment extends Fragment {
                         @Override
                         public void run() {
                             // TODO Auto-generated method stub
-                            mProgress.setProgress(pStatus);
-                            percent.setText(pStatus + "%");
+                            //mProgress.setProgress(pStatus);
 
                         }
                     });
@@ -92,7 +102,26 @@ public class HomeFragment extends Fragment {
     }
 
     public void putArgument(Bundle args){
-        String step = args.getString("steps");
-        stepsTxtView.setText(""+step);
+        int step = args.getInt("steps");
+        double cal =  args.getDouble("calories");
+        double pts = args.getDouble("points");
+        double test = args.getDouble("test");
+        double miles = ((double) step / (double )2000);
+        int dailyGoal = args.getInt("dailyGoal");
+        int bonus = args.getInt("bonus");
+
+
+        stepsTxtView.setText("" + step);
+        calorieTxtView.setText(""+(int)cal);
+        pointsTxtView.setText("" +(int) pts);
+        milesTxtView.setText(String.format( "%.2f", miles ));
+        bonusTxtView.setText("" + bonus);
+        percent.setText("/" + dailyGoal);
+        mProgress.setProgress((int) test);
     }
+
+
+//    public void putPercent(Bundle args){
+//        mProgress.setProgress(args.getInt("percent"));
+//    }
 }
