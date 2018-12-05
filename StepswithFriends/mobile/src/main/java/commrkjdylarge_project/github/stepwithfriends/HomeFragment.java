@@ -23,7 +23,6 @@ public class HomeFragment extends Fragment {
 
     private static final String TAG = "Home";
     int pStatus = 0;
-    String dailyGoal;
     private Handler handler = new Handler();
     TextView percent;
     TextView stepsTxtView;
@@ -31,7 +30,6 @@ public class HomeFragment extends Fragment {
     TextView pointsTxtView;
     TextView milesTxtView;
     TextView bonusTxtView;
-    int globalPercent;
     ProgressBar mProgress;
 
 
@@ -63,6 +61,8 @@ public class HomeFragment extends Fragment {
         mProgress.setSecondaryProgress(100); // Secondary Progress
         mProgress.setMax(100); // Maximum Progress
         mProgress.setProgressDrawable(drawable);
+
+
 
         percent = getView().findViewById(R.id.tv);
         stepsTxtView = getView().findViewById(R.id.stepTextView);
@@ -107,6 +107,7 @@ public class HomeFragment extends Fragment {
         double pts = args.getDouble("points");
         double test = args.getDouble("test");
         double miles = ((double) step / (double )2000);
+        int dailyGoal = args.getInt("dailyGoal");
         int bonus = args.getInt("bonus");
 
 
@@ -115,6 +116,7 @@ public class HomeFragment extends Fragment {
         pointsTxtView.setText("" +(int) pts);
         milesTxtView.setText(String.format( "%.2f", miles ));
         bonusTxtView.setText("" + bonus);
+        percent.setText("/" + dailyGoal);
         mProgress.setProgress((int) test);
     }
 
