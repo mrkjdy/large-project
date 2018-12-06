@@ -370,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         if(steps >= dailyGoal){
             bonus += bonus1;
-            points += bonus;
+
             if(bonusFlag1 == 0){
                 bonusFlag1 = 1;
                 Toast.makeText(this, "Hit first bonus goal! Added 1000 points!", Toast.LENGTH_SHORT).show();
@@ -382,7 +382,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             if(bonusFlag2 == 0){
                 bonusFlag2 = 1;
-                points += bonus;
                 Toast.makeText(this, "Hit Second bonus goal! Added 500 points!", Toast.LENGTH_SHORT).show();
             }
         }
@@ -392,12 +391,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             if(bonusFlag3 == 0){
                 bonusFlag3 = 1;
-                points += bonus;
                 Toast.makeText(this, "Hit third bonus goal! Added 1,500 points!", Toast.LENGTH_SHORT).show();
             }
         }
 
-        mStep.setPoint((mStep.getPoint() + points));
 
         args.putInt("steps",steps);
         args.putDouble("calories",cal);
@@ -483,13 +480,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onStop();
         Log.i(TAG,"-----------------> Stop");
 
+        //mStep.stepReset();
+
     }
-//
+
     public void onDestroy() {
         super.onDestroy();
         Log.i(TAG,"-----------------> kill");
-        totalPoints = totalPoints + mStep.getPoint();
-        boolean res = ((SWFApp) getApplication()).updateUserData("total_points", totalPoints,"User");
+//        totalPoints = totalPoints + mStep.getPoint();
+//        String tmp = "" + (int)totalPoints;
+//        boolean res = ((SWFApp) getApplication()).updateUserData("height", Integer.parseInt(tmp)),"User");
 
         mStep.stepReset();
 
