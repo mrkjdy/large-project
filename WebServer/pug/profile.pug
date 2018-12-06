@@ -7,12 +7,15 @@ html(lang='en')
 			#leftInfo
 				img#profilePic(src="/default-user-profile.svg" alt="Profile Picture")
 				p #{userinfo.firstName} #{userinfo.lastName}
-				if added
-					button#friendbutton(type='button' onclick='unfriend(); return false') Unfriend
-				else if user && (user.login == userinfo.login)
-					button(type='button' onclick='window.location.href="/settings"; return false') Settings
+				if user
+					if added
+						button#friendbutton(type='button' onclick='unfriend(); return false') Unfriend
+					else if (user.login == userinfo.login)
+						button(type='button' onclick='window.location.href="/settings"; return false') Settings
+					else
+						button#friendbutton(type='button' onclick='friend(); return false') Add Friend
 				else
-					button#friendbutton(type='button' onclick='friend(); return false') Add Friend
+					button#friendbutton(type='button' onclick='window.location.href="/login"; return false') Add Friend
 			#rightInfo
 				p Steps #{userinfo.steps}
 				p Global Rank #{globalrank}
