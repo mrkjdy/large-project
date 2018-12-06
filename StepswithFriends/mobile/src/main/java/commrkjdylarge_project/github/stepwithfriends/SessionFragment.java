@@ -65,7 +65,7 @@ public class SessionFragment extends Fragment {
 
         final Bundle args = new Bundle();
 
-        final TextView multiplierView = (TextView) getView().findViewById(R.id.multiplierView);
+        final TextView multiplierView = (TextView) getView().findViewById(R.id.multiplierResult);
         final TextView stepView = (TextView) getView().findViewById(R.id.stepsView);
         final TextView scoreView = (TextView) getView().findViewById(R.id.scoreView);
         final TextView milesView = (TextView) getView().findViewById(R.id.milesResult);
@@ -122,6 +122,7 @@ public class SessionFragment extends Fragment {
                                 args.putString("Step", stepView.getText().toString());
                                 args.putString("Score", scoreView.getText().toString());
                                 args.putString("Mile", milesView.getText().toString());
+                                args.putString("Multiplier", multiplierView.getText().toString());
 
                                 ResultFragment resultFragment = new ResultFragment();
                                 resultFragment.setArguments(args);
