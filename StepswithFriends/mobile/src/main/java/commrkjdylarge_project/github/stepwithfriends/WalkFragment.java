@@ -153,9 +153,10 @@ public class WalkFragment extends Fragment implements OnMapReadyCallback, StartF
                     ((SWFApp) getActivity().getApplication()).updateUserData(fields, values, "User");
                 }
 
-                //String string = ((SWFApp) getActivity().getApplication()).getSession();
-                //int count = Integer.parseInt(string);
-                //((SWFApp) getActivity().getApplication()).setMultiplier(count);
+                if(track == true) {
+                    int count = Integer.parseInt(((SWFApp) getActivity().getApplication()).getSession());
+                    ((SWFApp) getActivity().getApplication()).setMultiplier(count);
+                }
             }
 
         } ,Looper.myLooper());
