@@ -210,22 +210,21 @@ app.get('/user/:username', function (req, res) {
 		userinfo = req.user;
 		own = true;
 	}
-	else
-		userinfo = getUserPageData(req.params.username, req.user);
-
-	// if not found display 404
-	if (userinfo != null) {
-		res.render('profile', {
-			user: req.user,
-			userinfo: userinfo,
-			globalrank: globalrank,
-			friendrank: friendrank,
-			friendtable: friendtable,
-			own: own
-		});
-	}
 	else {
-		res.status(404).redirect('/404');
+		userinfo = getUserPageData(req.params.username, req.user, req, res, function(req, res, result) {
+			if(result != null) {
+				res.render('profile', {
+					user: req.user,
+					userinfo: result,
+					globalrank: globalrank,
+					friendrank: friendrank,
+					friendtable: friendtable,
+					own: own
+				});
+			} else {
+				res.status(404).redirect('/404');
+			}
+		});
 	}
 });
 
@@ -311,28 +310,6 @@ app.post('/register', function(req, res) {
 		});
 	}
 });
-
-// Login function
-// app.post('/login', function(req, res) {
-// 	passport.authenticate('local', function(err, user, info) {
-// 		// Database error
-// 		if(err) {
-// 			return res.status(400).send('Database Error');
-// 		}
-// 		// Credentials invalid
-// 		if(!user) {
-// 			return res.status(401).send(JSON.stringify([{ "loginSuccess": false }]));
-// 		}
-// 		req.logIn(user, function(err) {
-// 			if(err) {
-// 				console.log(err);
-// 				return res.status(400).send('Login Error');
-// 			}
-			
-// 			return res.send(JSON.stringify([{ "loginSuccess": true }]));
-// 		});
-// 	})(req, res);
-// });
 
 // Login function
 app.post('/login', function(req, res) {
@@ -885,22 +862,23 @@ var updateTopUsers = schedule.scheduleJob('*/5 * * * *', function() {
 	getNewTopUsers();
 });
 
-var getUserPageData = function(usernameToSearch, user) {
+var getUserPageData = function(usernameToSearch, user, req, res, callback) {
 	dbPool.getConnection(function(err, tempCont) {
 		if(err) {
 			console.log(err);
-			return null;
+			return callback(req, res, null);
 		} else {
 			if(!user) {
 				tempCont.query("SELECT * FROM User WHERE login = ? AND isPrivate = false;", [usernameToSearch], function(err, result) {
 					if(err) {
 						console.log(err);
-						return null;
+						return callback(req, res, null);
 					} else {
-						if(result[0]) {
-							return result[0];
+						if(result) {
+							console.log("result found: " + result[0]);
+							return callback(req, res, result[0]);
 						} else {
-							return null;
+							return callback(req, res, null);
 						}
 					}
 				});
@@ -910,10 +888,12 @@ var getUserPageData = function(usernameToSearch, user) {
 						console.log(err);
 						return null;
 					} else {
-						if(result[0]) {
-							return result[0];
+						console.log(result);
+						if(result) {
+							console.log("result found: " + result[0]);
+							return callback(req, res, result[0]);
 						} else {
-							return null;
+							return callback(req, res, null);
 						}
 					}
 				});

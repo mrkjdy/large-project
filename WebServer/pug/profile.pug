@@ -2,10 +2,9 @@ doctype html
 html(lang='en')
 	include head
 	body
-		img#profilePic
-		p #{userinfo.firstname} #{userinfo.lastname}
-		p #{userinfo.login}
-		p Steps #{userinfo.total_steps}
+		p #{userinfo.user_id}
+		p #{userinfo}
+		p Steps #{userinfo}
 		if added
 			button(type='button') Unfriend
 		else
