@@ -70,23 +70,29 @@ public class SessionFragment extends Fragment {
         final TextView scoreView = (TextView) getView().findViewById(R.id.scoreView);
         final TextView milesView = (TextView) getView().findViewById(R.id.milesResult);
 
-        new Thread(new Runnable() {
-            public void run() {
-                int step = ((SWFApp) getActivity().getApplication()).getSteps();
-                int multiplier = ((SWFApp) getActivity().getApplication()).getMultiplier();
-                double score = ((SWFApp) getActivity().getApplication()).getPoints();
-                double miles = ((double) step / (double )2000);
+        final Thread thread = new Thread() {
+            @Override
+            public void run(){
+                while(!isInterrupted()){
+                    try {
+                        Thread.sleep(1000);
 
-                multiplierView.setText("x" + multiplier);
-                stepView.setText("" + step);
-                scoreView.setText("" + score);
-                milesView.setText("" + miles);
+                        int step = ((SWFApp) getActivity().getApplication()).getSteps();
+                        int multiplier = ((SWFApp) getActivity().getApplication()).getMultiplier();
+                        double score = ((SWFApp) getActivity().getApplication()).getPoints();
+                        double miles = ((double) step / (double )2000);
 
-                try {
-                    Thread.sleep(4);
-                } catch (Exception e) {}
+                        multiplierView.setText("x" + multiplier);
+                        stepView.setText("" + step);
+                        scoreView.setText("" + score);
+                        milesView.setText("" + miles);
+
+                    } catch (Exception e) {}
+                }
             }
-        }).start();
+        };
+
+        thread.start();
 
         ImageButton stop = (ImageButton) getView().findViewById(R.id.stopButton);
         stop.setOnClickListener(new View.OnClickListener() {
@@ -103,6 +109,7 @@ public class SessionFragment extends Fragment {
                                 //Leave the session
                                 ((SWFApp) getActivity().getApplication()).leaveSession();
 
+                                thread.interrupt();
                                 chronometer.stop();
                                 sessionToWalk.stopClicked();
                                 sessionToActivity.stopClicked();
