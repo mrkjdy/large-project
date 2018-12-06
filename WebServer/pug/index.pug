@@ -10,7 +10,7 @@ html(lang='en')
 				th Points
 			if top
 				each val, index in top
-					tr(onclick="window.location.href='/user/" + val.login + "'; return false")
+					tr#linkRow(onclick="window.location.href='/user/" + val.login + "'; return false")
 						td= index + 1
 						td= val.login
 						td= val.total_points

@@ -156,3 +156,68 @@ function showLogin() {
 	document.getElementById("username").focus();
 	document.getElementById("submitmessage").innerHTML = "";
 }
+
+// Friend
+function friend() {
+	user = document.getElementById("username").value;
+	friendbutton = document.getElementById("friendbutton");
+	friendbutton.onclick = 'unfriend(); return false';
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "/friend", true);
+	xhr.setRequestHeader("Content-Type", "application/json");
+	xhr.onload = function(e) {
+		// Server should send an error message or a redirect url
+		var serverResponse = JSON.parse(this.responseText);
+		if (serverResponse.errorMessage != null) {
+			// Account creation was successful
+			if (serverResponse.errorMessage == "") {
+				friendbutton.innerHTML = "Unfriend";
+				friendbutton.onclick = 'unfriend(); return false';
+			}
+			// There was an error
+			else {
+				console.log(serverResponse.errorMessage);
+				return false;
+			}
+		}
+	}
+	xhr.onerror = function(e) {
+		console.log(e.message);
+	}
+	xhr.send(JSON.stringify({
+		user: user
+	}));
+}
+
+// Unfriend
+function unfriend() {
+	user = document.getElementById("username").value;
+	friendbutton = document.getElementById("friendbutton");
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "/unfriend", true);
+	xhr.setRequestHeader("Content-Type", "application/json");
+	xhr.onload = function(e) {
+		// Server should send an error message or a redirect url
+		var serverResponse = JSON.parse(this.responseText);
+		if (serverResponse.errorMessage != null) {
+			// Account creation was successful
+			if (serverResponse.errorMessage == "") {
+				friendbutton.innerHTML = "Unfriend";
+				friendbutton.onclick = 'unfriend(); return false';
+			}
+			// There was an error
+			else {
+				console.log(serverResponse.errorMessage);
+				return false;
+			}
+		}
+	}
+	xhr.onerror = function(e) {
+		console.log(e.message);
+	}
+	xhr.send(JSON.stringify({
+		user: user
+	}));
+}

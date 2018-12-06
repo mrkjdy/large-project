@@ -2,4 +2,21 @@ doctype html
 html(lang='en')
 	include head
 	body
-		
+		#loginBox.shadedBox
+			h2 Settings
+			#loginForm
+				form(onsubmit='updateSettings(); return false')
+					input#firstname(type='text' placeholder='First name' autofocus)
+					br
+					input#lastname(type='text' placeholder='Last name')
+					br
+					input#height(type='number' placeholder='Password')
+					br
+					input#weight(type='number' placeholder='Password')
+					br
+					input#privacy.small(type='checkbox')
+					span Private account
+					br
+					input#submitsettings(type='submit' value='Update Settings')
+					br
+			#submitMessage
