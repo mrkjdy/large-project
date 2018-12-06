@@ -616,50 +616,55 @@ app.post('/joinsession', function(req, res) {
 				console.log(err);
 				res.status(400).send();
 			} else {
-				tempCont.query("SELECT latitude, longitude, session_id FROM User INNER JOIN Friendship ON (User.user_id = Friendship.user_one_id AND Friendship.user_two_id = ?) OR (Friendship.user_one_id = ? AND User.user_id = Friendship.user_two_id);", [req.user.user_id, req.user.user_id], function(err, result) {
+				tempCont.query("SELECT latitude, longitude, session_id FROM User INNER JOIN Friendship ON (User.user_id = Friendship.user_one_id AND Friendship.user_two_id = ?) OR (Friendship.user_one_id = ? AND User.user_id = Friendship.user_two_id) WHERE session_id IS NOT NULL;", [req.user.user_id, req.user.user_id], function(err, result) {
+					console.log("joining session, init response is: " + result);
 					if(err) {
 						console.log(err);
 						res.status(400).send();
-					} else if(!result) {
+					} else if(result.length == 0) {
 						// Create new session
+						console.log("no result, creating new session...");
 						tempCont.query("UPDATE User SET session_id = ? WHERE user_id = ?;", [sessionID, req.user.user_id], function(err, result1) {
 							if(err) {
 								console.log(err);
 								res.status(400).send();
 							} else {
-								res.status(200).send(sessionID);
+								res.status(200).send({session_id: sessionID});
 								sessionID++;
 							}
 						});
 					} else {
 						// Join session
+						console.log("potential sessions found");
 						for(var i = 0; i < result.length; i++) {
+							console.log("evaluating response " + i + ": " + result[i]);
 							if(withinRange(result[i].latitude, result[i].longitude, req.user.latitude, req.user.longitude)) {
-								console.log(result[i]);
+								console.log("was within range, setting...");
 								tempCont.query("UPDATE User SET session_id = ? WHERE user_id = ?;", [result[i].session_id, req.user.user_id], function(err, result1) {
 									if(err) {
 										console.log(err);
 										res.status(400).send();
-										i = result.length;
+										return;
 									} else {
 										res.status(200).send();
-										i = result.length;
+										return;
+									}
+								});
+								i = result.length;
+							} else if(i == result.length - 1) {
+								console.log("no one in range found, making new session...");
+								// Create new session if no friends in range
+								tempCont.query("UPDATE User SET session_id = ? WHERE user_id = ?;", [sessionID, req.user.user_id], function(err, result1) {
+									if(err) {
+										console.log(err);
+										res.status(400).send();
+									} else {
+										//res.status(200).send(sessionID);
+										res.sendStatus(200);
+										sessionID++;
 									}
 								});
 							}
-						}
-						if(!res.headerSent) {
-							// Create new session if no friends in range
-							tempCont.query("UPDATE User SET session_id = ? WHERE user_id = ?;", [sessionID, req.user.user_id], function(err, result1) {
-								if(err) {
-									console.log(err);
-									res.status(400).send();
-								} else {
-									//res.status(200).send(sessionID);
-									res.sendStatus(200);
-									sessionID++;
-								}
-							});
 						}
 					}
 				});
@@ -933,15 +938,16 @@ var getUserIndex = function(username) {
 }
 
 var withinRange = function(latA, longA, latB, longB) {
+	console.log("comparing " + latA + ", " + longA + ", to " + latB + ", " + longB);
 	if(latA === null || longA === null || latB === null || longB === null) return false;
 	var radius = Math.sqrt(Math.pow(latA-latB,2) + Math.pow(longA-longB,2));
-
+	console.log("radius calculated as " + radius);
 	// Wiki:
 	// one latitudinal degree is 110.6 kilometres
 	// one longitudinal degree is 96.5 km
 
 	// 0.5 km radius ~= sqrt (2 x (0.05 degrees)^2) ~= 0.0707
-	return (radius < 0.0707);
+	return (radius < 5);
 }
 
 var getSessionID = function() {
@@ -964,6 +970,41 @@ var getSessionID = function() {
 				}
 				console.log("SessionID index is " + sessionID);
 			});
+		}
+		tempCont.release();
+	});
+}
+
+var lazySearch = function(username, user) {
+	dbPool.getConnection(function(err, tempCont) {
+		if(err) {
+			console.log(err);
+			res.status(400).send();
+		} else {
+			if(user) {
+				tempCont.query("SELECT DISTINCT login, total_points, CASE WHEN EXISTS (SELECT user_id FROM Friendship WHERE (user_one_id = ? AND user_two_id = User.user_id) OR (user_one_id = User.user_id AND user_two_id = ?)) THEN 'TRUE' ELSE 'FALSE' END AS isFriend FROM User INNER JOIN Friendship ON (User.user_id = Friendship.user_one_id AND Friendship.user_two_id = ?) OR (Friendship.user_one_id = ? AND User.user_id = Friendship.user_two_id) OR (User.isPrivate = false) WHERE login LIKE '%" + username + "%' AND user_id != ?;", [user.user_id, user.user_id, user.user_id, user.user_id, user.user_id], function(err, result) {
+					if(err) {
+						console.log(err);
+						return null;
+					} else if(!result) {
+						return null;
+					} else {
+						return result;
+					}
+				});
+			} else {
+				tempCont.query("SELECT DISTINCT * FROM User WHERE login LIKE '%" + username + "%' AND isPrivate = false;", function(err, result) {
+					if(err) {
+						console.log(err);
+						return null;
+					} else if(!result) {
+						return null;
+					} else {
+						return result;
+					}
+				});
+			}
+			
 		}
 		tempCont.release();
 	});
