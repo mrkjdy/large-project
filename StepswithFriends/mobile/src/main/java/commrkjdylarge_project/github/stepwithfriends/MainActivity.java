@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -39,6 +40,7 @@ import io.reactivex.schedulers.Schedulers;
 import static java.lang.Math.round;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener, SessionFragment.SessionToActivity, StartFragment.StartToActivity {
+    final static String TAG = "MainActivity";
 
     // bonuses  and back allow Vars
     private int backAllow = 1;
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private int bonusFlag2 = 0;
     private int bonusFlag3 = 0;
     private int dailyGoal = 0;
-    private int totalPoints = 0;
+    private double totalPoints = 0;
 
     // layout vars
     private FrameLayout mainFrame;
@@ -75,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.i(TAG,"onCreate");
 
         // Used Fragments
         mainFrame = findViewById(R.id.main_frame);
@@ -115,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         break;
                     case R.id.action_walk:
                         if(isServicesOK()) {
-                           setFragment(2);
+                            setFragment(2);
                         }
                         break;
                     case R.id.action_leaderboard:
@@ -162,7 +166,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             totalPoints = Integer.parseInt(usr.get("total_points").toString());
         } catch (Exception e) {}
 
-        Toast.makeText(this, "" + totalPoints, Toast.LENGTH_SHORT).show();
+        //mStep.setNumStep(80);
+
+        //Toast.makeText(this, "" + totalPoints, Toast.LENGTH_SHORT).show();
 
     }
 
@@ -364,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         if(steps >= dailyGoal){
             bonus += bonus1;
-
+            points += bonus;
             if(bonusFlag1 == 0){
                 bonusFlag1 = 1;
                 Toast.makeText(this, "Hit first bonus goal! Added 1000 points!", Toast.LENGTH_SHORT).show();
@@ -376,6 +382,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             if(bonusFlag2 == 0){
                 bonusFlag2 = 1;
+                points += bonus;
                 Toast.makeText(this, "Hit Second bonus goal! Added 500 points!", Toast.LENGTH_SHORT).show();
             }
         }
@@ -385,10 +392,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             if(bonusFlag3 == 0){
                 bonusFlag3 = 1;
+                points += bonus;
                 Toast.makeText(this, "Hit third bonus goal! Added 1,500 points!", Toast.LENGTH_SHORT).show();
             }
         }
 
+        mStep.setPoint((mStep.getPoint() + points));
 
         args.putInt("steps",steps);
         args.putDouble("calories",cal);
@@ -463,8 +472,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         bottomNavigationView.setVisibility(View.VISIBLE);
     }
 
+    public void onPause() {
+        super.onPause();
+        Log.i(TAG,"-----------------> Paused");
+
+
+    }
+
+    public void onStop() {
+        super.onStop();
+        Log.i(TAG,"-----------------> Stop");
+
+    }
+//
     public void onDestroy() {
         super.onDestroy();
+        Log.i(TAG,"-----------------> kill");
+        totalPoints = totalPoints + mStep.getPoint();
+        boolean res = ((SWFApp) getApplication()).updateUserData("total_points", totalPoints,"User");
 
         mStep.stepReset();
 

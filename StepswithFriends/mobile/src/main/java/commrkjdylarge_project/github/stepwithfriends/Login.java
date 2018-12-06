@@ -1,6 +1,11 @@
 package commrkjdylarge_project.github.stepwithfriends;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -19,8 +25,10 @@ import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
 
-public class Login extends AppCompatActivity {
+public class Login extends AppCompatActivity implements SensorEventListener {
 
+    private SensorManager mSensorManager;
+    private Sensor mStepDetectorSensor;
     private static final String TAG = "Login";
 
     @Override
@@ -32,6 +40,15 @@ public class Login extends AppCompatActivity {
         final TextView error = findViewById(R.id.errorBox);
         final AsyncHttpClient client = ((SWFApp) this.getApplication()).getClient();
         Button loginButton = findViewById(R.id.login_button);
+
+        mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
+        if(mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) != null)
+        {
+            mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+            mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -39,7 +56,11 @@ public class Login extends AppCompatActivity {
                     error.setText(getResources().getString(R.string.login_username_required));
                 } else if(password.length() == 0) {
                     error.setText(getResources().getString(R.string.login_password_required));
-                } else {
+                }
+                else if(mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) == null){
+                    Toast.makeText(getApplicationContext(), "You can't make map requests", Toast.LENGTH_SHORT).show();
+                }
+                else {
                     RequestParams params = new RequestParams();
                     params.put("username", username.getText().toString());
                     params.put("password", password.getText().toString());
@@ -72,12 +93,28 @@ public class Login extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Login.this, RegisterPopup.class));
+                if(mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) == null){
+                    Toast.makeText(getApplicationContext(), "You can't make map requests", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    startActivity(new Intent(Login.this, RegisterPopup.class));
+                   // mSensorManager.unregisterListener(mStepDetectorSensor);
+                }
             }
         });
 
         if(getIntent().getBooleanExtra("reg_success", false)) {
             error.setText("Registration successful");
         }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }

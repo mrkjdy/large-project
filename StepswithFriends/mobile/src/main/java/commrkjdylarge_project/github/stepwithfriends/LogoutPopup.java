@@ -37,7 +37,12 @@ public class LogoutPopup extends AppCompatActivity {
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         // called when response HTTP status is "200 OK"
                         ((SWFApp) getApplication()).resetUser();
-                        startActivity(new Intent(LogoutPopup.this, Login.class));
+
+                        Intent intent = new Intent(getApplicationContext(), Login.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("EXIT", true);
+                        startActivity(intent);
+                        //startActivity(new Intent(LogoutPopup.this, Login.class));
                     }
 
                     @Override
