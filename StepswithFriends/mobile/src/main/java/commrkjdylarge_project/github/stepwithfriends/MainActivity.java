@@ -2,6 +2,7 @@ package commrkjdylarge_project.github.stepwithfriends;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
@@ -445,7 +446,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onBackPressed() {
         if(backAllow == 1) {
-            super.onBackPressed();
+            //super.onBackPressed();
+            startActivity(new Intent(this, LogoutPopup.class));
         } else {
 
         }
