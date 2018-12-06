@@ -72,7 +72,6 @@ public class SessionFragment extends Fragment {
 
         final int stepOffset = ((SWFApp) getActivity().getApplication()).getSteps();
         final double scoreOffset = ((SWFApp) getActivity().getApplication()).getPoints();
-        final double milesOffset = ((double) stepOffset / (double )2000);
 
         final Thread thread = new Thread() {
             @Override
@@ -84,12 +83,16 @@ public class SessionFragment extends Fragment {
                         int step = ((SWFApp) getActivity().getApplication()).getSteps() - stepOffset;
                         int multiplier = ((SWFApp) getActivity().getApplication()).getMultiplier();
                         double score = ((SWFApp) getActivity().getApplication()).getPoints() - scoreOffset;
-                        double miles = ((double) step / (double )2000) - milesOffset;
+                        double miles = 0;
+
+                        if(step != 0){
+                            miles = ((double) step / (double )2000);
+                        }
 
                         multiplierView.setText("x" + multiplier);
                         stepView.setText("" + step);
                         scoreView.setText("" + score);
-                        milesView.setText("" + miles);
+                        milesView.setText(String.format( "%.2f", miles));
 
                     } catch (Exception e) {}
                 }
