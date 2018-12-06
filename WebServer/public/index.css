@@ -13,7 +13,9 @@
 /*////////////////////////////////////*/
 
 body {
-  background-color: #C1C8E4;
+  /*background-color: #C1C8E4;*/
+  background-image: linear-gradient(#84CEEB, #8860D0);
+  background-attachment: fixed;
   font-family: 'Oswald';
   color: #757575;
   font-size: 16px;
@@ -48,13 +50,30 @@ input[type=submit]:hover {
   background-color: #84CEEB;
 }
 
+button {
+  padding: 10px;
+  outline: 0;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 2px solid #e2e2e2;
+  background-color: #5AB9EA;
+  border: none;
+  color: white;
+  text-decoration: none;
+}
+
+button:hover {
+  background-color: #84CEEB;
+}
+
 a {
   color: inherit;
   text-decoration: none;
 }
 
 a:hover {
-  color: #fff;
+  color: #C1C8E4;
   text-decoration: none;
   cursor: pointer;
 }
@@ -65,6 +84,14 @@ a:hover {
 
 .spaced {
   margin: 10px;
+}
+
+.smallSpaced {
+  margin: 5px;
+}
+
+.small {
+  width: 20px !important;
 }
 
 .centerVertical {
@@ -90,6 +117,11 @@ a:hover {
 
 .link-button:hover {
   color: #fff;
+}
+
+#linkRow:hover {
+  background-color: #C1C8E4;
+  cursor: pointer; 
 }
 
 
@@ -132,6 +164,12 @@ a:hover {
   border: 0px;
 }
 
+#smallProfile {
+  width: 35px;
+  height: 35px;
+  border-radius: 4px;
+}
+
 
 /*////////////////////////////////////*/
 /* Index styles */
@@ -139,7 +177,7 @@ a:hover {
 
 #tableTitle {
   position: relative;
-  margin-top: 150px;
+  /*margin-top: 150px;*/
 }
 
 #indexTable {
@@ -151,6 +189,7 @@ a:hover {
   margin-bottom: 100px;
   background-color: #fff;
   border-radius: 4px;
+  max-width: 1000px;
 }
 
 tr:nth-child(even) {
@@ -185,4 +224,37 @@ tr:nth-child(even) {
 #submitmessage {
   padding: 10px;
   color: #F00;
+}
+
+
+/*////////////////////////////////////*/
+/* Profile styles */
+/*////////////////////////////////////*/
+#profilePic {
+  max-width: 100px;
+  max-height: 100px;
+  border-radius: 4px;
+}
+
+#profileInfo {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #fff;
+  width: 65%;
+  max-width: 1000px;
+  padding: 0px;
+  border-radius: 4px;
+  justify-content: space-between;
+  margin-bottom: 50px;
+}
+
+#leftInfo {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 40px;
+}
+
+#rightInfo {
+  margin-right: 40px;
 }

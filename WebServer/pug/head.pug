@@ -4,7 +4,7 @@ head
 	script(src='/index.js', type='text/javascript')
 	meta(name='viewport', content='width=device-width, initial-scale=1')
 	link(href='https://fonts.googleapis.com/css?family=Oswald', rel='stylesheet')
-	p#createdBy Group 4
+	a#createdBy(href="https://github.com/mrkjdy/large-project") Group 4
 	#navbar.centerVertical.shadedBox
 		#leftnav.centerVertical
 			a.spaced(href='/')
@@ -14,7 +14,9 @@ head
 				input(type='submit' value='Search')
 		#userBox.centerVertical
 			if user
-				a.spaced(href='/myprofile') #{user.firstName} #{user.lastName}
+				a.centerVertical.spaced(href='/myprofile') 
+					img.smallSpaced#smallProfile(src='/default-user-profile.svg')
+					span= user.firstName + " " + user.lastName
 				a.spaced(href='/settings') Settings
 				a.spaced(onclick='logout(); return false') Log out
 			else

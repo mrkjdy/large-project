@@ -204,33 +204,45 @@ app.get('/create-account', function (req, res) {
 
 app.get('/user/:username', function (req, res) {
 
-	var userinfo = null, own = false, globalrank = 0, friendrank = 0, friendtable = topRankedUsers;
+	var userinfo = null, added = false, globalrank = 0, friendrank = 0, friendtable = topRankedUsers;
 
 	if (req.user && req.user.login === req.params.username) {
 		userinfo = req.user;
-		own = true;
-	}
-	else
-		userinfo = getUserPageData(req.params.username, req.user);
-
-	// if not found display 404
-	if (userinfo != null) {
 		res.render('profile', {
 			user: req.user,
 			userinfo: userinfo,
+			added: added,
 			globalrank: globalrank,
 			friendrank: friendrank,
-			friendtable: friendtable,
-			own: own
+			friendtable: friendtable
 		});
 	}
 	else {
-		res.status(404).redirect('/404');
+		userinfo = getUserPageData(req.params.username, req.user, req, res, function(req, res, result) {
+			if(result != null) {
+				res.render('profile', {
+					user: req.user,
+					userinfo: result,
+					added: added,
+					globalrank: globalrank,
+					friendrank: friendrank,
+					friendtable: friendtable
+				});
+			} else {
+				res.status(404).redirect('/404');
+			}
+		});
 	}
 });
 
 app.get('/myprofile', function (req, res) {
 	res.redirect('/user/' + req.user.login);
+});
+
+app.get('/settings', function(req, res) {
+	res.render('settings', {
+		user: req.user
+	});
 });
 
 app.get('/404', function (req, res) {
@@ -242,14 +254,16 @@ app.get('/404', function (req, res) {
 app.get('/search/:searchstring', function (req, res) {
 	// get table from database
 	var searchString = decodeURI(req.params.searchstring);
-	console.log(searchString);
-	var searchResults = search(searchString);
-
-	// render table
-	res.render('search', {
-		user: req.user,
-		searchResults: searchResults,
-		searchString: searchString
+	var searchResults = search(searchString, req.user, req, res, function(result, req, res) {
+		if(result != null) {
+			res.render('search', {
+				user: req.user,
+				searchResults: result,
+				searchString: searchString
+			});
+		} else {
+			res.status(404).redirect('/404');
+		}
 	});
 });
 
@@ -311,28 +325,6 @@ app.post('/register', function(req, res) {
 		});
 	}
 });
-
-// Login function
-// app.post('/login', function(req, res) {
-// 	passport.authenticate('local', function(err, user, info) {
-// 		// Database error
-// 		if(err) {
-// 			return res.status(400).send('Database Error');
-// 		}
-// 		// Credentials invalid
-// 		if(!user) {
-// 			return res.status(401).send(JSON.stringify([{ "loginSuccess": false }]));
-// 		}
-// 		req.logIn(user, function(err) {
-// 			if(err) {
-// 				console.log(err);
-// 				return res.status(400).send('Login Error');
-// 			}
-			
-// 			return res.send(JSON.stringify([{ "loginSuccess": true }]));
-// 		});
-// 	})(req, res);
-// });
 
 // Login function
 app.post('/login', function(req, res) {
@@ -748,55 +740,6 @@ app.post('/getsession', function(req, res) {
 	}
 });
 
-// Get URL for a profile pic
-// app.post('/getUserPicURL', function(req, res) {
-	// if(!req.user) {
-		// res.status(401).send();
-	// } else {
-		// if(req.body.username) {
-			// dbPool.getConnection(function(err, tempCont) {
-				// if(err) {
-					// console.log(err);
-					// res.status(400).send();
-				// } else {
-					// tempCont.query("SELECT user_id, photo_type FROM User WHERE login = ?;", [req.body.username], function(err, result) {
-						// if(err) {
-							// console.log(err);
-							// res.status(400).send();
-						// } else if(!result[0]) {
-							// res.status(400).send();
-						// } else {
-							// let url = cdnurl + result[0].user_id + "." + result[0].photo_type;
-							// res.status(200).send(url);
-						// }
-					// });
-				// }
-				// tempCont.release();
-			// });
-		// } else {
-			// res.status(400).send();
-		// }
-	// }
-// });
-
-// // Upload a profile pic
-// app.post('/addUserPic', function(req, res) {
-	// if(!req.user) {
-		// res.status(401).send();
-	// } else if(!req.files.photo) {
-		// res.status(400).send();
-	// } else {
-		// let photo = req.files.photo;
-		// if(photo.mimetype.localeCompare('image/png') === 0 || photo.mimetype.localeCompare('image/jpeg') === 0) {
-			
-			// //Do something
-			
-		// } else {
-			// res.status(400).send();
-		// }
-	// }
-// });
-
 // Display 404 for 
 // MUST BE AT BOTTOM OF THIS SECTION!
 app.use(function(req, res, next) {
@@ -890,22 +833,23 @@ var updateTopUsers = schedule.scheduleJob('*/5 * * * *', function() {
 	getNewTopUsers();
 });
 
-var getUserPageData = function(usernameToSearch, user) {
+var getUserPageData = function(usernameToSearch, user, req, res, callback) {
 	dbPool.getConnection(function(err, tempCont) {
 		if(err) {
 			console.log(err);
-			return null;
+			return callback(req, res, null);
 		} else {
 			if(!user) {
 				tempCont.query("SELECT * FROM User WHERE login = ? AND isPrivate = false;", [usernameToSearch], function(err, result) {
 					if(err) {
 						console.log(err);
-						return null;
+						return callback(req, res, null);
 					} else {
-						if(result[0]) {
-							return result[0];
+						if(result) {
+							console.log("result found: " + result[0]);
+							return callback(req, res, result[0]);
 						} else {
-							return null;
+							return callback(req, res, null);
 						}
 					}
 				});
@@ -915,10 +859,12 @@ var getUserPageData = function(usernameToSearch, user) {
 						console.log(err);
 						return null;
 					} else {
-						if(result[0]) {
-							return result[0];
+						console.log(result);
+						if(result) {
+							console.log("result found: " + result[0]);
+							return callback(req, res, result[0]);
 						} else {
-							return null;
+							return callback(req, res, null);
 						}
 					}
 				});
@@ -928,10 +874,6 @@ var getUserPageData = function(usernameToSearch, user) {
 		}
 		tempCont.release();
 	});
-}
-
-var search = function(searchString) {
-	return "123";
 }
 
 var getUserIndex = function(username) {
@@ -995,32 +937,31 @@ var getSessionID = function() {
 	});
 }
 
-var lazySearch = function(username, user) {
+var search = function(username, user, req, res, callback) {
 	dbPool.getConnection(function(err, tempCont) {
 		if(err) {
-			console.log(err);
 			res.status(400).send();
 		} else {
 			if(user) {
 				tempCont.query("SELECT DISTINCT login, total_points, CASE WHEN EXISTS (SELECT user_id FROM Friendship WHERE (user_one_id = ? AND user_two_id = User.user_id) OR (user_one_id = User.user_id AND user_two_id = ?)) THEN 'TRUE' ELSE 'FALSE' END AS isFriend FROM User INNER JOIN Friendship ON (User.user_id = Friendship.user_one_id AND Friendship.user_two_id = ?) OR (Friendship.user_one_id = ? AND User.user_id = Friendship.user_two_id) OR (User.isPrivate = false) WHERE login LIKE '%" + username + "%' AND user_id != ?;", [user.user_id, user.user_id, user.user_id, user.user_id, user.user_id], function(err, result) {
 					if(err) {
 						console.log(err);
-						return null;
+						return callback(null, req, res);
 					} else if(!result) {
-						return null;
+						return callback(null, req, res);
 					} else {
-						return result;
+						return callback(result, req, res);
 					}
 				});
 			} else {
 				tempCont.query("SELECT DISTINCT * FROM User WHERE login LIKE '%" + username + "%' AND isPrivate = false;", function(err, result) {
 					if(err) {
 						console.log(err);
-						return null;
+						return callback(null, req, res);
 					} else if(!result) {
-						return null;
+						return callback(null, req, res);
 					} else {
-						return result;
+						return callback(result, req, res);
 					}
 				});
 			}

@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,16 +55,19 @@ public class ResultFragment extends Fragment {
         String step = b.getString("Step");
         String mile = b.getString("Mile");
         String score = b.getString("Score");
+        String multiplier = b.getString("Multiplier");
 
         TextView timeView = (TextView) getView().findViewById(R.id.timeResult);
         TextView stepView = (TextView) getView().findViewById(R.id.stepResult);
         TextView mileView = (TextView) getView().findViewById(R.id.milesResult);
         TextView scoreView = (TextView) getView().findViewById(R.id.scoreResult);
+        TextView multiplierView = (TextView) getView().findViewById(R.id.multiplierResult);
 
         timeView.setText(time);
         stepView.setText(step);
         mileView.setText(mile);
         scoreView.setText(score);
+        multiplierView.setText(multiplier);
 
         Button end = (Button) getView().findViewById(R.id.endButton);
         end.setOnClickListener(new View.OnClickListener() {

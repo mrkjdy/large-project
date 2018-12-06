@@ -73,11 +73,11 @@
             android:gravity="right|center_vertical"
             android:text="SCORE"
             android:textSize="30dp"
-            app:layout_constraintBottom_toTopOf="@+id/multiplierView"
+            app:layout_constraintBottom_toTopOf="@+id/multiplierResult"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/multiplierView"
+            android:id="@+id/multiplierResult"
             android:layout_width="104dp"
             android:layout_height="16dp"
             android:layout_marginStart="8dp"

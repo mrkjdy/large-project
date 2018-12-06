@@ -2,24 +2,33 @@ doctype html
 html(lang='en')
 	include head
 	body
-		img#profilePic
-		p #{userinfo.firstname} #{userinfo.lastname}
-		p #{userinfo.login}
-		p Steps #{userinfo.total_steps}
-		if added
-			button(type='button') Unfriend
-		else
-			button(type='button') Friend
-		p Global Rank #{globalrank}
-		p Friend Rank #{friendrank}
+		h1#username #{userinfo.login}
+		#profileInfo.centerVertical.shadedBox
+			#leftInfo
+				img#profilePic(src="/default-user-profile.svg" alt="Profile Picture")
+				p #{userinfo.firstName} #{userinfo.lastName}
+				if user
+					if added
+						button#friendbutton(type='button' onclick='unfriend(); return false') Unfriend
+					else if (user.login == userinfo.login)
+						button(type='button' onclick='window.location.href="/settings"; return false') Settings
+					else
+						button#friendbutton(type='button' onclick='friend(); return false') Add Friend
+				else
+					button#friendbutton(type='button' onclick='window.location.href="/login"; return false') Add Friend
+			#rightInfo
+				p Steps #{userinfo.steps}
+				p Global Rank #{globalrank}
+				p Friend Rank #{friendrank}
 		if friendtable
-			table
+			h2#tableTitle Friends
+			table#indexTable.shadedBox
 				tr
 					th Friend Rank
 					th Friend
 					th Points
 				each val, index in friendtable
-					tr
+					tr#linkRow(onclick="window.location.href='/user/" + val.login + "'; return false")
 						td= index + 1
 						td= val.login
 						td= val.total_points
