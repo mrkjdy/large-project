@@ -5,8 +5,8 @@
     android:id="@+id/lead_entry"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/ic_layout_border"
-    android:layout_marginBottom="4dp">
+    android:background="@drawable/settings_input"
+    android:layout_marginBottom="8dp">
 
     <TextView
         android:id="@+id/tv_lead_pos"
@@ -70,8 +70,8 @@
 
     <ImageButton
         android:id="@+id/bt_add_friend"
-        android:layout_width="31dp"
-        android:layout_height="33dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"

@@ -107,6 +107,7 @@
                     android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:background="@null"
                     android:src="@drawable/miles" />
 
                 <TextView

@@ -6,7 +6,8 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="MainActivity">
+    tools:context="MainActivity"
+    android:background="@color/colorSecondaryAccent">
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"

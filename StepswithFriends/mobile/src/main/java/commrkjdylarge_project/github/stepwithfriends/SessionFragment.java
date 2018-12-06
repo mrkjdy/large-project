@@ -65,10 +65,13 @@ public class SessionFragment extends Fragment {
 
         final Bundle args = new Bundle();
 
-        final TextView multiplierView = (TextView) getView().findViewById(R.id.multiplierView);
+        final TextView multiplierView = (TextView) getView().findViewById(R.id.multiplierResult);
         final TextView stepView = (TextView) getView().findViewById(R.id.stepsView);
         final TextView scoreView = (TextView) getView().findViewById(R.id.scoreView);
         final TextView milesView = (TextView) getView().findViewById(R.id.milesResult);
+
+        final int stepOffset = ((SWFApp) getActivity().getApplication()).getSteps();
+        final double scoreOffset = ((SWFApp) getActivity().getApplication()).getPoints();
 
         final Thread thread = new Thread() {
             @Override
@@ -77,15 +80,19 @@ public class SessionFragment extends Fragment {
                     try {
                         Thread.sleep(1000);
 
-                        int step = ((SWFApp) getActivity().getApplication()).getSteps();
+                        int step = ((SWFApp) getActivity().getApplication()).getSteps() - stepOffset;
                         int multiplier = ((SWFApp) getActivity().getApplication()).getMultiplier();
-                        double score = ((SWFApp) getActivity().getApplication()).getPoints();
-                        double miles = ((double) step / (double )2000);
+                        double score = ((SWFApp) getActivity().getApplication()).getPoints() - scoreOffset;
+                        double miles = 0;
+
+                        if(step != 0){
+                            miles = ((double) step / (double )2000);
+                        }
 
                         multiplierView.setText("x" + multiplier);
                         stepView.setText("" + step);
                         scoreView.setText("" + score);
-                        milesView.setText("" + miles);
+                        milesView.setText(String.format( "%.2f", miles));
 
                     } catch (Exception e) {}
                 }
@@ -118,6 +125,7 @@ public class SessionFragment extends Fragment {
                                 args.putString("Step", stepView.getText().toString());
                                 args.putString("Score", scoreView.getText().toString());
                                 args.putString("Mile", milesView.getText().toString());
+                                args.putString("Multiplier", multiplierView.getText().toString());
 
                                 ResultFragment resultFragment = new ResultFragment();
                                 resultFragment.setArguments(args);

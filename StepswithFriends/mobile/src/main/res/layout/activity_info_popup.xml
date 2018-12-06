@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".InfoPopup"
-    android:background="@drawable/ic_layout_border">
+    android:background="@drawable/card2">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -28,14 +28,13 @@
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="First Name"
+                android:text=" First Name"
                 android:textColor="#000"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/ic_layout_border"
                 android:orientation="horizontal">
 
                 <TextView
@@ -44,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:text="FirstName" />
+                    android:hint=" First" />
 
                 <EditText
                     android:id="@+id/et_first_name"
@@ -53,24 +52,28 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="First Name"
+                    android:hint=" First Name"
                     android:visibility="gone" />
 
                 <Button
                     android:id="@+id/bt_up_fn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="110dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:text="Change" />
+                    android:background="@drawable/button_gray"
+                    android:text=" Change" />
 
                 <Button
                     android:id="@+id/bt_chng_fn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="110dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:text="Update"
+                    android:background="@drawable/button_green"
+                    android:text=" Update"
                     android:visibility="gone" />
             </LinearLayout>
 
@@ -78,14 +81,13 @@
                 android:id="@+id/textView8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Last Name"
+                android:text=" Last Name"
                 android:textColor="#000" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/ic_layout_border"
                 android:orientation="horizontal">
 
                 <TextView
@@ -94,15 +96,17 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:text="LastName" />
+                    android:hint=" Last" />
 
                 <Button
                     android:id="@+id/bt_up_ln"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="110dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:text="Change" />
+                    android:background="@drawable/button_gray"
+                    android:text=" Change" />
 
                 <EditText
                     android:id="@+id/et_last_name"
@@ -111,16 +115,18 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="Last Name"
+                    android:hint=" Last Name"
                     android:visibility="gone" />
 
                 <Button
                     android:id="@+id/bt_chng_ln"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="110dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:text="Update"
+                    android:background="@drawable/button_green"
+                    android:text=" Update"
                     android:visibility="gone" />
             </LinearLayout>
 
@@ -128,14 +134,13 @@
                 android:id="@+id/textView9"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Height (in)"
+                android:text=" Height (in)"
                 android:textColor="#000" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/ic_layout_border"
                 android:orientation="horizontal">
 
                 <TextView
@@ -144,15 +149,17 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:text="Height" />
+                    android:hint=" Height" />
 
                 <Button
                     android:id="@+id/bt_up_h"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="110dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:text="Change" />
+                    android:background="@drawable/button_gray"
+                    android:text=" Change" />
 
                 <EditText
                     android:id="@+id/et_height"
@@ -161,16 +168,18 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="Height (in)"
+                    android:hint=" Height (in)"
                     android:visibility="gone" />
 
                 <Button
                     android:id="@+id/bt_chng_h"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="110dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:text="Update"
+                    android:background="@drawable/button_green"
+                    android:text=" Update"
                     android:visibility="gone" />
             </LinearLayout>
 
@@ -178,15 +187,14 @@
                 android:id="@+id/textView3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Weight (lbs)"
+                android:text=" Weight (lbs)"
                 android:textColor="#000" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/ic_layout_border">
+                android:layout_marginBottom="10dp">
 
                 <TextView
                     android:id="@+id/tv_weight"
@@ -194,15 +202,17 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_gravity="center_vertical"
-                    android:text="Wheight" />
+                    android:hint=" Weight" />
 
                 <Button
                     android:id="@+id/bt_up_w"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="110dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:text="Change" />
+                    android:background="@drawable/button_gray"
+                    android:text=" Change" />
 
                 <EditText
                     android:id="@+id/et_weight"
@@ -210,18 +220,20 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="Weight (lbs)"
+                    android:hint=" Weight (lbs)"
                     android:layout_gravity="center_vertical"
                     android:visibility="gone" />
 
                 <Button
                     android:id="@+id/bt_chng_w"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="110dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_gravity="center_vertical"
+                    android:background="@drawable/button_green"
                     android:visibility="gone"
                     android:layout_weight="1"
-                    android:text="Update" />
+                    android:text=" Update" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

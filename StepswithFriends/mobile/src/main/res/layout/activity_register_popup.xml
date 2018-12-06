@@ -181,29 +181,44 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="515dp">
+                tools:layout_editor_absoluteY="515dp"
+                android:weightSum="2">
 
                 <Button
                     android:id="@+id/backButton"
                     style="@style/Widget.AppCompat.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_width="110dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="16dp"
-                    android:gravity="start"
+                    android:background="@drawable/button_gray"
+                    android:gravity="center"
+                    android:scaleType="fitCenter"
+                    android:layout_weight="1"
+                    android:scaleX="1"
+                    android:scaleY="1"
                     android:text="Back"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
+                <Space
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent" />
+
                 <Button
                     android:id="@+id/register_button"
                     style="@style/Widget.AppCompat.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="100dp"
+                    android:layout_width="110dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
-                    android:gravity="end"
+                    android:background="@drawable/button_green"
+                    android:gravity="center"
+                    android:scaleType="fitCenter"
+                    android:layout_weight="1"
+                    android:scaleX="1"
+                    android:scaleY="1"
                     android:text="Register"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
@@ -212,14 +227,15 @@
             <TableRow
                 android:id="@+id/empty_row3"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="150dp"
                 android:layout_marginTop="12dp"
-
                 android:gravity="start|center_vertical"
                 android:text=""
                 app:layout_constraintEnd_toEndOf="@+id/scrollView2"
                 app:layout_constraintStart_toStartOf="@+id/scrollView2"
-                app:layout_constraintTop_toBottomOf="@+id/logout_button" />
+                app:layout_constraintTop_toBottomOf="@+id/logout_button" >
+
+            </TableRow>
         </LinearLayout>
     </ScrollView>
 
