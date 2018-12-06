@@ -850,7 +850,7 @@ var checkInput = function(input, type, callback) {
 var dailyUpdateUserStats = schedule.scheduleJob('00 00 00 * * 0-6', function() {
 	
 	// !!! Query that adds points, distance, steps from Daily Stats to total_points, total_distance, total_steps in User
-	var updateQuery = "UPDATE User SET total_score = total_score + daily_score AND total_steps = total_steps + daily_steps AND daily_score = 0 AND daily_steps = 0;";
+	var updateQuery = "UPDATE User SET total_points = total_points + daily_points, total_steps = total_steps + daily_steps, daily_points = 0, daily_steps = 0 WHERE user_id > 0;";
 	dbPool.getConnection(function(err, tempCont) {
 		if(err) {
 			console.log(err);
