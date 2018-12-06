@@ -673,6 +673,7 @@ app.post('/joinsession', function(req, res) {
 										return;
 									}
 								});
+								i = result.length;
 							} else if(i == result.length - 1) {
 								console.log("no one in range found, making new session...");
 								// Create new session if no friends in range
@@ -989,6 +990,41 @@ var getSessionID = function() {
 				}
 				console.log("SessionID index is " + sessionID);
 			});
+		}
+		tempCont.release();
+	});
+}
+
+var lazySearch = function(username, user) {
+	dbPool.getConnection(function(err, tempCont) {
+		if(err) {
+			console.log(err);
+			res.status(400).send();
+		} else {
+			if(user) {
+				tempCont.query("SELECT DISTINCT login, total_points, CASE WHEN EXISTS (SELECT user_id FROM Friendship WHERE (user_one_id = ? AND user_two_id = User.user_id) OR (user_one_id = User.user_id AND user_two_id = ?)) THEN 'TRUE' ELSE 'FALSE' END AS isFriend FROM User INNER JOIN Friendship ON (User.user_id = Friendship.user_one_id AND Friendship.user_two_id = ?) OR (Friendship.user_one_id = ? AND User.user_id = Friendship.user_two_id) OR (User.isPrivate = false) WHERE login LIKE '%" + username + "%' AND user_id != ?;", [user.user_id, user.user_id, user.user_id, user.user_id, user.user_id], function(err, result) {
+					if(err) {
+						console.log(err);
+						return null;
+					} else if(!result) {
+						return null;
+					} else {
+						return result;
+					}
+				});
+			} else {
+				tempCont.query("SELECT DISTINCT * FROM User WHERE login LIKE '%" + username + "%' AND isPrivate = false;", function(err, result) {
+					if(err) {
+						console.log(err);
+						return null;
+					} else if(!result) {
+						return null;
+					} else {
+						return result;
+					}
+				});
+			}
+			
 		}
 		tempCont.release();
 	});
